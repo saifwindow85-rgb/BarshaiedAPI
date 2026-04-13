@@ -24,6 +24,7 @@ namespace DataAccessLayer.Repositories
 
         private Expression<Func<Category, CategoryDTO>> CategoryToDTO = c => new CategoryDTO
         {
+            Id = c.CategoryId,
             CategoryName = c.Name,
             CreatedAt = c.CreatedAt,
         };
@@ -34,7 +35,7 @@ namespace DataAccessLayer.Repositories
             //  await _context.Categories.AddRangeAsync(SeedMethods.SeedCategories());
             //    await _context.SaveChangesAsync();
             //}
-            return await _context.Categories.Select(CategoryToDTO).ToListAsync();
+            return await _context.Categories.AsNoTracking().Select(CategoryToDTO).ToListAsync();
         }
 
         public async Task SaveChanges()
@@ -45,6 +46,12 @@ namespace DataAccessLayer.Repositories
         public async Task Add(Category newCategory)
         {
             await _context.Categories.AddAsync(newCategory);
+        }
+
+        public async Task<CategoryDTO> GetCategoryById(int Id)
+        {
+            return await _context.Categories.Select(CategoryToDTO).SingleOrDefaultAsync(x => x.Id == Id);
+
         }
     }
 }

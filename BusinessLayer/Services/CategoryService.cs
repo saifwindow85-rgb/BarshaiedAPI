@@ -1,17 +1,44 @@
-﻿using Domain.DTOs.CategoryDTOs;
+﻿using BusinessLayer.Enums;
+using BusinessLayer.Results;
+using BusinessLayer.Validators;
+using Domain.DTOs.CategoryDTOs;
 using Domain.Interfaces;
+using Domain.Mappers;
+using FluentValidation;
 namespace BusinessLayer.Services
 {
     public class CategoryService
     {
         private IcategoryRepository _repo;
-        public CategoryService(IcategoryRepository repo)
+        private IValidator<AddUpdateCategoryDTO> _validator;
+        public CategoryService(IcategoryRepository repo,IValidator<AddUpdateCategoryDTO> validator)
         {
             _repo = repo;
+            _validator = validator;
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
             return await _repo.GetCategories();
+        }
+
+        public async Task<CategoryDTO>GetCategoryById(int Id)
+        {
+            return await _repo.GetCategoryById(Id);
+        }
+
+        public async Task<CategoryServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
+        {
+            var validatorResult = await _validator.ValidateAsync(newCategory);
+            if(!validatorResult.IsValid)
+            {
+                return CategoryServiceResponse<CategoryDTO>.Failure(validatorResult.Errors
+                    .Select(e => $"{e.PropertyName} : {e.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
+            }
+            var categoryEntity = newCategory.ToEntity();
+            await _repo.Add(categoryEntity);
+            await _repo.SaveChanges();
+            var categoryDTO = categoryEntity.ToDTO();
+            return CategoryServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Domain.DTOs.CategoryDTOs
 {
     public class CategoryDTO
     {
+        public int Id { get; set; }
         public string CategoryName { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
     }

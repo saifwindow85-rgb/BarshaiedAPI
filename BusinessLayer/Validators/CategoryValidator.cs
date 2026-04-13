@@ -10,7 +10,7 @@ namespace BusinessLayer.Validators
 {
     public class CategoryValidator : AbstractValidator<AddUpdateCategoryDTO>
     {
-        CategoryValidator()
+       public CategoryValidator()
         {
             RuleFor(c => c.CategoryName).NotEmpty().MinimumLength(2).MaximumLength(50);
         }

@@ -26,5 +26,41 @@ namespace BarshaiedAPI.Controllers
                 return NotFound("No Categories Found");
             return Ok(categories);
         }
+
+        [HttpGet("{Id}",Name ="GetCategoryById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategoryById(int Id)
+        {
+          if(Id < 1)
+            {
+                return BadRequest($"Not Accepted Id {Id}");
+            }
+            var categorie = await _service.GetCategoryById(Id);
+            if(categorie == null)
+            {
+                return NotFound($"No Student Found With Id = {Id}");
+            }
+            return Ok(categorie);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
+        {
+            var categoryResponse = await _service.AddCategory(newCategory);
+            if(!categoryResponse.IsSuccess)
+            {
+                return BadRequest(new
+                {
+                    Message = categoryResponse.ErrorType.ToString(),
+                    Errors = categoryResponse.Errors
+                });
+            }
+            return CreatedAtRoute("GetCategoryById", new { Id = categoryResponse.Data!.Id },categoryResponse.Data);
+        }
     }
 }
