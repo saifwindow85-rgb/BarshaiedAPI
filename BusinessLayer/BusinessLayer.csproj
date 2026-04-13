@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Results\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="7.6.105" />
   </ItemGroup>
 
 </Project>

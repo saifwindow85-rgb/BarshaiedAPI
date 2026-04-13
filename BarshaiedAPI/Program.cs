@@ -1,6 +1,10 @@
 using BusinessLayer.Services;
+using BusinessLayer.Validators;
 using DataAccessLayer.AppDbContext;
 using DataAccessLayer.Repositories;
+using Domain.DTOs.CategoryDTOs;
+using Domain.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +19,12 @@ builder.Services.AddDbContext<BarshaiedDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<CategoryRespository>();
+builder.Services.AddScoped<IcategoryRepository,CategoryRespository>();
+builder.Services.AddScoped<IValidator<AddUpdateCategoryDTO>, CategoryValidator>();
+
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
