@@ -67,7 +67,7 @@ namespace DataAccessLayer.Seeds
         {
             ProductId = 4,
             ProductName = "Apple",
-            Barcode = null, // اختبار NULL + Unique Index
+            Barcode = null, 
             CategoryId = 4,
             CostPrice = 0.50m,
             SellPrice = 1.00m,
@@ -80,7 +80,7 @@ namespace DataAccessLayer.Seeds
             ProductId = 5,
             ProductName = "Unknown Product",
             Barcode = "444444444",
-            CategoryId = null, // اختبار SetNull
+            CategoryId = null,
             CostPrice = 5.00m,
             SellPrice = 7.00m,
             Quantity = 10,
