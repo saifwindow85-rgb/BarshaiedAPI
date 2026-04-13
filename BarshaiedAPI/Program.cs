@@ -1,4 +1,6 @@
+using BusinessLayer.Services;
 using DataAccessLayer.AppDbContext;
+using DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BarshaiedDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<CategoryRespository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
