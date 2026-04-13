@@ -9,6 +9,5 @@ namespace Domain.DTOs.CategoryDTOs
     public class AddUpdateCategoryDTO
     {
         public string CategoryName { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
     }
 }

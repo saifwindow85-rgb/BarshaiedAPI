@@ -15,7 +15,6 @@ namespace Domain.Mappers
             return new Category
             {
                 Name = dto.CategoryName,
-                CreatedAt = dto.CreatedAt
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Services;
+﻿using BusinessLayer.Results;
+using BusinessLayer.Services;
 using Domain.DTOs.CategoryDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,47 @@ namespace BarshaiedAPI.Controllers
                 return NotFound($"No Category Found With Id = {Id}");
             }
             return Ok();
+        }
+
+        [HttpPut("{Id}",Name ="UpdateCategory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CategoryDTO>>UpdateCategory(int Id,AddUpdateCategoryDTO updateCategoryDTO)
+        {
+            if( Id < 1)
+            {
+                return BadRequest($"Not Accepted Id {Id}");
+            }
+            CategoryServiceResponse<CategoryDTO> categoryResponse = await _service.UpdateCategory(Id, updateCategoryDTO);
+            if(categoryResponse.Data == null)
+            {
+                return NotFound(new
+                {
+                    Message = categoryResponse.ErrorType.ToString(),
+                    Errors = categoryResponse.Errors
+                });
+            }
+            if(!categoryResponse.IsSuccess)
+            {
+                if(categoryResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.NotFound)
+                {
+                    return NotFound(new
+                    {
+                        Message = categoryResponse.ErrorType.ToString(),
+                        Errors = categoryResponse.Errors
+                    });
+                }
+                else if(categoryResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.InvalidData)
+                {
+                    return BadRequest(new
+                    {
+                        Message = categoryResponse.ErrorType.ToString(),
+                        Errors = categoryResponse.Errors
+                    });
+                }
+            }
+                return Ok(categoryResponse.Data);
         }
     }
 }

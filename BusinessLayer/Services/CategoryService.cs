@@ -46,5 +46,23 @@ namespace BusinessLayer.Services
             return await _repo.Delete(Id);
         }
 
+
+       public async Task<CategoryServiceResponse<CategoryDTO>>UpdateCategory(int Id,AddUpdateCategoryDTO updatedCategory)
+        {
+            var validatorResult = await _validator.ValidateAsync(updatedCategory);
+            if(!validatorResult.IsValid)
+            {
+                return CategoryServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
+            }
+            var categoryEntity = await _repo.GetCategoryEntityById(Id);
+            if(categoryEntity == null)
+            {
+                return CategoryServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
+            }
+            categoryEntity.Name = updatedCategory.CategoryName;
+            await _repo.SaveChanges();
+            var categoryDTO = categoryEntity.ToDTO();
+            return CategoryServiceResponse<CategoryDTO>.Success(categoryDTO);
+        }
     }
 }

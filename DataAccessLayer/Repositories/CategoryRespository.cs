@@ -65,5 +65,10 @@ namespace DataAccessLayer.Repositories
             int rowEffected = await _context.SaveChangesAsync();
             return rowEffected > 0;
         }
+
+        public async Task<Category> GetCategoryEntityById(int Id)
+        {
+            return await _context.Categories.SingleOrDefaultAsync(x=>x.CategoryId == Id);
+        }
     }
 }
