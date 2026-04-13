@@ -40,5 +40,11 @@ namespace BusinessLayer.Services
             var categoryDTO = categoryEntity.ToDTO();
             return CategoryServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
+
+        public async Task<bool>Delete(int Id)
+        {
+            return await _repo.Delete(Id);
+        }
+
     }
 }

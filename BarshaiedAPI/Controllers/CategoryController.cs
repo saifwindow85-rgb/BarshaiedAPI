@@ -62,5 +62,24 @@ namespace BarshaiedAPI.Controllers
             }
             return CreatedAtRoute("GetCategoryById", new { Id = categoryResponse.Data!.Id },categoryResponse.Data);
         }
+
+
+        [HttpDelete("{Id}",Name = "DeleteCategoryById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>>DeleteCategory(int Id)
+        {
+            if(Id < 1)
+            {
+                return BadRequest($"Not Accepted Id {Id}");
+            }
+            var IsDeleted = await _service.Delete(Id);
+            if(!IsDeleted)
+            {
+                return NotFound($"No Category Found With Id = {Id}");
+            }
+            return Ok();
+        }
     }
 }

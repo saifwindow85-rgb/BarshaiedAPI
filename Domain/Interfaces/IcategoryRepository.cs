@@ -12,6 +12,7 @@ namespace Domain.Interfaces
     {
         public  Task<List<CategoryDTO>> GetCategories();
         public  Task<CategoryDTO> GetCategoryById(int Id);
+        public Task<bool> Delete(int Id);
         public Task Add(Category newCategory);
         public Task SaveChanges();
     }

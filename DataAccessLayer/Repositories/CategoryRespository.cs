@@ -53,5 +53,17 @@ namespace DataAccessLayer.Repositories
             return await _context.Categories.Select(CategoryToDTO).SingleOrDefaultAsync(x => x.Id == Id);
 
         }
+
+        public async Task<bool> Delete(int Id)
+        {
+            var category = await _context.Categories.FindAsync(Id);
+            if(category == null)
+            {
+                return false;
+            }
+            _context.Categories.Remove(category);
+            int rowEffected = await _context.SaveChangesAsync();
+            return rowEffected > 0;
+        }
     }
 }
