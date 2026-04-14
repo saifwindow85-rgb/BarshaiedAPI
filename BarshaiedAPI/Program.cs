@@ -19,7 +19,7 @@ builder.Services.AddDbContext<BarshaiedDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<IcategoryRepository,CategoryRespository>();
+builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IValidator<AddUpdateCategoryDTO>, CategoryValidator>();
 
 var app = builder.Build();

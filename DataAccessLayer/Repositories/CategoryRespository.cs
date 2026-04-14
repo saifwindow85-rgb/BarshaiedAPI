@@ -12,7 +12,7 @@ using Domain.Interfaces;
 
 namespace DataAccessLayer.Repositories
 {
-    public class CategoryRespository : IcategoryRepository
+    public class CategoryRespository : ICategoryRepository
     {
         private BarshaiedDbContext _context;
 

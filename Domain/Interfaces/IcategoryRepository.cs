@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IcategoryRepository
+    public interface ICategoryRepository
     {
         public  IQueryable<Category> GetCategories();
 

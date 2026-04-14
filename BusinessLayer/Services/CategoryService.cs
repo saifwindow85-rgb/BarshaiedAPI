@@ -18,9 +18,9 @@ namespace BusinessLayer.Services
             CategoryName = c.Name,
             CreatedAt = c.CreatedAt,
         };
-        private IcategoryRepository _repo;
+        private ICategoryRepository _repo;
         private IValidator<AddUpdateCategoryDTO> _validator;
-        public CategoryService(IcategoryRepository repo,IValidator<AddUpdateCategoryDTO> validator)
+        public CategoryService(ICategoryRepository repo,IValidator<AddUpdateCategoryDTO> validator)
         {
             _repo = repo;
             _validator = validator;
