@@ -11,6 +11,6 @@ namespace BusinessLayer.DTOs.ProductDTOs
         public int Id { get; set; }
         public string ProductName { get; set; } = null!;
         public string? Barcode { get; set; }
-        public string CategoryName { get; set; } = null!;
+        public string ?CategoryName { get; set; } 
     }
 }
