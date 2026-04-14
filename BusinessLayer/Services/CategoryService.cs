@@ -1,14 +1,23 @@
 ﻿using BusinessLayer.Enums;
 using BusinessLayer.Results;
 using BusinessLayer.Validators;
+using DataAccessLayer.Entities;
 using Domain.DTOs.CategoryDTOs;
 using Domain.Interfaces;
 using Domain.Mappers;
 using FluentValidation;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 namespace BusinessLayer.Services
 {
     public class CategoryService
     {
+        private Expression<Func<Category, CategoryDTO>> CategoryToDTO = c => new CategoryDTO
+        {
+            Id = c.CategoryId,
+            CategoryName = c.Name,
+            CreatedAt = c.CreatedAt,
+        };
         private IcategoryRepository _repo;
         private IValidator<AddUpdateCategoryDTO> _validator;
         public CategoryService(IcategoryRepository repo,IValidator<AddUpdateCategoryDTO> validator)
@@ -18,12 +27,13 @@ namespace BusinessLayer.Services
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
-            return await _repo.GetCategories();
+            var categories = _repo.GetCategories();
+            return await categories.Select(CategoryToDTO).ToListAsync();
         }
 
         public async Task<CategoryDTO>GetCategoryById(int Id)
         {
-            return await _repo.GetCategoryById(Id);
+            return await _repo.GetCategories().Select(CategoryToDTO).SingleOrDefaultAsync(x=>x.Id == Id);
         }
 
         public async Task<CategoryServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
@@ -54,8 +64,8 @@ namespace BusinessLayer.Services
             {
                 return CategoryServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            var categoryEntity = await _repo.GetCategoryEntityById(Id);
-            if(categoryEntity == null)
+            var categoryEntity = await _repo.GetCategories().SingleOrDefaultAsync(x => x.CategoryId == Id);
+            if (categoryEntity == null)
             {
                 return CategoryServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }

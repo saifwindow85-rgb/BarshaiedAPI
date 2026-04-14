@@ -1,5 +1,4 @@
 ﻿using DataAccessLayer.Entities;
-using Domain.DTOs.CategoryDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +9,8 @@ namespace Domain.Interfaces
 {
     public interface IcategoryRepository
     {
-        public  Task<List<CategoryDTO>> GetCategories();
-        public  Task<CategoryDTO> GetCategoryById(int Id);
-        public Task<Category> GetCategoryEntityById(int Id);
+        public  IQueryable<Category> GetCategories();
+
         public Task<bool> Delete(int Id);
         public Task Add(Category newCategory);
         public Task SaveChanges();

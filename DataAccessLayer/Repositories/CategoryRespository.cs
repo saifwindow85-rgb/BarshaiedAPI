@@ -9,11 +9,10 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces;
-using Domain.DTOs.CategoryDTOs;
 
 namespace DataAccessLayer.Repositories
 {
-    public  class CategoryRespository : IcategoryRepository
+    public class CategoryRespository : IcategoryRepository
     {
         private BarshaiedDbContext _context;
 
@@ -22,21 +21,8 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-        private Expression<Func<Category, CategoryDTO>> CategoryToDTO = c => new CategoryDTO
-        {
-            Id = c.CategoryId,
-            CategoryName = c.Name,
-            CreatedAt = c.CreatedAt,
-        };
-        public async Task<List<CategoryDTO>>GetCategories()
-        {
-            //if(!await _context.Categories.AnyAsync())
-            //{
-            //  await _context.Categories.AddRangeAsync(SeedMethods.SeedCategories());
-            //    await _context.SaveChangesAsync();
-            //}
-            return await _context.Categories.AsNoTracking().Select(CategoryToDTO).ToListAsync();
-        }
+
+
 
         public async Task SaveChanges()
         {
@@ -48,16 +34,11 @@ namespace DataAccessLayer.Repositories
             await _context.Categories.AddAsync(newCategory);
         }
 
-        public async Task<CategoryDTO> GetCategoryById(int Id)
-        {
-            return await _context.Categories.Select(CategoryToDTO).SingleOrDefaultAsync(x => x.Id == Id);
-
-        }
 
         public async Task<bool> Delete(int Id)
         {
             var category = await _context.Categories.FindAsync(Id);
-            if(category == null)
+            if (category == null)
             {
                 return false;
             }
@@ -66,9 +47,11 @@ namespace DataAccessLayer.Repositories
             return rowEffected > 0;
         }
 
-        public async Task<Category> GetCategoryEntityById(int Id)
+
+        public IQueryable<Category> GetCategories()
         {
-            return await _context.Categories.SingleOrDefaultAsync(x=>x.CategoryId == Id);
+            return _context.Categories;
         }
+
     }
 }
