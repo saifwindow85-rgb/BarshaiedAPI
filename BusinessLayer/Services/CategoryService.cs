@@ -74,5 +74,10 @@ namespace BusinessLayer.Services
             var categoryDTO = categoryEntity.ToDTO();
             return CategoryServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
+
+        public async Task<List<CategoryDTO>>GetCategoryByName(string Name)
+        {
+            return await _repo.GetCategories().Select(CategoryToDTO).Where(x => EF.Functions.Like(x.CategoryName,$"%{Name}%")).ToListAsync();
+        }
     }
 }

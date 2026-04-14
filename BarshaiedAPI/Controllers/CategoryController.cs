@@ -123,5 +123,23 @@ namespace BarshaiedAPI.Controllers
             }
                 return Ok(categoryResponse.Data);
         }
+
+        [HttpGet("by-name/{Name}", Name = "GetCategoryByName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategoryById(string Name)
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return BadRequest("Name Can Not Be Null Or WitheSpace");
+            }
+            var categorie = await _service.GetCategoryByName(Name);
+            if (categorie == null || !categorie.Any())
+            {
+                return NotFound($"No Category Found With Name = {Name}");
+            }
+            return Ok(categorie);
+        }
     }
 }
