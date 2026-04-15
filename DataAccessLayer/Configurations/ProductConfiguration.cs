@@ -19,7 +19,7 @@ namespace DataAccessLayer.Configurations
             builder.Property(p => p.ProductName).HasColumnType("NVARCHAR(100)").IsRequired();
 
             builder.HasIndex(p => p.Barcode).IsUnique().HasFilter("[Barcode] IS NOT NULL");
-            builder.Property(p => p.Barcode).HasColumnType("NVARCHAR(9)").IsRequired(false);
+            builder.Property(p => p.Barcode).HasColumnType("NVARCHAR(20)").IsRequired(false);
             builder.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
 
             builder.Property(p => p.CostPrice).HasPrecision(18, 4);

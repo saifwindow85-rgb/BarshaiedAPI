@@ -15,12 +15,12 @@ namespace BarshaiedAPI.Controllers
         {
             _service = service;
         }
-        [HttpGet]
+        [HttpGet("{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ProductDTO>>>GetAllProducts()
+        public async Task<ActionResult<List<ProductDTO>>>GetAllProducts(int pageNumber)
         {
-            var products = await _service.GetAllProducts();
+            var products = await _service.GetAllProducts(pageNumber);
             if(products == null || !products.Any())
             {
                 return NotFound("No Products Found");

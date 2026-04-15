@@ -27,7 +27,7 @@ namespace BusinessLayer.Services
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
-            var categories = _repo.GetCategories();
+            var categories = _repo.GetCategories_UnTracked();
             return await categories.Select(CategoryToDTO).ToListAsync();
         }
 

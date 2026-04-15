@@ -10,7 +10,7 @@ namespace Domain.Interfaces
     public interface ICategoryRepository
     {
         public  IQueryable<Category> GetCategories();
-
+        public IQueryable<Category> GetCategories_UnTracked();
         public Task<bool> Delete(int Id);
         public Task Add(Category newCategory);
         public Task SaveChanges();

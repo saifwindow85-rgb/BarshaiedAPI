@@ -13,14 +13,15 @@ namespace DataAccessLayer.Repositories
     public class ProductRepository : IProductRepository
     {
         private BarshaiedDbContext _context;
+        private int _pageSize = 10;
 
         public ProductRepository(BarshaiedDbContext context)
         {
             _context = context;
         }
-        public IQueryable<Product> GetAllProducts()
+        public IQueryable<Product> GetAllProducts(int pageNumber)
         {
-            return _context.Products;
+            return _context.Products.Skip((pageNumber - 1) * _pageSize).Take(_pageSize);
         }
     }
 }

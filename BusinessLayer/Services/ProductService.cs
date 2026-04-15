@@ -27,11 +27,13 @@ namespace BusinessLayer.Services
             ProductName = p.ProductName,
             CategoryName = p.Category.Name,
             Barcode = p.Barcode,
+            Quantity = p.Quantity,
+            ExpiryDate = p.ExpiryDate,
         };
 
-        public async Task<List<ProductDTO>>GetAllProducts()
+        public async Task<List<ProductDTO>>GetAllProducts(int pageNumber)
         {
-            return await _repo.GetAllProducts().Include(p => p.Category).Select(ProductToDTO).ToListAsync();
+            return await _repo.GetAllProducts(pageNumber).Select(ProductToDTO).ToListAsync();
         }
     }
 }

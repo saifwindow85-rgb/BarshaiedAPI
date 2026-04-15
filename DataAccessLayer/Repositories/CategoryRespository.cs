@@ -53,5 +53,9 @@ namespace DataAccessLayer.Repositories
             return _context.Categories;
         }
 
+        public IQueryable<Category> GetCategories_UnTracked()
+        {
+            return _context.Categories.AsNoTracking();
+        }
     }
 }
