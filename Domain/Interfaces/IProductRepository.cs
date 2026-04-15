@@ -11,5 +11,8 @@ namespace Domain.Interfaces
     {
         public IQueryable<Product> GetAllProducts();
         public IQueryable<Product> GetProducts_UnTracked(int pageNumber);
+        public Task<bool> Delete(int Id);
+        public Task Add(Category newCategory);
+        public Task SaveChanges();
     }
 }

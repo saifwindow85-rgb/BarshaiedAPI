@@ -55,5 +55,10 @@ namespace BusinessLayer.Services
         {
             return await _repo.GetAllProducts().Select(ProductDetailsDTO).SingleOrDefaultAsync(p => p.ProductId == Id);
         }
+
+        public async Task<bool>Delete(int Id)
+        {
+            return await _repo.Delete(Id);
+        }
     }
 }

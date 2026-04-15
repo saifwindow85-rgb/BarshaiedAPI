@@ -20,6 +20,25 @@ namespace DataAccessLayer.Repositories
         {
             _context = context;
         }
+
+        public Task Add(Category newCategory)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> Delete(int Id)
+        {
+            var product = await _context.Products.FindAsync(Id);
+            if (product == null)
+            {
+                return false;
+            }
+            _context.Products.Remove(product);
+            int rowEffected = await _context.SaveChangesAsync();
+            return rowEffected > 0;
+
+        }
+
         public IQueryable<Product> GetAllProducts()
         {
             return _context.Products;
@@ -28,6 +47,11 @@ namespace DataAccessLayer.Repositories
         public IQueryable<Product> GetProducts_UnTracked(int pageNumber)
         {
             return _context.Products.Skip((pageNumber - 1) * _pageSize).Take(_pageSize).AsNoTracking();
+        }
+
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

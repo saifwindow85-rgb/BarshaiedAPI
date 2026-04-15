@@ -45,5 +45,23 @@ namespace BarshaiedAPI.Controllers
             }
             return Ok(productDetails);
         }
+
+        [HttpDelete("{Id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>>DeleteProduct(int Id)
+        {
+            if(Id < 1)
+            {
+                return BadRequest($"Not Accepted Id {Id}");
+            }
+            var IsDeleted = await _service.Delete(Id);
+            if(!IsDeleted)
+            {
+                return NotFound($"No Product Found With Id = {Id}");
+            }
+            return Ok($"Product With Id = {Id} Deleted Succesfully");
+        }
     }
 }
