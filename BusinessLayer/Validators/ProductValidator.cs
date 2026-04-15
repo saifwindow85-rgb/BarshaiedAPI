@@ -51,11 +51,7 @@ namespace BusinessLayer.Validators
                 .LessThanOrEqualTo(x => x.Quantity)
                 .WithMessage("MinQuantity cannot exceed Quantity");
 
-            // ExpiryDate
-            RuleFor(x => x.ExpiryDate)
-                .GreaterThan(DateTime.UtcNow)
-                .When(x => x.ExpiryDate.HasValue)
-                .WithMessage("Expiry date must be in the future");
+
         }
     }
 }

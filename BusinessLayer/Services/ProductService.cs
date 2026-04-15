@@ -78,7 +78,7 @@ namespace BusinessLayer.Services
             productEntity.ExpiryDate = DateTime.UtcNow;
             await _repo.Add(productEntity);
             await _repo.SaveChanges();
-            var productDTO = productEntity.ToDTO();
+            var productDTO =await _repo.GetAllProducts().Select(ProductToDTO).SingleOrDefaultAsync(p => p.Id == productEntity.ProductId);
             return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
         }
     }
