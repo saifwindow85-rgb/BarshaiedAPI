@@ -14,7 +14,6 @@ namespace DataAccessLayer.Repositories
     public class ProductRepository : IProductRepository
     {
         private BarshaiedDbContext _context;
-        private int _pageSize = 10;
 
         public ProductRepository(BarshaiedDbContext context)
         {
@@ -44,9 +43,9 @@ namespace DataAccessLayer.Repositories
             return _context.Products;
         }
 
-        public IQueryable<Product> GetProducts_UnTracked(int pageNumber)
+        public IQueryable<Product> GetProducts_UnTracked()
         {
-            return _context.Products.Skip((pageNumber - 1) * _pageSize).Take(_pageSize).AsNoTracking();
+            return _context.Products.AsNoTracking();
         }
 
         public async Task SaveChanges()

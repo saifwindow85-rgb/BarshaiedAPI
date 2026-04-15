@@ -25,6 +25,8 @@ namespace BusinessLayer.Services
             _repo = repo;
             _validator = validator;
         }
+        private int _pageSize = 10;
+
 
         private Expression<Func<Product, ProductDTO>> ProductToDTO = p => new ProductDTO
         {
@@ -53,7 +55,7 @@ namespace BusinessLayer.Services
 
         public async Task<List<ProductDTO>>GetAllProducts(int pageNumber)
         {
-            return await _repo.GetProducts_UnTracked(pageNumber).Select(ProductToDTO).ToListAsync();
+            return await _repo.GetProducts_UnTracked().Skip((pageNumber-1)*_pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
 
         public async Task<ProductDetailsDTO>GetProductById(int Id)
@@ -80,6 +82,12 @@ namespace BusinessLayer.Services
             await _repo.SaveChanges();
             var productDTO =await _repo.GetAllProducts().Select(ProductToDTO).SingleOrDefaultAsync(p => p.Id == productEntity.ProductId);
             return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
+        }
+
+
+        public async Task<List<ProductDTO>> GetExpiredProducts(int pageNumber)
+        {
+            return await _repo.GetProducts_UnTracked().Where(p=>p.ExpiryDate <= DateTime.Now).Skip((pageNumber-1)*_pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
     }
 }

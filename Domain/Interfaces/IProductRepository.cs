@@ -10,7 +10,7 @@ namespace Domain.Interfaces
     public interface IProductRepository
     {
         public IQueryable<Product> GetAllProducts();
-        public IQueryable<Product> GetProducts_UnTracked(int pageNumber);
+        public IQueryable<Product> GetProducts_UnTracked();
         public Task<bool> Delete(int Id);
         public Task Add(Product newProduct);
         public Task SaveChanges();
