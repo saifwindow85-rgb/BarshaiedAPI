@@ -26,11 +26,13 @@ namespace DataAccessLayer.Configurations
             builder.Property(p => p.SellPrice).HasPrecision(18, 4);
             builder.Property(p => p.ProfitMargin).HasPrecision(18, 4);
 
-            builder.Property(p => p.ProfitMargin).HasComputedColumnSql
-                (@"CASE 
-                        WHEN [CostPrice] = 0 THEN 0 
-                        ELSE (([SellPrice] - [CostPrice]) * 100.0 / [CostPrice])
-                         END",stored:true);
+            builder.Property(p => p.ProfitMargin)
+     .HasComputedColumnSql(
+                 @"CASE 
+                 WHEN [SellPrice] = 0 THEN 0 
+                ELSE (([SellPrice] - [CostPrice]) * 100.0 / [SellPrice])
+                END",
+                 stored: true);
             builder.HasMany(p => p.ShoppingListItems).WithOne(p => p.Product).HasForeignKey(p => p.ProductId).IsRequired();
             builder.ToTable("Products",p=>p.HasCheckConstraint("CK_Product_Prices","[SellPrice] >= [CostPrice]"));
 
