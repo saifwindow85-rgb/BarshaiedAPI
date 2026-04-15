@@ -24,7 +24,7 @@ namespace BusinessLayer.Results
         {
             Errors = errors,
             ErrorType = errorType,
-            IsSuccess = true
+            IsSuccess = false
         };
     }
 }

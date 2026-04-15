@@ -75,7 +75,7 @@ namespace BusinessLayer.Services
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var productEntity = newProduct.ToEntity();
-            productEntity.ExpiryDate = DateTime.UtcNow;
+
             await _repo.Add(productEntity);
             await _repo.SaveChanges();
             var productDTO =await _repo.GetAllProducts().Select(ProductToDTO).SingleOrDefaultAsync(p => p.Id == productEntity.ProductId);

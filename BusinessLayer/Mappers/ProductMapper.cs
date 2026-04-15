@@ -21,20 +21,10 @@ namespace BusinessLayer.Mappers
                 MinQuantity = DTO.MinQuantity,
                 SellPrice = DTO.SellPrice,
                 CostPrice = DTO.CostPrice,
+                ExpiryDate = DTO.ExpiryDate,
             };
         }
 
-        public static ProductDTO ToDTO(this Product entity)
-        {
-            return new ProductDTO
-            {
-                Id = entity.ProductId,
-                ProductName = entity.ProductName,
-                Barcode = entity.Barcode,
-                Quantity = entity.Quantity,
-                ExpiryDate = entity.ExpiryDate,
-                CategoryName = entity.Category.Name,
 
-            };
     }
-    } }
+    } 
