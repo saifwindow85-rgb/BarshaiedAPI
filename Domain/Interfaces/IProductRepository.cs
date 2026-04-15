@@ -9,6 +9,7 @@ namespace Domain.Interfaces
 {
     public interface IProductRepository
     {
-        public IQueryable<Product> GetAllProducts(int pageNumber);
+        public IQueryable<Product> GetAllProducts();
+        public IQueryable<Product> GetProducts_UnTracked(int pageNumber);
     }
 }

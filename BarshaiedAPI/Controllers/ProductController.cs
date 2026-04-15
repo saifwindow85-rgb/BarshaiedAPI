@@ -27,5 +27,23 @@ namespace BarshaiedAPI.Controllers
             }
             return Ok(products);
         }
+
+        [HttpGet("by-Id{Id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+         public async Task<ActionResult<ProductDetailsDTO>>GetProductById(int Id)
+        {
+            if(Id < 1)
+            {
+                return BadRequest($"Not Accepted Id {Id}");
+            }
+            var productDetails = await _service.GetProductById(Id);
+            if(productDetails == null)
+            {
+                return NotFound($"No Product Found With Id = {Id}");
+            }
+            return Ok(productDetails);
+        }
     }
 }

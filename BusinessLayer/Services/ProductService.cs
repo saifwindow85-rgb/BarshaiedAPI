@@ -31,9 +31,29 @@ namespace BusinessLayer.Services
             ExpiryDate = p.ExpiryDate,
         };
 
+        private Expression<Func<Product, ProductDetailsDTO>> ProductDetailsDTO = p => new ProductDetailsDTO
+        {
+            ProductId = p.ProductId,
+            ProductName = p.ProductName,
+            Barcode = p.Barcode,
+            Quantity = p.Quantity,
+            MinQuantity = p.MinQuantity,
+            CreatedAt = p.CreatedAt,
+            CostPrice = p.CostPrice,
+            SellPrice = p.SellPrice,
+            ProfitMargin = p.ProfitMargin,
+            ExpiryDate = p.ExpiryDate,
+            UpdatedAt = p.UpdatedAt
+        };
+
         public async Task<List<ProductDTO>>GetAllProducts(int pageNumber)
         {
-            return await _repo.GetAllProducts(pageNumber).Select(ProductToDTO).ToListAsync();
+            return await _repo.GetProducts_UnTracked(pageNumber).Select(ProductToDTO).ToListAsync();
+        }
+
+        public async Task<ProductDetailsDTO>GetProductById(int Id)
+        {
+            return await _repo.GetAllProducts().Select(ProductDetailsDTO).SingleOrDefaultAsync(p => p.ProductId == Id);
         }
     }
 }
