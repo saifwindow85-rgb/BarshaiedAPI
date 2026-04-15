@@ -81,5 +81,18 @@ namespace BarshaiedAPI.Controllers
             }
             return CreatedAtRoute("GetProductById", new { Id = postResponse.Data!.Id }, postResponse.Data);
         }
+
+        [HttpGet("get-expired-products{pageNumber}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ProductDTO>>> GetExpiredProducts(int pageNumber)
+        {
+            var ExpierdProducts = await _service.GetExpiredProducts(pageNumber);
+            if (ExpierdProducts == null || !ExpierdProducts.Any())
+            {
+                return NotFound("No Products Found");
+            }
+            return Ok(ExpierdProducts);
+        }
     }
 }
