@@ -36,19 +36,19 @@ namespace BusinessLayer.Services
             return await _repo.GetCategories().Select(CategoryToDTO).SingleOrDefaultAsync(x=>x.Id == Id);
         }
 
-        public async Task<CategoryServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
+        public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
         {
             var validatorResult = await _validator.ValidateAsync(newCategory);
             if(!validatorResult.IsValid)
             {
-                return CategoryServiceResponse<CategoryDTO>.Failure(validatorResult.Errors
+                return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors
                     .Select(e => $"{e.PropertyName} : {e.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = newCategory.ToEntity();
             await _repo.Add(categoryEntity);
             await _repo.SaveChanges();
             var categoryDTO = categoryEntity.ToDTO();
-            return CategoryServiceResponse<CategoryDTO>.Success(categoryDTO);
+            return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<bool>Delete(int Id)
@@ -57,22 +57,22 @@ namespace BusinessLayer.Services
         }
 
 
-       public async Task<CategoryServiceResponse<CategoryDTO>>UpdateCategory(int Id,AddUpdateCategoryDTO updatedCategory)
+       public async Task<AddUpdateServiceResponse<CategoryDTO>>UpdateCategory(int Id,AddUpdateCategoryDTO updatedCategory)
         {
             var validatorResult = await _validator.ValidateAsync(updatedCategory);
             if(!validatorResult.IsValid)
             {
-                return CategoryServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
+                return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = await _repo.GetCategories().SingleOrDefaultAsync(x => x.CategoryId == Id);
             if (categoryEntity == null)
             {
-                return CategoryServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
+                return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }
             categoryEntity.Name = updatedCategory.CategoryName;
             await _repo.SaveChanges();
             var categoryDTO = categoryEntity.ToDTO();
-            return CategoryServiceResponse<CategoryDTO>.Success(categoryDTO);
+            return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<List<CategoryDTO>>GetCategoryByName(string Name)

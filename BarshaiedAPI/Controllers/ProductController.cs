@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
+using BusinessLayer.Results;
 using BusinessLayer.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace BarshaiedAPI.Controllers
             return Ok(products);
         }
 
-        [HttpGet("by-Id{Id}")]
+        [HttpGet("by-Id{Id}",Name = "GetProductById")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,6 +63,23 @@ namespace BarshaiedAPI.Controllers
                 return NotFound($"No Product Found With Id = {Id}");
             }
             return Ok($"Product With Id = {Id} Deleted Succesfully");
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<AddUpdateServiceResponse<ProductDTO>>>AddProduct(AddUpdateProductDTO newProduct)
+        {
+            var postResponse = await _service.AddProduct(newProduct);
+            if(!postResponse.IsSuccess)
+            {
+                return BadRequest(new
+                {
+                    Message = postResponse.ErrorType.ToString(),
+                    Errors = postResponse.Errors
+                });
+            }
+            return CreatedAtRoute("GetProductById", new { Id = postResponse.Data!.Id }, postResponse.Data);
         }
     }
 }

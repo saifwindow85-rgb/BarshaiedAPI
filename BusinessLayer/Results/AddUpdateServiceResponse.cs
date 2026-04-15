@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Results
 {
-    public  class CategoryServiceResponse<T>
+    public  class AddUpdateServiceResponse<T>
     {
         public T? Data { get; private set; }
         public bool IsSuccess { get; private set; }
         public List<string>?Errors { get; private set; }
         public EnErrorTypes ?ErrorType { get; private set; }
 
-        public static CategoryServiceResponse<T> Success(T data) => new CategoryServiceResponse<T>
+        public static AddUpdateServiceResponse<T> Success(T data) => new AddUpdateServiceResponse<T>
         {
             Data = data,
             IsSuccess = true
         };
 
-        public static CategoryServiceResponse<T> Failure(List<string>errors,EnErrorTypes errorType) => new CategoryServiceResponse<T>
+        public static AddUpdateServiceResponse<T> Failure(List<string>errors,EnErrorTypes errorType) => new AddUpdateServiceResponse<T>
         {
             Errors = errors,
             ErrorType = errorType,

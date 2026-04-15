@@ -1,3 +1,4 @@
+using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Services;
 using BusinessLayer.Validators;
 using DataAccessLayer.AppDbContext;
@@ -23,6 +24,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IValidator<AddUpdateCategoryDTO>, CategoryValidator>();
+builder.Services.AddScoped<IValidator<AddUpdateProductDTO>, ProductValidator>();
 
 var app = builder.Build();
 

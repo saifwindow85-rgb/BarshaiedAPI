@@ -9,16 +9,21 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using BusinessLayer.Results;
+using FluentValidation;
+using BusinessLayer.Enums;
+using BusinessLayer.Mappers;
 
 namespace BusinessLayer.Services
 {
     public class ProductService
     {
         private IProductRepository _repo;
-
-        public ProductService(IProductRepository repo)
+        private IValidator<AddUpdateProductDTO> _validator;
+        public ProductService(IProductRepository repo,IValidator<AddUpdateProductDTO>validator)
         {
             _repo = repo;
+            _validator = validator;
         }
 
         private Expression<Func<Product, ProductDTO>> ProductToDTO = p => new ProductDTO
@@ -59,6 +64,22 @@ namespace BusinessLayer.Services
         public async Task<bool>Delete(int Id)
         {
             return await _repo.Delete(Id);
+        }
+
+        public async Task<AddUpdateServiceResponse<ProductDTO>>AddProduct(AddUpdateProductDTO newProduct)
+        {
+            var validatorResult = await _validator.ValidateAsync(newProduct);
+            if(!validatorResult.IsValid)
+            {
+                return AddUpdateServiceResponse<ProductDTO>.Failure(validatorResult.Errors.Select
+                    (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
+            }
+            var productEntity = newProduct.ToEntity();
+            productEntity.ExpiryDate = DateTime.UtcNow;
+            await _repo.Add(productEntity);
+            await _repo.SaveChanges();
+            var productDTO = productEntity.ToDTO();
+            return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
         }
     }
 }

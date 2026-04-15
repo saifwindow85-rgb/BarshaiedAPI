@@ -93,7 +93,7 @@ namespace BarshaiedAPI.Controllers
             {
                 return BadRequest($"Not Accepted Id {Id}");
             }
-            CategoryServiceResponse<CategoryDTO> categoryResponse = await _service.UpdateCategory(Id, updateCategoryDTO);
+            AddUpdateServiceResponse<CategoryDTO> categoryResponse = await _service.UpdateCategory(Id, updateCategoryDTO);
             if(categoryResponse.Data == null)
             {
                 return NotFound(new

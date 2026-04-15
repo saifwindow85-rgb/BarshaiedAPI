@@ -53,5 +53,10 @@ namespace DataAccessLayer.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task Add(Product product)
+        {
+            await _context.AddAsync(product);
+        }
     }
 }
