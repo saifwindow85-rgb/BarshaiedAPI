@@ -142,7 +142,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-by-name-barcode{pageNumber}/{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ProductDTO>>> GetProductsByNameOrBarcode(int pageNumber,string nameOrBarcode)
+        public async Task<ActionResult<List<ProductDetailsDTO>>> GetProductsByNameOrBarcode(int pageNumber,string nameOrBarcode)
         {
             if (pageNumber < 1)
             {
@@ -153,6 +153,23 @@ namespace BarshaiedAPI.Controllers
                 return BadRequest("Name Or Barcode Can Not Be Null!");
             }
             var products = await _service.GetProductByNameOrBarcode(pageNumber,nameOrBarcode);
+            if (products == null || !products.Any())
+            {
+                return NotFound("No Products Under The Min Quantity Found !");
+            }
+            return Ok(products);
+        }
+
+        [HttpGet("get-nearing-expiry-products{pageNumber}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ProductDTO>>> GetNearingExpiryProduct(int pageNumber)
+        {
+            if (pageNumber < 1)
+            {
+                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+            }
+            var products = await _service.ProductsNearingExpiry(pageNumber);
             if (products == null || !products.Any())
             {
                 return NotFound("No Products Under The Min Quantity Found !");

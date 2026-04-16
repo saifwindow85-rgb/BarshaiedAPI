@@ -89,7 +89,7 @@ namespace BusinessLayer.Services
 
         public async Task<List<ProductDTO>> GetExpiredProducts(int pageNumber)
         {
-            return await _repo.GetProducts_UnTracked().Where(p => p.ExpiryDate <= DateTime.Now).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
+            return await _repo.GetProducts_UnTracked().Where(p => p.ExpiryDate <= DateTime.Now.Date).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
 
         public async Task<List<ProductDTO>> GetZeroQuantityProducts(int pageNumber)
@@ -108,6 +108,15 @@ namespace BusinessLayer.Services
         {
             return await _repo.GetProducts_UnTracked()
                  .Where(p => p.Barcode == value || p.ProductName.Contains(value)).Select(ProductDetailsDTO).ToListAsync();
+        }
+
+
+        public async Task<List<ProductDTO>> ProductsNearingExpiry(int pageNumber)
+        {
+            var toDay = DateTime.Now.Date;
+            var maxDate = toDay.AddDays(10);
+            return await _repo.GetProducts_UnTracked().Where
+           (p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).Select(ProductToDTO).ToListAsync();
         }
     }
 }
