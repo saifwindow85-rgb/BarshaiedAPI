@@ -107,5 +107,17 @@ namespace BarshaiedAPI.Controllers
             }
             return Ok(zeroQuantityProducts);
         }
+
+
+        [HttpGet("get-under-min-quantity{pageNumber}")]
+        public async Task<ActionResult<List<ProductDTO>>>GetProductsUnderMinQuantity(int pageNumber)
+        {
+            var products = await _service.GetProductsUnderMinQuantity(pageNumber);
+            if(products == null || ! products.Any())
+            {
+                return NotFound("No Products Under The Min Quantity Found !");
+            }
+            return Ok(products);
+        }
     }
 }
