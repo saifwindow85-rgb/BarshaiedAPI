@@ -13,6 +13,7 @@ using BusinessLayer.Results;
 using FluentValidation;
 using BusinessLayer.Enums;
 using BusinessLayer.Mappers;
+using BusinessLayer.Helpper_Classes;
 
 namespace BusinessLayer.Services
 {
@@ -101,6 +102,12 @@ namespace BusinessLayer.Services
         {
             return await _repo.GetProducts_UnTracked().Where(p => p.Quantity < p.MinQuantity)
                 .Select(ProductToDTO).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
+        }
+
+        public async Task<List<ProductDetailsDTO>>GetProductByNameOrBarcode(int pageNumber,string value)
+        {
+            return await _repo.GetProducts_UnTracked()
+                 .Where(p => p.Barcode == value || p.ProductName.Contains(value)).Select(ProductDetailsDTO).ToListAsync();
         }
     }
 }

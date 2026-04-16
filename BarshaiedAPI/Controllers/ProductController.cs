@@ -21,6 +21,10 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<ProductDTO>>>GetAllProducts(int pageNumber)
         {
+            if (pageNumber < 1)
+            {
+                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+            }
             var products = await _service.GetAllProducts(pageNumber);
             if(products == null || !products.Any())
             {
@@ -70,6 +74,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<AddUpdateServiceResponse<ProductDTO>>>AddProduct(AddUpdateProductDTO newProduct)
         {
+
             var postResponse = await _service.AddProduct(newProduct);
             if(!postResponse.IsSuccess)
             {
@@ -87,6 +92,10 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<ProductDTO>>> GetExpiredProducts(int pageNumber)
         {
+            if (pageNumber < 1)
+            {
+                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+            }
             var ExpierdProducts = await _service.GetExpiredProducts(pageNumber);
             if (ExpierdProducts == null || !ExpierdProducts.Any())
             {
@@ -100,6 +109,10 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<ProductDTO>>> GetZeroQuantityProducts(int pageNumber)
         {
+            if(pageNumber < 1)
+            {
+                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+            }
             var zeroQuantityProducts = await _service.GetZeroQuantityProducts(pageNumber);
             if (zeroQuantityProducts == null || !zeroQuantityProducts.Any())
             {
@@ -110,10 +123,37 @@ namespace BarshaiedAPI.Controllers
 
 
         [HttpGet("get-under-min-quantity{pageNumber}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<ProductDTO>>>GetProductsUnderMinQuantity(int pageNumber)
         {
+            if (pageNumber < 1)
+            {
+                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+            }
             var products = await _service.GetProductsUnderMinQuantity(pageNumber);
             if(products == null || ! products.Any())
+            {
+                return NotFound("No Products Under The Min Quantity Found !");
+            }
+            return Ok(products);
+        }
+
+        [HttpGet("get-by-name-barcode{pageNumber}/{nameOrBarcode}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ProductDTO>>> GetProductsByNameOrBarcode(int pageNumber,string nameOrBarcode)
+        {
+            if (pageNumber < 1)
+            {
+                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+            }
+            if(string.IsNullOrWhiteSpace(nameOrBarcode))
+            {
+                return BadRequest("Name Or Barcode Can Not Be Null!");
+            }
+            var products = await _service.GetProductByNameOrBarcode(pageNumber,nameOrBarcode);
+            if (products == null || !products.Any())
             {
                 return NotFound("No Products Under The Min Quantity Found !");
             }
