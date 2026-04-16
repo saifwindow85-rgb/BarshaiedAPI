@@ -89,5 +89,10 @@ namespace BusinessLayer.Services
         {
             return await _repo.GetProducts_UnTracked().Where(p=>p.ExpiryDate <= DateTime.Now).Skip((pageNumber-1)*_pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
+
+        public async Task<List<ProductDTO>>GetZeroQuantityProducts(int pageNumber)
+        {
+            return await _repo.GetProducts_UnTracked().Select(ProductToDTO).Where(p => p.Quantity == 0).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
+        }
     }
 }

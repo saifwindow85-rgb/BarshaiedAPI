@@ -94,5 +94,18 @@ namespace BarshaiedAPI.Controllers
             }
             return Ok(ExpierdProducts);
         }
+
+        [HttpGet("get-zero-Quantity-products{pageNumber}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ProductDTO>>> GetZeroQuantityProducts(int pageNumber)
+        {
+            var zeroQuantityProducts = await _service.GetZeroQuantityProducts(pageNumber);
+            if (zeroQuantityProducts == null || !zeroQuantityProducts.Any())
+            {
+                return NotFound("No Products With Zero Quantity Found");
+            }
+            return Ok(zeroQuantityProducts);
+        }
     }
 }
