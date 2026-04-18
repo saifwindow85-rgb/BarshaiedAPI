@@ -118,5 +118,36 @@ namespace BusinessLayer.Services
             return await _repo.GetProducts_UnTracked().Where
            (p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).Select(ProductToDTO).ToListAsync();
         }
+
+
+        public async Task<AddUpdateServiceResponse<ProductDTO>>UpdateProduct(int ProductId,AddUpdateProductDTO updatedProduct)
+        {
+            var validatorResult = await _validator.ValidateAsync(updatedProduct);
+            if(!validatorResult.IsValid)
+            {
+                return AddUpdateServiceResponse<ProductDTO>.Failure(validatorResult.Errors.Select
+                    (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
+            }
+
+            var productEntity = await _repo.GetAllProducts().FirstAsync(x => x.ProductId == ProductId);
+            if(productEntity == null)
+            {
+                return AddUpdateServiceResponse<ProductDTO>.Failure(new List<string> { $"No Product Found With Id = {ProductId}" }, EnErrorTypes.NotFound);
+            }
+
+            productEntity.ProductName = updatedProduct.ProductName;
+            productEntity.Barcode = updatedProduct.Barcode;
+            productEntity.Quantity = updatedProduct.Quantity;
+            productEntity.CategoryId = updatedProduct.CategoryId;
+            productEntity.CostPrice = updatedProduct.CostPrice;
+            productEntity.SellPrice = updatedProduct.SellPrice;
+            productEntity.MinQuantity = updatedProduct.MinQuantity;
+            productEntity.ExpiryDate = updatedProduct.ExpiryDate;
+            productEntity.UpdatedAt = DateTime.Now;
+           
+            await _repo.SaveChanges();
+            var productDTO = await _repo.GetProducts_UnTracked().Select(ProductToDTO).FirstAsync(x => x.Id == ProductId);
+            return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
+        }
     }
 }

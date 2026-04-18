@@ -176,5 +176,40 @@ namespace BarshaiedAPI.Controllers
             }
             return Ok(products);
         }
+
+
+        [HttpPut("{Id}",Name ="UpdateProduct")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+         public async Task<ActionResult<ProductDTO>>UpdateProduct(int Id,AddUpdateProductDTO updatedProduct)
+        {
+            if(Id < 1)
+            {
+                return BadRequest($"Not Accepted Id {Id}");
+            }
+            var productResponse = await _service.UpdateProduct(Id, updatedProduct);
+            if(!productResponse.IsSuccess)
+            {
+                if(productResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.NotFound)
+                {
+                    return NotFound(new
+                    {
+                        Message = productResponse.ErrorType.ToString(),
+                        Error = $"No Product Found With Id = {Id}"
+                    });
+                }
+                else if(productResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.InvalidData)
+                {
+                    return BadRequest(new
+                    {
+                        Message = productResponse.ErrorType.ToString(),
+                        Errors = productResponse.Errors
+                    });
+                }
+            }
+             var productDTO = productResponse.Data;
+            return Ok(productDTO);
+        }
     }
 }
