@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.Enums;
 using BusinessLayer.Results;
 using BusinessLayer.Validators;
-using DataAccessLayer.Entities;
+using Domain.Entities;
 using Domain.DTOs.CategoryDTOs;
 using Domain.Interfaces;
 using Domain.Mappers;

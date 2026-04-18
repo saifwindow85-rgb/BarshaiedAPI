@@ -32,7 +32,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<CategoryDTO>>> GetCategoryById(int Id)
+        public async Task<ActionResult<CategoryDTO>> GetCategoryById(int Id)
         {
           if(Id < 1)
             {

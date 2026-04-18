@@ -1,8 +1,8 @@
 using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Services;
 using BusinessLayer.Validators;
-using DataAccessLayer.AppDbContext;
-using DataAccessLayer.Repositories;
+using Domain.AppDbContext;
+using Domain.Repositories;
 using Domain.DTOs.CategoryDTOs;
 using Domain.Interfaces;
 using FluentValidation;

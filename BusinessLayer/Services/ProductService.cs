@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
-using DataAccessLayer.Entities;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

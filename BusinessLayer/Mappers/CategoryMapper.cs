@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Entities;
+﻿using Domain.Entities;
 using Domain.DTOs.CategoryDTOs;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
-﻿using DataAccessLayer.AppDbContext;
-using DataAccessLayer.Entities;
-using DataAccessLayer.Seeds;
+﻿using Domain.AppDbContext;
+using Domain.Entities;
+using Domain.Seeds;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces;
 
-namespace DataAccessLayer.Repositories
+namespace Domain.Repositories
 {
     public class CategoryRespository : ICategoryRepository
     {

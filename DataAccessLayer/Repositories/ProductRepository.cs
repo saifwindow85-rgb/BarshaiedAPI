@@ -1,5 +1,5 @@
-﻿using DataAccessLayer.AppDbContext;
-using DataAccessLayer.Entities;
+﻿using Domain.AppDbContext;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Repositories
+namespace Domain.Repositories
 {
     public class ProductRepository : IProductRepository
     {

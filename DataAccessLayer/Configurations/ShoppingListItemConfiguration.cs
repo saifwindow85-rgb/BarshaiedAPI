@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Configurations
+namespace Domain.Configurations
 {
     public class ShoppingListItemConfiguration : IEntityTypeConfiguration<ShoppingListItem>
     {

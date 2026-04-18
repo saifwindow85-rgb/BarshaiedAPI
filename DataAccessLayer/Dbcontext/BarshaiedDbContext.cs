@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.AppDbContext
+namespace Domain.AppDbContext
 {
     public class BarshaiedDbContext:DbContext
     {
