@@ -27,7 +27,7 @@ namespace BusinessLayer.Services
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
-            var categories = _unitOfWork.categories.GetCategories_UnTracked();
+            var categories = _unitOfWork.categories.GetReadOnlyCategories();
             return await categories.Select(CategoryToDTO).ToListAsync();
         }
 

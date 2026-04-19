@@ -22,13 +22,6 @@ namespace Domain.Repositories
         }
 
 
-
-
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
-        }
-
         public async Task Add(Category newCategory)
         {
             await _context.Categories.AddAsync(newCategory);
@@ -48,14 +41,14 @@ namespace Domain.Repositories
         }
 
 
-        public IQueryable<Category> GetCategories()
+        public async Task<List<Category>> GetCategories()
         {
-            return _context.Categories;
+            return await _context.Categories.ToListAsync();
         }
 
-        public IQueryable<Category> GetCategories_UnTracked()
+        public async Task< List<Category>> GetReadOnlyCategories()
         {
-            return _context.Categories.AsNoTracking();
+            return await _context.Categories.AsNoTracking().ToListAsync();
         }
     }
 }

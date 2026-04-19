@@ -59,7 +59,7 @@ namespace BusinessLayer.Services
 
         public async Task<List<ProductDTO>> GetAllProducts(int pageNumber)
         {
-            return await _unitOfWork.products.GetProducts_UnTracked().Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
+            return await _unitOfWork.products.GetReadOnlyProducts().Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
 
         public async Task<ProductDetailsDTO> GetProductById(int Id)
@@ -91,24 +91,24 @@ namespace BusinessLayer.Services
 
         public async Task<List<ProductDTO>> GetExpiredProducts(int pageNumber)
         {
-            return await _unitOfWork.products.GetProducts_UnTracked().Where(p => p.ExpiryDate <= DateTime.Now.Date).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
+            return await _unitOfWork.products.GetReadOnlyProducts().Where(p => p.ExpiryDate <= DateTime.Now.Date).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
 
         public async Task<List<ProductDTO>> GetZeroQuantityProducts(int pageNumber)
         {
-            return await _unitOfWork.products.GetProducts_UnTracked().Select(ProductToDTO).Where(p => p.Quantity == 0).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
+            return await _unitOfWork.products.GetReadOnlyProducts().Select(ProductToDTO).Where(p => p.Quantity == 0).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
         }
 
 
         public async Task<List<ProductDTO>> GetProductsUnderMinQuantity(int pageNumber)
         {
-            return await _unitOfWork.products.GetProducts_UnTracked().Where(p => p.Quantity < p.MinQuantity)
+            return await _unitOfWork.products.GetReadOnlyProducts().Where(p => p.Quantity < p.MinQuantity)
                 .Select(ProductToDTO).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
         }
 
         public async Task<List<ProductDetailsDTO>>GetProductByNameOrBarcode(int pageNumber,string value)
         {
-            return await _unitOfWork.products.GetProducts_UnTracked()
+            return await _unitOfWork.products.GetReadOnlyProducts()
                  .Where(p => p.Barcode == value || p.ProductName.Contains(value)).Select(ProductDetailsDTO).ToListAsync();
         }
 
@@ -117,7 +117,7 @@ namespace BusinessLayer.Services
         {
             var toDay = DateTime.Now.Date;
             var maxDate = toDay.AddDays(10);
-            return await _unitOfWork.products.GetProducts_UnTracked().Where
+            return await _unitOfWork.products.GetReadOnlyProducts().Where
            (p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).Select(ProductToDTO).ToListAsync();
         }
 
@@ -149,7 +149,7 @@ namespace BusinessLayer.Services
 
             await _unitOfWork.ComleteAsync();
  
-            var productDTO = await _unitOfWork.products.GetProducts_UnTracked().Select(ProductToDTO).SingleOrDefaultAsync(x => x.Id == ProductId);
+            var productDTO = await _unitOfWork.products.GetReadOnlyProducts().Select(ProductToDTO).SingleOrDefaultAsync(x => x.Id == ProductId);
             return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
         }
     }

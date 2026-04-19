@@ -43,15 +43,12 @@ namespace Domain.Repositories
             return _context.Products;
         }
 
-        public IQueryable<Product> GetProducts_UnTracked()
+        public IQueryable<Product> GetReadOnlyProducts()
         {
             return _context.Products.AsNoTracking();
         }
 
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
-        }
+
 
         public async Task Add(Product product)
         {
