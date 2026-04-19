@@ -12,6 +12,8 @@ namespace Domain.Interfaces
         public Task<List<Category>> GetCategories();
         public Task<List<Category>> GetReadOnlyCategories();
         public Task<bool> Delete(int Id);
+        public Task<Category> FindById(int Id);
+        public Task<List<Category>> FindByName(string Name);
         public Task Add(Category newCategory);
     }
 }

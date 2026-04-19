@@ -40,6 +40,17 @@ namespace Domain.Repositories
             return rowEffected > 0;
         }
 
+        public async Task<Category> FindById(int Id)
+        {
+            var category = await _context.Categories.SingleOrDefaultAsync(c => c.CategoryId == Id);
+            return category;
+        }
+
+        public Task<List<Category>> FindByName(string Name)
+        {
+            var categories = _context.Categories.Where(c => EF.Functions.Like(c.Name, $"%{Name}%")).ToListAsync();
+            return categories;
+        }
 
         public async Task<List<Category>> GetCategories()
         {

@@ -8,6 +8,7 @@ using Domain.Mappers;
 using FluentValidation;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 namespace BusinessLayer.Services
 {
     public class CategoryService
@@ -27,13 +28,16 @@ namespace BusinessLayer.Services
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
-            var categories = _unitOfWork.categories.GetReadOnlyCategories();
-            return await categories.Select(CategoryToDTO).ToListAsync();
+            var categories = await _unitOfWork.categories.GetReadOnlyCategories();
+            var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
+            return categoriesDTO;
         }
 
         public async Task<CategoryDTO>GetCategoryById(int Id)
         {
-            return await _unitOfWork.categories.GetCategories().Select(CategoryToDTO).SingleOrDefaultAsync(x=>x.Id == Id);
+            var categories = await _unitOfWork.categories.GetReadOnlyCategories();
+            var category = categories.Select(CategoryToDTO.Compile()).SingleOrDefault(c => c.Id == Id);
+            return category;
         }
 
         public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
@@ -64,7 +68,7 @@ namespace BusinessLayer.Services
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            var categoryEntity = await _unitOfWork.categories.GetCategories().SingleOrDefaultAsync(x => x.CategoryId == Id);
+            var categoryEntity = await _unitOfWork.categories.FindById(Id);
             if (categoryEntity == null)
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
@@ -77,7 +81,9 @@ namespace BusinessLayer.Services
 
         public async Task<List<CategoryDTO>>GetCategoryByName(string Name)
         {
-            return await _unitOfWork.categories.GetCategories().Select(CategoryToDTO).Where(x => EF.Functions.Like(x.CategoryName,$"%{Name}%")).ToListAsync();
+            var categories = await _unitOfWork.categories.FindByName(Name);
+            var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
+            return categoriesDTO;
         }
     }
 }
