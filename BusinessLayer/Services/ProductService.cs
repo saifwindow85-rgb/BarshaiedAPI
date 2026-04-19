@@ -20,10 +20,12 @@ namespace BusinessLayer.Services
     public class ProductService
     {
         private IProductRepository _repo;
+        private readonly IUnitOfWork _unitOfWork;
         private IValidator<AddUpdateProductDTO> _validator;
-        public ProductService(IProductRepository repo, IValidator<AddUpdateProductDTO> validator)
+        public ProductService(IProductRepository repo, IValidator<AddUpdateProductDTO> validator,IUnitOfWork unitOfWork)
         {
             _repo = repo;
+            _unitOfWork = unitOfWork;
             _validator = validator;
         }
         private int _pageSize = 10;
@@ -57,12 +59,12 @@ namespace BusinessLayer.Services
 
         public async Task<List<ProductDTO>> GetAllProducts(int pageNumber)
         {
-            return await _repo.GetProducts_UnTracked().Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
+            return await _unitOfWork.products.GetProducts_UnTracked().Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
 
         public async Task<ProductDetailsDTO> GetProductById(int Id)
         {
-            return await _repo.GetAllProducts().Select(ProductDetailsDTO).SingleOrDefaultAsync(p => p.ProductId == Id);
+            return await _unitOfWork.products.GetAllProducts().Select(ProductDetailsDTO).SingleOrDefaultAsync(p => p.ProductId == Id);
         }
 
         public async Task<bool> Delete(int Id)
@@ -80,33 +82,33 @@ namespace BusinessLayer.Services
             }
             var productEntity = newProduct.ToEntity();
 
-            await _repo.Add(productEntity);
-            await _repo.SaveChanges();
-            var productDTO = await _repo.GetAllProducts().Select(ProductToDTO).SingleOrDefaultAsync(p => p.Id == productEntity.ProductId);
+            await _unitOfWork.products.Add(productEntity);
+            await _unitOfWork.ComleteAsync();
+            var productDTO = await _unitOfWork.products.GetAllProducts().Select(ProductToDTO).SingleOrDefaultAsync(p => p.Id == productEntity.ProductId);
             return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
         }
 
 
         public async Task<List<ProductDTO>> GetExpiredProducts(int pageNumber)
         {
-            return await _repo.GetProducts_UnTracked().Where(p => p.ExpiryDate <= DateTime.Now.Date).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
+            return await _unitOfWork.products.GetProducts_UnTracked().Where(p => p.ExpiryDate <= DateTime.Now.Date).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).Select(ProductToDTO).ToListAsync();
         }
 
         public async Task<List<ProductDTO>> GetZeroQuantityProducts(int pageNumber)
         {
-            return await _repo.GetProducts_UnTracked().Select(ProductToDTO).Where(p => p.Quantity == 0).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
+            return await _unitOfWork.products.GetProducts_UnTracked().Select(ProductToDTO).Where(p => p.Quantity == 0).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
         }
 
 
         public async Task<List<ProductDTO>> GetProductsUnderMinQuantity(int pageNumber)
         {
-            return await _repo.GetProducts_UnTracked().Where(p => p.Quantity < p.MinQuantity)
+            return await _unitOfWork.products.GetProducts_UnTracked().Where(p => p.Quantity < p.MinQuantity)
                 .Select(ProductToDTO).Skip((pageNumber - 1) * _pageSize).Take(_pageSize).ToListAsync();
         }
 
         public async Task<List<ProductDetailsDTO>>GetProductByNameOrBarcode(int pageNumber,string value)
         {
-            return await _repo.GetProducts_UnTracked()
+            return await _unitOfWork.products.GetProducts_UnTracked()
                  .Where(p => p.Barcode == value || p.ProductName.Contains(value)).Select(ProductDetailsDTO).ToListAsync();
         }
 
@@ -115,7 +117,7 @@ namespace BusinessLayer.Services
         {
             var toDay = DateTime.Now.Date;
             var maxDate = toDay.AddDays(10);
-            return await _repo.GetProducts_UnTracked().Where
+            return await _unitOfWork.products.GetProducts_UnTracked().Where
            (p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).Select(ProductToDTO).ToListAsync();
         }
 
@@ -129,7 +131,7 @@ namespace BusinessLayer.Services
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
 
-            var productEntity = await _repo.GetAllProducts().FirstAsync(x => x.ProductId == ProductId);
+            var productEntity = await _repo.GetAllProducts().SingleOrDefaultAsync(x => x.ProductId == ProductId);
             if(productEntity == null)
             {
                 return AddUpdateServiceResponse<ProductDTO>.Failure(new List<string> { $"No Product Found With Id = {ProductId}" }, EnErrorTypes.NotFound);
@@ -144,9 +146,10 @@ namespace BusinessLayer.Services
             productEntity.MinQuantity = updatedProduct.MinQuantity;
             productEntity.ExpiryDate = updatedProduct.ExpiryDate;
             productEntity.UpdatedAt = DateTime.Now;
-           
-            await _repo.SaveChanges();
-            var productDTO = await _repo.GetProducts_UnTracked().Select(ProductToDTO).FirstAsync(x => x.Id == ProductId);
+
+            await _unitOfWork.ComleteAsync();
+ 
+            var productDTO = await _unitOfWork.products.GetProducts_UnTracked().Select(ProductToDTO).SingleOrDefaultAsync(x => x.Id == ProductId);
             return AddUpdateServiceResponse<ProductDTO>.Success(productDTO);
         }
     }

@@ -18,22 +18,22 @@ namespace BusinessLayer.Services
             CategoryName = c.Name,
             CreatedAt = c.CreatedAt,
         };
-        private ICategoryRepository _repo;
-        private IValidator<AddUpdateCategoryDTO> _validator;
-        public CategoryService(ICategoryRepository repo,IValidator<AddUpdateCategoryDTO> validator)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IValidator<AddUpdateCategoryDTO> _validator;
+        public CategoryService( IValidator<AddUpdateCategoryDTO> validator,IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
             _validator = validator;
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
-            var categories = _repo.GetCategories_UnTracked();
+            var categories = _unitOfWork.categories.GetCategories_UnTracked();
             return await categories.Select(CategoryToDTO).ToListAsync();
         }
 
         public async Task<CategoryDTO>GetCategoryById(int Id)
         {
-            return await _repo.GetCategories().Select(CategoryToDTO).SingleOrDefaultAsync(x=>x.Id == Id);
+            return await _unitOfWork.categories.GetCategories().Select(CategoryToDTO).SingleOrDefaultAsync(x=>x.Id == Id);
         }
 
         public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
@@ -45,15 +45,15 @@ namespace BusinessLayer.Services
                     .Select(e => $"{e.PropertyName} : {e.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = newCategory.ToEntity();
-            await _repo.Add(categoryEntity);
-            await _repo.SaveChanges();
+            await _unitOfWork.categories.Add(categoryEntity);
+            await _unitOfWork.ComleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
             return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<bool>Delete(int Id)
         {
-            return await _repo.Delete(Id);
+            return await _unitOfWork.categories.Delete(Id);
         }
 
 
@@ -64,20 +64,20 @@ namespace BusinessLayer.Services
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            var categoryEntity = await _repo.GetCategories().SingleOrDefaultAsync(x => x.CategoryId == Id);
+            var categoryEntity = await _unitOfWork.categories.GetCategories().SingleOrDefaultAsync(x => x.CategoryId == Id);
             if (categoryEntity == null)
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }
             categoryEntity.Name = updatedCategory.CategoryName;
-            await _repo.SaveChanges();
+            await _unitOfWork.ComleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
             return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<List<CategoryDTO>>GetCategoryByName(string Name)
         {
-            return await _repo.GetCategories().Select(CategoryToDTO).Where(x => EF.Functions.Like(x.CategoryName,$"%{Name}%")).ToListAsync();
+            return await _unitOfWork.categories.GetCategories().Select(CategoryToDTO).Where(x => EF.Functions.Like(x.CategoryName,$"%{Name}%")).ToListAsync();
         }
     }
 }

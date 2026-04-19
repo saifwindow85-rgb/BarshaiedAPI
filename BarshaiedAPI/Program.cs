@@ -7,6 +7,7 @@ using Domain.DTOs.CategoryDTOs;
 using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using DataAccessLayer.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<AddUpdateCategoryDTO>, CategoryValidator>();
 builder.Services.AddScoped<IValidator<AddUpdateProductDTO>, ProductValidator>();
 
