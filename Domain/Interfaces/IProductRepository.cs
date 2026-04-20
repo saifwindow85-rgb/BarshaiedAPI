@@ -9,8 +9,8 @@ namespace Domain.Interfaces
 {
     public interface IProductRepository
     {
-        public IQueryable<Product> GetAllProducts();
-        public IQueryable<Product> GetReadOnlyProducts();
+        public Task<List<object>> GetAllProducts();
+        public List<Product> GetReadOnlyProducts();
         public Task<bool> Delete(int Id);
         public Task Add(Product newProduct);
     }
