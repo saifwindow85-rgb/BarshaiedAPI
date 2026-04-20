@@ -80,7 +80,7 @@ namespace BarshaiedAPI.Controllers
             {
                 return NotFound($"No Category Found With Id = {Id}");
             }
-            return Ok();
+            return Ok($"Category Deleted Succesfuly");
         }
 
         [HttpPut("{Id}",Name ="UpdateCategory")]

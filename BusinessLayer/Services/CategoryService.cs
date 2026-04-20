@@ -28,16 +28,15 @@ namespace BusinessLayer.Services
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
-            var categories = await _unitOfWork.categories.GetReadOnlyCategories();
+            var categories = await _unitOfWork.Categories.GetReadOnlyCategories();
             var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
             return categoriesDTO;
         }
 
         public async Task<CategoryDTO>GetCategoryById(int Id)
         {
-            var categories = await _unitOfWork.categories.GetReadOnlyCategories();
-            var category = categories.Select(CategoryToDTO.Compile()).SingleOrDefault(c => c.Id == Id);
-            return category;
+            var category = await _unitOfWork.Categories.FindById(Id);
+            return category.ToDTO();
         }
 
         public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
@@ -49,15 +48,20 @@ namespace BusinessLayer.Services
                     .Select(e => $"{e.PropertyName} : {e.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = newCategory.ToEntity();
-            await _unitOfWork.categories.Add(categoryEntity);
-            await _unitOfWork.ComleteAsync();
+            await _unitOfWork.Categories.Add(categoryEntity);
+            await _unitOfWork.CompleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
             return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<bool>Delete(int Id)
         {
-            return await _unitOfWork.categories.Delete(Id);
+            if(!await _unitOfWork.Categories.Delete(Id))
+            {
+                return false;
+            }
+            await _unitOfWork.CompleteAsync();
+            return true;
         }
 
 
@@ -68,20 +72,20 @@ namespace BusinessLayer.Services
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            var categoryEntity = await _unitOfWork.categories.FindById(Id);
+            var categoryEntity = await _unitOfWork.Categories.FindById(Id);
             if (categoryEntity == null)
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }
             categoryEntity.Name = updatedCategory.CategoryName;
-            await _unitOfWork.ComleteAsync();
+            await _unitOfWork.CompleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
             return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<List<CategoryDTO>>GetCategoryByName(string Name)
         {
-            var categories = await _unitOfWork.categories.FindByName(Name);
+            var categories = await _unitOfWork.Categories.FindByName(Name);
             var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
             return categoriesDTO;
         }

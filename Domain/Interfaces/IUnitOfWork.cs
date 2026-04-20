@@ -8,9 +8,9 @@ namespace Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        ICategoryRepository categories { get; }
-        IProductRepository products { get; }
+        ICategoryRepository Categories { get; }
+        IProductRepository Products { get; }
 
-        Task<int> ComleteAsync();
+        Task<int> CompleteAsync();
     }
 }

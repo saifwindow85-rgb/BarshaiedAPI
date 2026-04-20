@@ -12,20 +12,20 @@ namespace DataAccessLayer.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly BarshaiedDbContext _context;
-        public ICategoryRepository categories { get; private set; }
+        public ICategoryRepository Categories { get; private set; }
 
-        public IProductRepository products { get; private set; }
+        public IProductRepository Products { get; private set; }
 
 
         public UnitOfWork(BarshaiedDbContext context)
         {
             _context = context;
-            categories = new CategoryRespository(_context);
-            products = new ProductRepository(_context);
+            Categories = new CategoryRespository(_context);
+            Products = new ProductRepository(_context);
 
         }
 
-        public async Task<int> ComleteAsync()
+        public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
         }

@@ -36,8 +36,7 @@ namespace Domain.Repositories
                 return false;
             }
             _context.Categories.Remove(category);
-            int rowEffected = await _context.SaveChangesAsync();
-            return rowEffected > 0;
+            return true;
         }
 
         public async Task<Category> FindById(int Id)
