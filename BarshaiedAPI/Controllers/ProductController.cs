@@ -20,7 +20,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightProductObject>>>GetAllProducts(int pageNumber)
+        public async Task<ActionResult<List<ReadOnlyProductDTO>>>GetAllProducts(int pageNumber)
         {
             if (pageNumber < 1)
             {
@@ -38,7 +38,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<DetailedProductObject>>GetProductById(int Id)
+         public async Task<ActionResult<DetailedProductDTO>>GetProductById(int Id)
         {
             if(Id < 1)
             {
@@ -73,7 +73,7 @@ namespace BarshaiedAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductObject>>>AddProduct(AddUpdateProductDTO newProduct)
+        public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>>AddProduct(AddUpdateProductDTO newProduct)
         {
 
             var postResponse = await _service.AddProduct(newProduct);
@@ -91,7 +91,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-expired-products{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightProductObject>>> GetExpiredProducts(int pageNumber)
+        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetExpiredProducts(int pageNumber)
         {
             if (pageNumber < 1)
             {
@@ -108,7 +108,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-zero-Quantity-products{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightProductObject>>> GetZeroQuantityProducts(int pageNumber)
+        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetZeroQuantityProducts(int pageNumber)
         {
             if(pageNumber < 1)
             {
@@ -126,7 +126,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-under-min-quantity{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightProductObject>>>GetProductsUnderMinQuantity(int pageNumber)
+        public async Task<ActionResult<List<ReadOnlyProductDTO>>>GetProductsUnderMinQuantity(int pageNumber)
         {
             if (pageNumber < 1)
             {
@@ -143,7 +143,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-by-name-barcode{pageNumber}/{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightProductObject>>> GetProductsByNameOrBarcode(int pageNumber,string nameOrBarcode)
+        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetProductsByNameOrBarcode(int pageNumber,string nameOrBarcode)
         {
             if (pageNumber < 1)
             {
@@ -164,7 +164,7 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-nearing-expiry-products{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightProductObject>>> GetNearingExpiryProduct(int pageNumber)
+        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetNearingExpiryProduct(int pageNumber)
         {
             if (pageNumber < 1)
             {
@@ -183,7 +183,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<DetailedProductObject>>UpdateProduct(int Id,AddUpdateProductDTO updatedProduct)
+         public async Task<ActionResult<DetailedProductDTO>>UpdateProduct(int Id,AddUpdateProductDTO updatedProduct)
         {
             if(Id < 1)
             {

@@ -17,7 +17,7 @@ namespace Domain.Repositories
         private BarshaiedDbContext _context;
 
 
-        private Expression<Func<Product, LightProductObject>> ToLightObject = p => new LightProductObject
+        private Expression<Func<Product, ReadOnlyProductDTO>> ToLightObject = p => new ReadOnlyProductDTO
         {
             Id = p.ProductId,
             ProductName = p.ProductName,
@@ -29,7 +29,7 @@ namespace Domain.Repositories
 
         };
 
-        private Expression<Func<Product, DetailedProductObject>> ToDetaieldObject = p => new DetailedProductObject
+        private Expression<Func<Product, DetailedProductDTO>> ToDetaieldObject = p => new DetailedProductDTO
         {
             ProductId = p.ProductId,
             ProductName = p.ProductName,
@@ -67,17 +67,17 @@ namespace Domain.Repositories
 
         }
 
-        public async Task<List<LightProductObject>> GetAllProducts(int pageNumber,int pageSize)
+        public async Task<List<ReadOnlyProductDTO>> GetAllProducts(int pageNumber,int pageSize)
         {
             return await _context.Products.Skip((pageNumber-1)*pageSize).Take(pageSize).Select(ToLightObject).ToListAsync();
         }
 
-        public async Task<List<LightProductObject>> GetReadOnlyProducts(int pageNumber,int pageSize)
+        public async Task<List<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber,int pageSize)
         {
             return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().Select(ToLightObject).ToListAsync();
         }
 
-        public async Task<DetailedProductObject>GetProdutcById(int Id)
+        public async Task<DetailedProductDTO>GetProdutcById(int Id)
         {
             return await _context.Products.Select(ToDetaieldObject).SingleOrDefaultAsync(p => p.ProductId == Id);
         }
@@ -87,31 +87,31 @@ namespace Domain.Repositories
             await _context.AddAsync(product);
         }
 
-        public async Task<List<LightProductObject>> GetProductByNameOrBarcode(string nameOrBarcode,int pageNumber,int pageSize)
+        public async Task<List<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string nameOrBarcode,int pageNumber,int pageSize)
         {
             return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
                 .Where(p => EF.Functions.Like(p.ProductName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode).ToListAsync();
         }
 
-        public async Task<List<LightProductObject>> GetExpiredProducts(int pageNumber, int pageSize)
+        public async Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize)
         {
            return await _context.Products.Skip((pageNumber - 1) * pageSize).
                 Take(pageSize).Select(ToLightObject).Where(p=>p.ExpiryDate <= DateTime.UtcNow).ToListAsync();
         }
 
-        public async Task<List<LightProductObject>> GetZeroQuantityProducts(int pageNumber, int pageSize)
+        public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize)
         {
             return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .Select(ToLightObject).Where(p => p.Quantity <= 0).ToListAsync();
         }
 
-        public Task<List<LightProductObject>> GetProductsUnderMinQuantity(int pageNumber, int pageSize)
+        public Task<List<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize)
         {
             return _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
                 .Where(p => p.Quantity < p.MinQuantity).ToListAsync();
         }
 
-        public  async Task<List<LightProductObject>> ProductsNearingExpiry(int pageNumber, int pageSize)
+        public  async Task<List<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize)
         {
             var toDay = DateTime.Now.Date;
             var maxDate = toDay.AddDays(10);

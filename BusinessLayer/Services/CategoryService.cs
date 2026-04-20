@@ -7,7 +7,6 @@ using Domain.Interfaces;
 using Domain.Mappers;
 using FluentValidation;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 namespace BusinessLayer.Services
 {

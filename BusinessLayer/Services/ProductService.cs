@@ -1,14 +1,12 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
 using Domain.Entities;
 using Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using BusinessLayer.Results;
 using FluentValidation;
 using BusinessLayer.Enums;
@@ -30,54 +28,58 @@ namespace BusinessLayer.Services
         private int _pageSize = 10;
 
 
-        private Expression<Func<Product, ProductDTO>> ProductToDTO = p => new ProductDTO
-        {
-            Id = p.ProductId,
-            ProductName = p.ProductName,
-            CategoryName = p.Category.Name,
-            Barcode = p.Barcode,
-            Quantity = p.Quantity,
-            MinQuantity = p.MinQuantity,
-            ExpiryDate = p.ExpiryDate,
-        };
+        //private Expression<Func<Product, ProductDTO>> ProductToDTO = p => new ProductDTO
+        //{
+        //    Id = p.ProductId,
+        //    ProductName = p.ProductName,
+        //    CategoryName = p.Category.Name,
+        //    Barcode = p.Barcode,
+        //    Quantity = p.Quantity,
+        //    MinQuantity = p.MinQuantity,
+        //    ExpiryDate = p.ExpiryDate,
+        //};
 
-        private Expression<Func<Product, ProductDetailsDTO>> ProductDetailsDTO = p => new ProductDetailsDTO
-        {
-            ProductId = p.ProductId,
-            ProductName = p.ProductName,
-            Barcode = p.Barcode,
-            Quantity = p.Quantity,
-            MinQuantity = p.MinQuantity,
-            CreatedAt = p.CreatedAt,
-            CostPrice = p.CostPrice,
-            SellPrice = p.SellPrice,
-            ProfitMargin = p.ProfitMargin,
-            ExpiryDate = p.ExpiryDate,
-            UpdatedAt = p.UpdatedAt
-        };
+        //private Expression<Func<Product, ProductDetailsDTO>> ProductDetailsDTO = p => new ProductDetailsDTO
+        //{
+        //    ProductId = p.ProductId,
+        //    ProductName = p.ProductName,
+        //    Barcode = p.Barcode,
+        //    Quantity = p.Quantity,
+        //    MinQuantity = p.MinQuantity,
+        //    CreatedAt = p.CreatedAt,
+        //    CostPrice = p.CostPrice,
+        //    SellPrice = p.SellPrice,
+        //    ProfitMargin = p.ProfitMargin,
+        //    ExpiryDate = p.ExpiryDate,
+        //    UpdatedAt = p.UpdatedAt
+        //};
 
-        public async Task<List<LightProductObject>> GetAllProducts(int pageNumber)
+        public async Task<List<ReadOnlyProductDTO>> GetAllProducts(int pageNumber)
         {
             return await _unitOfWork.Products.GetReadOnlyProducts(pageNumber, _pageSize);
             
         }
 
-        public async Task<DetailedProductObject> GetProductById(int Id)
+        public async Task<DetailedProductDTO> GetProductById(int Id)
         {
             return await _unitOfWork.Products.GetProdutcById(Id);
         }
 
         public async Task<bool> Delete(int Id)
         {
-            return await _unitOfWork.Products.Delete(Id);
+            if (! await _unitOfWork.Products.Delete(Id))
+                return false;
+
+            await _unitOfWork.CompleteAsync();
+            return true;
         }
 
-        public async Task<AddUpdateServiceResponse<DetailedProductObject>> AddProduct(AddUpdateProductDTO newProduct)
+        public async Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddUpdateProductDTO newProduct)
         {
             var validatorResult = await _validator.ValidateAsync(newProduct);
             if (!validatorResult.IsValid)
             {
-                return AddUpdateServiceResponse<DetailedProductObject>.Failure(validatorResult.Errors.Select
+                return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var productEntity = newProduct.ToEntity();
@@ -85,51 +87,51 @@ namespace BusinessLayer.Services
             await _unitOfWork.Products.Add(productEntity);
             await _unitOfWork.CompleteAsync();
             var productDTO = await _unitOfWork.Products.GetProdutcById(productEntity.ProductId); // To Get The CategoryNameProprty From Navagation Proprty Category
-            return AddUpdateServiceResponse<DetailedProductObject>.Success(productDTO);
+            return AddUpdateServiceResponse<DetailedProductDTO>.Success(productDTO);
         }
 
 
-        public async Task<List<LightProductObject>> GetExpiredProducts(int pageNumber)
+        public async Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber)
         {
             return await _unitOfWork.Products.GetExpiredProducts(pageNumber, _pageSize);
         }
 
-        public async Task<List<LightProductObject>> GetZeroQuantityProducts(int pageNumber)
+        public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber)
         {
             return await _unitOfWork.Products.GetZeroQuantityProducts(pageNumber, _pageSize);
         }
 
 
-        public async Task<List<LightProductObject>> GetProductsUnderMinQuantity(int pageNumber)
+        public async Task<List<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber)
         {
             return await _unitOfWork.Products.GetProductsUnderMinQuantity(pageNumber,_pageSize);
         }
 
-        public async Task<List<LightProductObject>>GetProductByNameOrBarcode(int pageNumber,string value)
+        public async Task<List<ReadOnlyProductDTO>>GetProductByNameOrBarcode(int pageNumber,string value)
         {
             return await _unitOfWork.Products.GetProductByNameOrBarcode(value, pageNumber, _pageSize);
         }
 
 
-        public async Task<List<LightProductObject>> ProductsNearingExpiry(int pageNumber)
+        public async Task<List<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber)
         {
             return await _unitOfWork.Products.ProductsNearingExpiry(pageNumber, _pageSize);
         }
 
 
-        public async Task<AddUpdateServiceResponse<DetailedProductObject>>UpdateProduct(int ProductId,AddUpdateProductDTO updatedProduct)
+        public async Task<AddUpdateServiceResponse<DetailedProductDTO>>UpdateProduct(int ProductId,AddUpdateProductDTO updatedProduct)
         {
             var validatorResult = await _validator.ValidateAsync(updatedProduct);
             if(!validatorResult.IsValid)
             {
-                return AddUpdateServiceResponse<DetailedProductObject>.Failure(validatorResult.Errors.Select
+                return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
 
             var productEntity = await _unitOfWork.Products.GetProductEntityById(ProductId);
             if(productEntity == null)
             {
-                return AddUpdateServiceResponse<DetailedProductObject>.Failure(new List<string> { $"No Product Found With Id = {ProductId}" }, EnErrorTypes.NotFound);
+                return AddUpdateServiceResponse<DetailedProductDTO>.Failure(new List<string> { $"No Product Found With Id = {ProductId}" }, EnErrorTypes.NotFound);
             }
 
             productEntity.ProductName = updatedProduct.ProductName;
@@ -145,7 +147,7 @@ namespace BusinessLayer.Services
             await _unitOfWork.CompleteAsync();
 
             var productDTO = await _unitOfWork.Products.GetProdutcById(ProductId);
-            return AddUpdateServiceResponse<DetailedProductObject>.Success(productDTO);
+            return AddUpdateServiceResponse<DetailedProductDTO>.Success(productDTO);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.ReadOnlyModels.Product_Models
 {
-    public class LightProductObject
+    public class ReadOnlyProductDTO
     {
         public int Id { get; set; }
         public string ProductName { get; set; } = null!;
