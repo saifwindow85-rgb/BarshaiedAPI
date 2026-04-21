@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Results;
 using BusinessLayer.Services;
 using Domain.DTOs.CategoryDTOs;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -140,6 +141,17 @@ namespace BarshaiedAPI.Controllers
                 return NotFound($"No Category Found With Name = {Name}");
             }
             return Ok(categorie);
+        }
+
+        [HttpGet("by-category", Name = "GetCategoriesDetails")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+       public async Task<ActionResult<List<CategoryDetailsDTO>>>GetCategoriesDetails()
+        {
+            var categoriesDetails = await _service.GetCategoriesDetails();
+            if (categoriesDetails == null || !categoriesDetails.Any())
+                return NotFound("No Result Found !");
+            return Ok(categoriesDetails);
         }
     }
 }

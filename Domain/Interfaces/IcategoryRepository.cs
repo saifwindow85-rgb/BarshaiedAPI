@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Domain.Interfaces
         public Task<Category> FindById(int Id);
         public Task<List<Category>> FindByName(string Name);
         public Task Add(Category newCategory);
+        public Task<List<CategoryDetailsDTO>> GetCategoriesDetails();
     }
 }

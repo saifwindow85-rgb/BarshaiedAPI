@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 
 namespace Domain.Repositories
 {
@@ -56,9 +57,24 @@ namespace Domain.Repositories
             return await _context.Categories.ToListAsync();
         }
 
+
         public async Task< List<Category>> GetReadOnlyCategories()
         {
             return await _context.Categories.AsNoTracking().ToListAsync();
+        }
+        public async Task<List<CategoryDetailsDTO>> GetCategoriesDetails()
+        {
+            return await _context.Categories.AsNoTracking().Select(c => new CategoryDetailsDTO
+            {
+                Id = c.CategoryId,
+                CategoryName = c.Name,
+                NumberOfProducts = c.Products.Count(),
+                TotalCostPrice = c.Products.Sum(p => p.CostPrice),
+                TotalSellPrice = c.Products.Sum(p => p.SellPrice),
+                AvrageCostPrice = c.Products.Any() ? c.Products.Average(p => p.CostPrice) : 0,
+                AvrageSellPrice = c.Products.Any() ? c.Products.Average(p => p.SellPrice) : 0,
+                AvrageProfitMargin = c.Products.Any() ? c.Products.Average(p => p.ProfitMargin) : 0
+            }).OrderBy(c => c.Id).ToListAsync();
         }
     }
 }

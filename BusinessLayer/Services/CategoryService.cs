@@ -8,6 +8,7 @@ using Domain.Mappers;
 using FluentValidation;
 using System.Linq.Expressions;
 using System.Linq;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 namespace BusinessLayer.Services
 {
     public class CategoryService
@@ -87,6 +88,11 @@ namespace BusinessLayer.Services
             var categories = await _unitOfWork.Categories.FindByName(Name);
             var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
             return categoriesDTO;
+        }
+
+        public async Task<List<CategoryDetailsDTO>>GetCategoriesDetails()
+        {
+            return await _unitOfWork.Categories.GetCategoriesDetails();
         }
     }
 }
