@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Transaction : BaseAuditableEntity
+    public class TransactionType :BaseAuditableEntity
     {
-        public int TransactionId { get; set; }
+  
         public int TransactionTypeId { get; set; }
-        public TransactionType TransactionsType { get; set; } = null!;
+        public string TransactionName { get; set; } = null!;
+    
 
     }
 }
