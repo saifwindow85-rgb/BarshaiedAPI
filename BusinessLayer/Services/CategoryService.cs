@@ -8,7 +8,7 @@ using DataAccessLayer.Mappers;
 using FluentValidation;
 using System.Linq.Expressions;
 using System.Linq;
-using DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 namespace BusinessLayer.Services
 {
     public class CategoryService
@@ -35,10 +35,9 @@ namespace BusinessLayer.Services
             return categoriesDTO;
         }
 
-        public async Task<CategoryDTO>GetCategoryById(int Id)
+        public async Task<CategoryDetailsDTO>GetCategoryById(int Id)
         {
-            var category = await _unitOfWork.Categories.FindById(Id);
-            return category.ToDTO();
+            return await _unitOfWork.Categories.FindById(Id);
         }
 
         public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddCategoryDTO newCategory)
@@ -74,7 +73,7 @@ namespace BusinessLayer.Services
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            var categoryEntity = await _unitOfWork.Categories.FindById(Id);
+            var categoryEntity = await _unitOfWork.Categories.GetCategoryById(Id);
             if (categoryEntity == null)
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
@@ -94,7 +93,7 @@ namespace BusinessLayer.Services
             return categoriesDTO;
         }
 
-        public async Task<List<CategoryDetailsDTO>>GetCategoriesDetails()
+        public async Task<List<CategoryReportDTO>>GetCategoriesDetails()
         {
             return await _unitOfWork.Categories.GetCategoriesDetails();
         }

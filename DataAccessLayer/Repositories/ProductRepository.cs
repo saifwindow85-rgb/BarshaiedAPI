@@ -1,7 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
 using Domain.Entities;
 using Domain.Interfaces;
-using DataAccessLayer.ReadOnlyModels.Product_Models;
+using Domain.ReadOnlyModels.Product_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

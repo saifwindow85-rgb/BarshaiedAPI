@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.Results;
 using BusinessLayer.Services;
 using DataAccessLayer.DTOs.CategoryDTOs;
-using DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +33,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CategoryDTO>> GetCategoryById(int Id)
+        public async Task<ActionResult<CategoryDetailsDTO>> GetCategoryById(int Id)
         {
           if(Id < 1)
             {

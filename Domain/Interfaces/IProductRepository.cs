@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using DataAccessLayer.ReadOnlyModels.Product_Models;
+using Domain.ReadOnlyModels.Product_Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

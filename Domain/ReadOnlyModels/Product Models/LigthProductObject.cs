@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.ReadOnlyModels.Product_Models
+namespace Domain.ReadOnlyModels.Product_Models
 {
     public class ReadOnlyProductDTO
     {

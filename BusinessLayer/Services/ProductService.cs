@@ -12,7 +12,7 @@ using FluentValidation;
 using BusinessLayer.Enums;
 using BusinessLayer.Mappers;
 using BusinessLayer.Helpper_Classes;
-using DataAccessLayer.ReadOnlyModels.Product_Models;
+using Domain.ReadOnlyModels.Product_Models;
 
 namespace BusinessLayer.Services
 {

@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
-using DataAccessLayer.ReadOnlyModels.Product_Models;
+using Domain.ReadOnlyModels.Product_Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -9,14 +9,24 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces;
-using DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 
 namespace DataAccessLayer.Repositories
 {
+
+    
     public class CategoryRespository : ICategoryRepository
     {
-        private BarshaiedDbContext _context;
-
+        private readonly BarshaiedDbContext _context;
+        private Expression<Func<Category, CategoryDetailsDTO>> ToDetailsDTO = c => new CategoryDetailsDTO
+        {
+            Id = c.CategoryId,
+            CategoryName = c.Name,
+            CreatedAt = c.CreatedAt,
+            CreatedByUser = c.Creator.UserName,
+            UpdatedAt = c.LastUpdate,
+            UpdatedByUser = c.UpdatedByUser.UserName
+        };
         public CategoryRespository(BarshaiedDbContext context)
         {
             _context = context;
@@ -40,10 +50,9 @@ namespace DataAccessLayer.Repositories
             return true;
         }
 
-        public async Task<Category> FindById(int Id)
+        public async Task<CategoryDetailsDTO> FindById(int Id)
         {
-            var category = await _context.Categories.SingleOrDefaultAsync(c => c.CategoryId == Id);
-            return category;
+            return await _context.Categories.Select(ToDetailsDTO).SingleOrDefaultAsync(c => c.Id == Id);
         }
 
         public Task<List<Category>> FindByName(string Name)
@@ -62,9 +71,9 @@ namespace DataAccessLayer.Repositories
         {
             return await _context.Categories.AsNoTracking().ToListAsync();
         }
-        public async Task<List<CategoryDetailsDTO>> GetCategoriesDetails()
+        public async Task<List<CategoryReportDTO>> GetCategoriesDetails()
         {
-            return await _context.Categories.AsNoTracking().Select(c => new CategoryDetailsDTO
+            return await _context.Categories.AsNoTracking().Select(c => new CategoryReportDTO
             {
                 Id = c.CategoryId,
                 CategoryName = c.Name,
@@ -75,6 +84,11 @@ namespace DataAccessLayer.Repositories
                 AvrageSellPrice = c.Products.Any() ? c.Products.Average(p => p.SellPrice) : 0,
                 AvrageProfitMargin = c.Products.Any() ? c.Products.Average(p => p.ProfitMargin) : 0
             }).OrderBy(c => c.Id).ToListAsync();
+        }
+
+        public async Task<Category> GetCategoryById(int Id)
+        {
+            return await _context.Categories.SingleOrDefaultAsync(c => c.CategoryId == Id);
         }
     }
 }
