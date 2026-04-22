@@ -1,11 +1,11 @@
-﻿using DataAccessLayer.Entities;
+﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Abstracts
+namespace Domain.Abstracts
 {
     public abstract  class UserAbstract
     {

@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.Enums;
 using BusinessLayer.Results;
 using BusinessLayer.Validators;
-using DataAccessLayer.Entities;
+using Domain.Entities;
 using DataAccessLayer.DTOs.CategoryDTOs;
-using DataAccessLayer.Interfaces;
+using Domain.Interfaces;
 using DataAccessLayer.Mappers;
 using FluentValidation;
 using System.Linq.Expressions;

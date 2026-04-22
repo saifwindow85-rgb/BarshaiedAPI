@@ -1,10 +1,12 @@
-﻿using DataAccessLayer.Entities;
+﻿using Domain.Entities;
 using DataAccessLayer.DTOs.CategoryDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
+using Domain.Abstracts;
 
 namespace DataAccessLayer.Mappers
 {

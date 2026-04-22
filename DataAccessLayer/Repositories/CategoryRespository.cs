@@ -1,5 +1,5 @@
 ﻿using DataAccessLayer.AppDbContext;
-using DataAccessLayer.Entities;
+using Domain.Entities;
 using DataAccessLayer.Seeds;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccessLayer.Interfaces;
+using Domain.Interfaces;
 using DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels;
 
 namespace DataAccessLayer.Repositories

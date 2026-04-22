@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace DataAccessLayer.Interfaces
+using Domain.Entities;
+namespace Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {

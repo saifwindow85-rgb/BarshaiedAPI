@@ -1,6 +1,6 @@
 ﻿using DataAccessLayer.AppDbContext;
-using DataAccessLayer.Entities;
-using DataAccessLayer.Interfaces;
+using Domain.Entities;
+using Domain.Interfaces;
 using DataAccessLayer.ReadOnlyModels.Product_Models;
 using Microsoft.EntityFrameworkCore;
 using System;

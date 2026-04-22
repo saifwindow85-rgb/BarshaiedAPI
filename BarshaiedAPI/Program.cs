@@ -4,7 +4,7 @@ using BusinessLayer.Validators;
 using DataAccessLayer.AppDbContext;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.DTOs.CategoryDTOs;
-using DataAccessLayer.Interfaces;
+using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.UnitOfWork;
