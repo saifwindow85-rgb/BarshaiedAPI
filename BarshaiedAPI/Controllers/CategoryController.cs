@@ -51,7 +51,7 @@ namespace BarshaiedAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
+        public async Task<ActionResult<CategoryDTO>>AddCategory(AddCategoryDTO newCategory)
         {
             var categoryResponse = await _service.AddCategory(newCategory);
             if(!categoryResponse.IsSuccess)
@@ -88,7 +88,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CategoryDTO>>UpdateCategory(int Id,AddUpdateCategoryDTO updateCategoryDTO)
+        public async Task<ActionResult<CategoryDTO>>UpdateCategory(int Id,UpdateCategoryDTO updateCategoryDTO)
         {
             if( Id < 1)
             {

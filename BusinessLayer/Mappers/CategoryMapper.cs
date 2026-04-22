@@ -10,7 +10,7 @@ namespace DataAccessLayer.Mappers
 {
     public static class CategoryMapper
     {
-         public static Category ToEntity(this AddUpdateCategoryDTO dto)
+         public static Category ToEntity(this AddCategoryDTO dto)
         {
             return new Category
             {

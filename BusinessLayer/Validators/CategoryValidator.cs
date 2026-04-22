@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Validators
 {
-    public class CategoryValidator : AbstractValidator<AddUpdateCategoryDTO>
+    public class CategoryValidator : AbstractValidator<AddCategoryDTO>
     {
        public CategoryValidator()
         {

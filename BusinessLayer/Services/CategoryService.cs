@@ -20,8 +20,8 @@ namespace BusinessLayer.Services
             CreatedAt = c.CreatedAt,
         };
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IValidator<AddUpdateCategoryDTO> _validator;
-        public CategoryService( IValidator<AddUpdateCategoryDTO> validator,IUnitOfWork unitOfWork)
+        private readonly IValidator<AddCategoryDTO> _validator;
+        public CategoryService( IValidator<AddCategoryDTO> validator,IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _validator = validator;
@@ -39,7 +39,7 @@ namespace BusinessLayer.Services
             return category.ToDTO();
         }
 
-        public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddUpdateCategoryDTO newCategory)
+        public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddCategoryDTO newCategory)
         {
             var validatorResult = await _validator.ValidateAsync(newCategory);
             if(!validatorResult.IsValid)
@@ -65,7 +65,7 @@ namespace BusinessLayer.Services
         }
 
 
-       public async Task<AddUpdateServiceResponse<CategoryDTO>>UpdateCategory(int Id,AddUpdateCategoryDTO updatedCategory)
+       public async Task<AddUpdateServiceResponse<CategoryDTO>>UpdateCategory(int Id,UpdateCategoryDTO updatedCategory)
         {
             var validatorResult = await _validator.ValidateAsync(updatedCategory);
             if(!validatorResult.IsValid)

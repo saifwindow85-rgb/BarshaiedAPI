@@ -73,7 +73,7 @@ namespace BarshaiedAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>>AddProduct(AddUpdateProductDTO newProduct)
+        public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>>AddProduct(AddProductDTO newProduct)
         {
 
             var postResponse = await _service.AddProduct(newProduct);
@@ -183,7 +183,7 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<DetailedProductDTO>>UpdateProduct(int Id,AddUpdateProductDTO updatedProduct)
+         public async Task<ActionResult<DetailedProductDTO>>UpdateProduct(int Id,UpdateProductDTO updatedProduct)
         {
             if(Id < 1)
             {

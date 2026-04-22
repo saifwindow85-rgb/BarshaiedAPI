@@ -19,8 +19,8 @@ namespace BusinessLayer.Services
     public class ProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private IValidator<AddUpdateProductDTO> _validator;
-        public ProductService(IProductRepository repo, IValidator<AddUpdateProductDTO> validator,IUnitOfWork unitOfWork)
+        private IValidator<AddProductDTO> _validator;
+        public ProductService(IProductRepository repo, IValidator<AddProductDTO> validator,IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _validator = validator;
@@ -74,7 +74,7 @@ namespace BusinessLayer.Services
             return true;
         }
 
-        public async Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddUpdateProductDTO newProduct)
+        public async Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddProductDTO newProduct)
         {
             var validatorResult = await _validator.ValidateAsync(newProduct);
             if (!validatorResult.IsValid)
@@ -119,7 +119,7 @@ namespace BusinessLayer.Services
         }
 
 
-        public async Task<AddUpdateServiceResponse<DetailedProductDTO>>UpdateProduct(int ProductId,AddUpdateProductDTO updatedProduct)
+        public async Task<AddUpdateServiceResponse<DetailedProductDTO>>UpdateProduct(int ProductId,UpdateProductDTO updatedProduct)
         {
             var validatorResult = await _validator.ValidateAsync(updatedProduct);
             if(!validatorResult.IsValid)
@@ -142,7 +142,8 @@ namespace BusinessLayer.Services
             productEntity.SellPrice = updatedProduct.SellPrice;
             productEntity.MinQuantity = updatedProduct.MinQuantity;
             productEntity.ExpiryDate = updatedProduct.ExpiryDate;
-            productEntity.UpdatedAt = DateTime.Now;
+            productEntity.UpdatedByUserId = updatedProduct.UpdatedByUserId;
+            productEntity.LastUpdate = DateTime.Now;
 
             await _unitOfWork.CompleteAsync();
 

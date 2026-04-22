@@ -42,7 +42,7 @@ namespace DataAccessLayer.Repositories
             ProfitMargin = p.ProfitMargin,
             CreatedAt = p.CreatedAt,
             ExpiryDate = p.ExpiryDate,
-            UpdatedAt = p.UpdatedAt,
+            UpdatedAt = p.LastUpdate
         };
 
         public ProductRepository(BarshaiedDbContext context)

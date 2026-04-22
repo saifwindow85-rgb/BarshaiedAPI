@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Validators
 {
-    public class ProductValidator : AbstractValidator<AddUpdateProductDTO>
+    public class ProductValidator : AbstractValidator<AddProductDTO>
     {
         public ProductValidator()
         {

@@ -10,7 +10,7 @@ namespace BusinessLayer.Mappers
 {
     public static class ProductMapper
     {
-        public static Product ToEntity(this AddUpdateProductDTO DTO)
+        public static Product ToEntity(this AddProductDTO DTO)
         {
             return new Product
             {
@@ -22,6 +22,7 @@ namespace BusinessLayer.Mappers
                 SellPrice = DTO.SellPrice,
                 CostPrice = DTO.CostPrice,
                 ExpiryDate = DTO.ExpiryDate,
+                CreatedByUserId = DTO.CreatedByUserId,
             };
         }
 
