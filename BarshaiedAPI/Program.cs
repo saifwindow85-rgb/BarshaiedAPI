@@ -25,8 +25,10 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IValidator<AddCategoryDTO>, CategoryValidator>();
-builder.Services.AddScoped<IValidator<AddProductDTO>, ProductValidator>();
+builder.Services.AddScoped<IValidator<AddCategoryDTO>, AddCategoryValidator>();
+builder.Services.AddScoped<IValidator<AddProductDTO>, AddProductValidator>();
+builder.Services.AddScoped<IValidator<UpdateCategoryDTO>, UpdateCategoryValidator>();
+builder.Services.AddScoped<IValidator<UpdateProductDTO>, UpdateProductValidator>();
 
 var app = builder.Build();
 

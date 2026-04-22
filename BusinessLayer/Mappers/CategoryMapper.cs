@@ -15,6 +15,7 @@ namespace DataAccessLayer.Mappers
             return new Category
             {
                 Name = dto.CategoryName,
+                CreatedByUserId = dto.CreatedByUserId,
             };
         }
 
@@ -25,7 +26,8 @@ namespace DataAccessLayer.Mappers
             {
                 Id = entitiy.CategoryId,
                 CategoryName = entitiy.Name,
-                CreatedAt = entitiy.CreatedAt
+                CreatedAt = entitiy.CreatedAt,
+           
             };
         }
     }

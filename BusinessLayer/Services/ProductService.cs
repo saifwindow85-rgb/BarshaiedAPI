@@ -20,10 +20,12 @@ namespace BusinessLayer.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private IValidator<AddProductDTO> _validator;
-        public ProductService(IProductRepository repo, IValidator<AddProductDTO> validator,IUnitOfWork unitOfWork)
+        private IValidator<UpdateProductDTO> _updateValidator;
+        public ProductService(IProductRepository repo, IValidator<AddProductDTO> validator,IUnitOfWork unitOfWork,IValidator<UpdateProductDTO>updateValidator)
         {
             _unitOfWork = unitOfWork;
             _validator = validator;
+            _updateValidator = updateValidator;
         }
         private int _pageSize = 10;
 
@@ -121,7 +123,7 @@ namespace BusinessLayer.Services
 
         public async Task<AddUpdateServiceResponse<DetailedProductDTO>>UpdateProduct(int ProductId,UpdateProductDTO updatedProduct)
         {
-            var validatorResult = await _validator.ValidateAsync(updatedProduct);
+            var validatorResult = await _updateValidator.ValidateAsync(updatedProduct);
             if(!validatorResult.IsValid)
             {
                 return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select

@@ -21,10 +21,12 @@ namespace BusinessLayer.Services
         };
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<AddCategoryDTO> _validator;
-        public CategoryService( IValidator<AddCategoryDTO> validator,IUnitOfWork unitOfWork)
+        private readonly IValidator<UpdateCategoryDTO> _updateValidator;
+        public CategoryService( IValidator<AddCategoryDTO> validator,IUnitOfWork unitOfWork,IValidator<UpdateCategoryDTO>updateValidator)
         {
             _unitOfWork = unitOfWork;
             _validator = validator;
+            _updateValidator = updateValidator;
         }
         public async Task<List<CategoryDTO>>GetCategories()
         {
@@ -67,7 +69,7 @@ namespace BusinessLayer.Services
 
        public async Task<AddUpdateServiceResponse<CategoryDTO>>UpdateCategory(int Id,UpdateCategoryDTO updatedCategory)
         {
-            var validatorResult = await _validator.ValidateAsync(updatedCategory);
+            var validatorResult = await _updateValidator.ValidateAsync(updatedCategory);
             if(!validatorResult.IsValid)
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
@@ -78,6 +80,8 @@ namespace BusinessLayer.Services
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }
             categoryEntity.Name = updatedCategory.CategoryName;
+            categoryEntity.UpdatedByUserId = updatedCategory.UpdatedByUserId;
+            categoryEntity.LastUpdate = DateTime.Now;
             await _unitOfWork.CompleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
             return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
