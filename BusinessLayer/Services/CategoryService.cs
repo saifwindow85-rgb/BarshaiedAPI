@@ -1,14 +1,14 @@
 ﻿using BusinessLayer.Enums;
 using BusinessLayer.Results;
 using BusinessLayer.Validators;
-using Domain.Entities;
-using Domain.DTOs.CategoryDTOs;
-using Domain.Interfaces;
-using Domain.Mappers;
+using DataAccessLayer.Entities;
+using DataAccessLayer.DTOs.CategoryDTOs;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Mappers;
 using FluentValidation;
 using System.Linq.Expressions;
 using System.Linq;
-using Domain.ReadOnlyModels.CategoryReadOnlyModels;
+using DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels;
 namespace BusinessLayer.Services
 {
     public class CategoryService

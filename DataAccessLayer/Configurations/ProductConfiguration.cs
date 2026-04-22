@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Configurations
+namespace DataAccessLayer.Configurations
 {
     public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
@@ -33,6 +33,13 @@ namespace Domain.Configurations
                 ELSE (([SellPrice] - [CostPrice]) * 100.0 / [SellPrice])
                 END",
                  stored: true);
+
+            builder.HasOne(p => p.Creator).WithMany().HasForeignKey(t => t.CreatedByUserId).IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.UpdatedByUser).WithMany().HasForeignKey
+                (t => t.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(p => p.ShoppingListItems).WithOne(p => p.Product).HasForeignKey(p => p.ProductId).IsRequired();
             builder.ToTable("Products",p=>p.HasCheckConstraint("CK_Product_Prices","[SellPrice] >= [CostPrice]"));
 

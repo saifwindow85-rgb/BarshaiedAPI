@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.ReadOnlyModels.CategoryReadOnlyModels
+namespace DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels
 {
     public class CategoryDetailsDTO
     {

@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
-using Domain.Entities;
-using Domain.Interfaces;
+using DataAccessLayer.Entities;
+using DataAccessLayer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using FluentValidation;
 using BusinessLayer.Enums;
 using BusinessLayer.Mappers;
 using BusinessLayer.Helpper_Classes;
-using Domain.ReadOnlyModels.Product_Models;
+using DataAccessLayer.ReadOnlyModels.Product_Models;
 
 namespace BusinessLayer.Services
 {

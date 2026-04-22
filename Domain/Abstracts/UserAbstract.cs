@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Abstracts
 {
-    public abstract class BaseAuditableEntity
+    public abstract  class UserAbstract
     {
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int CreatedByUserId { get; set; }
         public User Creator { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
-        public int? UpdatedByUserId { get; set; }
-        public User? UpdatedByUser { get; set; }
+        public DateTime ?LastUpdate {  get; set; }
+        public int UpdatedByUserId { get; set; }
+        public User?UpdatedByUser { get; set; }
     }
 }

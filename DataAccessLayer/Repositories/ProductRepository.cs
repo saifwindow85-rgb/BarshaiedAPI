@@ -1,7 +1,7 @@
-﻿using Domain.AppDbContext;
-using Domain.Entities;
-using Domain.Interfaces;
-using Domain.ReadOnlyModels.Product_Models;
+﻿using DataAccessLayer.AppDbContext;
+using DataAccessLayer.Entities;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.ReadOnlyModels.Product_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Repositories
+namespace DataAccessLayer.Repositories
 {
     public class ProductRepository : IProductRepository
     {

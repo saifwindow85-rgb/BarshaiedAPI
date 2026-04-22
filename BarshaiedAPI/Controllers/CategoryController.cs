@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.Results;
 using BusinessLayer.Services;
-using Domain.DTOs.CategoryDTOs;
-using Domain.ReadOnlyModels.CategoryReadOnlyModels;
+using DataAccessLayer.DTOs.CategoryDTOs;
+using DataAccessLayer.ReadOnlyModels.CategoryReadOnlyModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

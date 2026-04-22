@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -16,7 +16,7 @@ namespace DataAccessLayer.Configurations
             builder.HasKey(t => t.TransactionId);
             builder.Property(t => t.TransactionId).ValueGeneratedOnAdd();
 
-            builder.HasOne(t => t.Creator).WithMany().HasForeignKey(t => t.CreatedByUserId)
+            builder.HasOne(t => t.Creator).WithMany().HasForeignKey(t => t.CreatedByUserId).IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(t => t.UpdatedByUser).WithMany().HasForeignKey
@@ -24,7 +24,7 @@ namespace DataAccessLayer.Configurations
 
             builder.HasOne(t => t.TransactionsType).WithMany().HasForeignKey
                 (t => t.TransactionTypeId).OnDelete(DeleteBehavior.Restrict);
-
+      
             builder.Property(t => t.CreatedAt).HasDefaultValueSql("GETDATE()");
 
             builder.ToTable("Transactions"); 

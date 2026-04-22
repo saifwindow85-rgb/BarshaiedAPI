@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,13 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.AppDbContext
+namespace DataAccessLayer.AppDbContext
 {
     public class BarshaiedDbContext:DbContext
     {
         public DbSet<Category>Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ShoppingListItem>ShoppingListItems { get; set; }
+        public DbSet<User>Users { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionType>TransactionTypes { get; set; }
 
         public BarshaiedDbContext(DbContextOptions<BarshaiedDbContext> options)
         : base(options)

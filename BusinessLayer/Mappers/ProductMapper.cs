@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
-using Domain.Entities;
+using DataAccessLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

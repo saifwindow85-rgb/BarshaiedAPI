@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DataAccessLayer.Abstracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace DataAccessLayer.Entities
 {
-    public class Product
+    public class Product :UserAbstract
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; } = null!;
@@ -20,8 +21,7 @@ namespace Domain.Entities
         public int Quantity { get; set; }
         public int MinQuantity { get; set; }
         public DateTime ? ExpiryDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt {  get; set; }
+
         public ICollection<ShoppingListItem> ShoppingListItems { get; set; } = new List<ShoppingListItem>();
 
     }

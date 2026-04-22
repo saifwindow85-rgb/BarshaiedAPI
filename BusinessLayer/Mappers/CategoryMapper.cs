@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
-using Domain.DTOs.CategoryDTOs;
+﻿using DataAccessLayer.Entities;
+using DataAccessLayer.DTOs.CategoryDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Mappers
+namespace DataAccessLayer.Mappers
 {
     public static class CategoryMapper
     {

@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
-using Domain.ReadOnlyModels.Product_Models;
+﻿using DataAccessLayer.Entities;
+using DataAccessLayer.ReadOnlyModels.Product_Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Interfaces
+namespace DataAccessLayer.Interfaces
 {
     public interface IProductRepository
     {

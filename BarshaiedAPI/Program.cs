@@ -1,10 +1,10 @@
 using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Services;
 using BusinessLayer.Validators;
-using Domain.AppDbContext;
-using Domain.Repositories;
-using Domain.DTOs.CategoryDTOs;
-using Domain.Interfaces;
+using DataAccessLayer.AppDbContext;
+using DataAccessLayer.Repositories;
+using DataAccessLayer.DTOs.CategoryDTOs;
+using DataAccessLayer.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.UnitOfWork;

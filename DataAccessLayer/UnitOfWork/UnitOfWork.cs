@@ -1,6 +1,6 @@
-﻿using Domain.AppDbContext;
-using Domain.Interfaces;
-using Domain.Repositories;
+﻿using DataAccessLayer.AppDbContext;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
