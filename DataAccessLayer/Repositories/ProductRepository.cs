@@ -14,7 +14,7 @@ namespace DataAccessLayer.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private BarshaiedDbContext _context;
+        private readonly BarshaiedDbContext _context;
 
 
         private Expression<Func<Product, ReadOnlyProductDTO>> ToLightObject = p => new ReadOnlyProductDTO

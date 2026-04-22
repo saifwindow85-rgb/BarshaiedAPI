@@ -49,6 +49,11 @@ namespace BusinessLayer.Services
                     .Select(e => $"{e.PropertyName} : {e.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = newCategory.ToEntity();
+            if(!await _unitOfWork.Users.IsUserExsist(categoryEntity.CreatedByUserId))
+            {
+                return AddUpdateServiceResponse<CategoryDTO>.
+                    Failure(new List<string> { $"User With Id = {categoryEntity.CreatedByUserId} Dose Not Exist !!!" }, EnErrorTypes.InvalidData);
+            }
             await _unitOfWork.Categories.Add(categoryEntity);
             await _unitOfWork.CompleteAsync();
             var categoryDTO = categoryEntity.ToDTO();

@@ -10,6 +10,7 @@ namespace Domain.Interfaces
     {
         ICategoryRepository Categories { get; }
         IProductRepository Products { get; }
+        IUserRepository Users { get; }
 
         Task<int> CompleteAsync();
     }
