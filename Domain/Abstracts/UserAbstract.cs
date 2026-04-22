@@ -14,7 +14,7 @@ namespace DataAccessLayer.Abstracts
         public DateTime CreatedAt { get; set; }
 
         public DateTime ?LastUpdate {  get; set; }
-        public int UpdatedByUserId { get; set; }
+        public int ?UpdatedByUserId { get; set; }
         public User?UpdatedByUser { get; set; }
     }
 }

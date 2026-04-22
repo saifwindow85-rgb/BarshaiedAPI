@@ -24,7 +24,7 @@ namespace DataAccessLayer.Configurations
 
             builder.Property(t => t.CreatedAt).HasDefaultValueSql("GETDATE()").IsRequired();
             builder.Property(t => t.TransactionName).HasColumnType("NVARCHAR(50)").IsRequired();
-            builder.ToTable("TransactionType");
+            builder.ToTable("TransactionTypes");
         }
     }
 }

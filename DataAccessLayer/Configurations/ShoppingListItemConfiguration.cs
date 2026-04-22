@@ -16,8 +16,14 @@ namespace DataAccessLayer.Configurations
             builder.HasKey(l => l.Id);
             builder.Property(l => l.Id).ValueGeneratedOnAdd();
 
-            builder.HasMany(s => s.Transactions).WithOne().HasForeignKey(s => s.TransactionId)
-                .IsRequired().OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(l => l.Transactions).WithOne(l=>l.ShoppingListItem).HasForeignKey(s => s.ShoppingListItemId)
+                .IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(l => l.Creator).WithMany().HasForeignKey(l => l.CreatedByUserId).IsRequired()
+             .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(l => l.UpdatedByUser).WithMany().HasForeignKey
+                (t => t.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(l => l.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Property(l => l.Notes).HasColumnType("NVARCHAR(300)").IsRequired(false);

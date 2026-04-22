@@ -9,7 +9,7 @@ namespace DataAccessLayer.Abstracts
 {
     public abstract class BaseAuditableEntity
     {
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
         public int CreatedByUserId { get; set; }
         public User Creator { get; set; } = null!;
 

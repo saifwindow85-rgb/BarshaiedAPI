@@ -11,7 +11,9 @@ namespace DataAccessLayer.Entities
     {
         public int TransactionId { get; set; }
         public int TransactionTypeId { get; set; }
-        public TransactionType TransactionsType { get; set; } = null!;
+        public TransactionType TransactionType { get; set; } = null!;
 
+        public int ?ShoppingListItemId { get; set; }
+        public ShoppingListItem ShoppingListItem { get; set; }
     }
 }

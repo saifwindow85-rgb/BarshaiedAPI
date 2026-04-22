@@ -17,6 +17,8 @@ namespace DataAccessLayer.Configurations
             builder.Property(u => u.UserId).ValueGeneratedOnAdd();
 
             builder.Property(u => u.UserName).HasColumnType("NVARCHAR(50)").IsRequired();
+            builder.HasIndex(u => u.UserName).IsUnique();
+
             builder.Property(u => u.Password).HasColumnType("NVARCHAR(50)").IsRequired();
 
             builder.Property(u => u.Permissions).HasColumnType("Tinyint").IsRequired();
@@ -25,6 +27,14 @@ namespace DataAccessLayer.Configurations
             builder.HasOne(u => u.Creator).WithMany().HasForeignKey
                 (u => u.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
             builder.ToTable("Users");
+            builder.HasData(new User
+            {   UserId =1,
+                UserName = "Admin",
+                Password = "12345",
+                IsActive = true,
+                Permissions = 1,
+                CreatedAt = DateTime.Now
+            });
         }
     }
 }
