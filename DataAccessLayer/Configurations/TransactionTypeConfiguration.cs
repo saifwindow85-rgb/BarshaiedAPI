@@ -29,10 +29,10 @@ namespace DataAccessLayer.Configurations
             builder.Property(t => t.TransactionName).HasColumnType("NVARCHAR(50)").IsRequired();
             builder.ToTable("TransactionTypes");
 
-            builder.HasData(builder.HasData(
-                new TransactionType { TransactionTypeId = 1, TransactionName = "Sale" },
-                new TransactionType { TransactionTypeId = 2, TransactionName = "Purchase" }
-             ));
+            //builder.HasData(builder.HasData(
+            //    new TransactionType { TransactionTypeId = 1, TransactionName = "Sale",CreatedByUserId = 1 },
+            //    new TransactionType { TransactionTypeId = 2, TransactionName = "Purchase",CreatedByUserId =1 }
+            // ));
 
         }
     }

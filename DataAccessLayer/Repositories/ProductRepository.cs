@@ -40,8 +40,10 @@ namespace DataAccessLayer.Repositories
             CostPrice = p.CostPrice,
             SellPrice = p.SellPrice,
             ProfitMargin = p.ProfitMargin,
+            CreatedByUser = p.Creator.UserName,
             CreatedAt = p.CreatedAt,
             ExpiryDate = p.ExpiryDate,
+            UpdatedByUser = p.UpdatedByUser.UserName,
             UpdatedAt = p.LastUpdate
         };
 

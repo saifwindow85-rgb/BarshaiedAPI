@@ -17,6 +17,8 @@ namespace DataAccessLayer.ReadOnlyModels.Product_Models
         public decimal ProfitMargin { get; set; }
         public int Quantity { get; set; }
         public int MinQuantity { get; set; }
+        public string CreatedByUser { get; set; } = null!;
+        public string UpdatedByUser { get; set; } 
         public DateTime? ExpiryDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
