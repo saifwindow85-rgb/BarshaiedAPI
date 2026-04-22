@@ -24,8 +24,16 @@ namespace DataAccessLayer.Configurations
                 (t => t.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(t => t.CreatedAt).HasDefaultValueSql("GETDATE()").IsRequired();
+
+            builder.HasIndex(t => t.TransactionName).IsUnique();
             builder.Property(t => t.TransactionName).HasColumnType("NVARCHAR(50)").IsRequired();
             builder.ToTable("TransactionTypes");
+
+            builder.HasData(builder.HasData(
+                new TransactionType { TransactionTypeId = 1, TransactionName = "Sale" },
+                new TransactionType { TransactionTypeId = 2, TransactionName = "Purchase" }
+             ));
+
         }
     }
 }

@@ -22,7 +22,7 @@ namespace DataAccessLayer.Configurations
             builder.HasOne(t => t.UpdatedByUser).WithMany().HasForeignKey
                 (t => t.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(t => t.TransactionType).WithMany().HasForeignKey
+            builder.HasOne(t => t.TransactionType).WithMany(t=>t.Transactions).HasForeignKey
                 (t => t.TransactionTypeId).OnDelete(DeleteBehavior.Restrict);
       
             builder.Property(t => t.CreatedAt).HasDefaultValueSql("GETDATE()");
