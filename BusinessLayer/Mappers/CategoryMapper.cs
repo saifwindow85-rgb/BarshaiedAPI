@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Domain.Abstracts;
+using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 
 namespace DataAccessLayer.Mappers
 {
@@ -22,9 +23,9 @@ namespace DataAccessLayer.Mappers
         }
 
 
-        public static CategoryDTO ToDTO(this Category entitiy)
+        public static LightCategoryDTO ToDTO(this Category entitiy)
         {
-            return new CategoryDTO
+            return new LightCategoryDTO
             {
                 Id = entitiy.CategoryId,
                 CategoryName = entitiy.Name,

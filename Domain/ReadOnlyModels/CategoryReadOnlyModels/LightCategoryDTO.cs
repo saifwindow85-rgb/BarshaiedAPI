@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.DTOs.CategoryDTOs
+namespace Domain.ReadOnlyModels.CategoryReadOnlyModels
 {
-    public class CategoryDTO
+    public class LightCategoryDTO
     {
         public int Id { get; set; }
         public string CategoryName { get; set; } = null!;

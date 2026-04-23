@@ -13,12 +13,7 @@ namespace BusinessLayer.Services
 {
     public class CategoryService
     {
-        private Expression<Func<Category, CategoryDTO>> CategoryToDTO = c => new CategoryDTO
-        {
-            Id = c.CategoryId,
-            CategoryName = c.Name,
-            CreatedAt = c.CreatedAt,
-        };
+      
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<AddCategoryDTO> _validator;
         private readonly IValidator<UpdateCategoryDTO> _updateValidator;
@@ -28,11 +23,9 @@ namespace BusinessLayer.Services
             _validator = validator;
             _updateValidator = updateValidator;
         }
-        public async Task<List<CategoryDTO>>GetCategories()
+        public async Task<List<LightCategoryDTO>>GetCategories()
         {
-            var categories = await _unitOfWork.Categories.GetReadOnlyCategories();
-            var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
-            return categoriesDTO;
+            return await _unitOfWork.Categories.GetReadOnlyCategories();
         }
 
         public async Task<CategoryDetailsDTO>GetCategoryById(int Id)
@@ -40,23 +33,23 @@ namespace BusinessLayer.Services
             return await _unitOfWork.Categories.FindById(Id);
         }
 
-        public async Task<AddUpdateServiceResponse<CategoryDTO>>AddCategory(AddCategoryDTO newCategory)
+        public async Task<AddUpdateServiceResponse<LightCategoryDTO>>AddCategory(AddCategoryDTO newCategory)
         {
             var validatorResult = await _validator.ValidateAsync(newCategory);
             if(!validatorResult.IsValid)
             {
-                return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors
+                return AddUpdateServiceResponse<LightCategoryDTO>.Failure(validatorResult.Errors
                     .Select(e => $"{e.PropertyName} : {e.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = newCategory.ToEntity();
             if(!await _unitOfWork.Users.IsUserExsist(categoryEntity.CreatedByUserId))
             {
-                return AddUpdateServiceResponse<CategoryDTO>.InvalidRelatedData();
+                return AddUpdateServiceResponse<LightCategoryDTO>.InvalidRelatedData();
             }
             await _unitOfWork.Categories.Add(categoryEntity);
             await _unitOfWork.CompleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
-            return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
+            return AddUpdateServiceResponse<LightCategoryDTO>.Success(categoryDTO);
         }
 
         public async Task<bool>Delete(int Id)
@@ -70,35 +63,33 @@ namespace BusinessLayer.Services
         }
 
 
-       public async Task<AddUpdateServiceResponse<CategoryDTO>>UpdateCategory(int Id,UpdateCategoryDTO updatedCategory)
+       public async Task<AddUpdateServiceResponse<LightCategoryDTO>>UpdateCategory(int Id,UpdateCategoryDTO updatedCategory)
         {
             var validatorResult = await _updateValidator.ValidateAsync(updatedCategory);
             if(!validatorResult.IsValid)
             {
-                return AddUpdateServiceResponse<CategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
+                return AddUpdateServiceResponse<LightCategoryDTO>.Failure(validatorResult.Errors.Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
             var categoryEntity = await _unitOfWork.Categories.GetCategoryById(Id);
             if (categoryEntity == null)
             {
-                return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
+                return AddUpdateServiceResponse<LightCategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }
             if(!await _unitOfWork.Users.IsUserExsist(updatedCategory.UpdatedByUserId))
             {
-                return AddUpdateServiceResponse<CategoryDTO>.InvalidRelatedData();
+                return AddUpdateServiceResponse<LightCategoryDTO>.InvalidRelatedData();
             }
             categoryEntity.Name = updatedCategory.CategoryName;
             categoryEntity.UpdatedByUserId = updatedCategory.UpdatedByUserId;
             categoryEntity.LastUpdate = DateTime.Now;
             await _unitOfWork.CompleteAsync();
             var categoryDTO = categoryEntity.ToDTO();
-            return AddUpdateServiceResponse<CategoryDTO>.Success(categoryDTO);
+            return AddUpdateServiceResponse<LightCategoryDTO>.Success(categoryDTO);
         }
 
-        public async Task<List<CategoryDTO>>GetCategoryByName(string Name)
+        public async Task<List<LightCategoryDTO>>GetCategoryByName(string Name)
         {
-            var categories = await _unitOfWork.Categories.FindByName(Name);
-            var categoriesDTO = categories.Select(CategoryToDTO.Compile()).ToList();
-            return categoriesDTO;
+            return await _unitOfWork.Categories.FindByName(Name);
         }
 
         public async Task<List<CategoryReportDTO>>GetCategoriesDetails()

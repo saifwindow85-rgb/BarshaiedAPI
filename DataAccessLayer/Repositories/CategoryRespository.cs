@@ -27,6 +27,13 @@ namespace DataAccessLayer.Repositories
             UpdatedAt = c.LastUpdate,
             UpdatedByUser = c.UpdatedByUser.UserName
         };
+
+        private Expression<Func<Category, LightCategoryDTO>> ToLightDTO = c => new LightCategoryDTO
+        {
+            Id = c.CategoryId,
+            CategoryName = c.Name,
+            CreatedAt = c.CreatedAt
+        };
         public CategoryRespository(BarshaiedDbContext context)
         {
             _context = context;
@@ -55,9 +62,9 @@ namespace DataAccessLayer.Repositories
             return await _context.Categories.Select(ToDetailsDTO).SingleOrDefaultAsync(c => c.Id == Id);
         }
 
-        public Task<List<Category>> FindByName(string Name)
+        public Task<List<LightCategoryDTO>> FindByName(string Name)
         {
-            var categories = _context.Categories.Where(c => EF.Functions.Like(c.Name, $"%{Name}%")).ToListAsync();
+            var categories = _context.Categories.Select(ToLightDTO).Where(c => EF.Functions.Like(c.CategoryName, $"%{Name}%")).ToListAsync();
             return categories;
         }
 
@@ -67,9 +74,9 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task< List<Category>> GetReadOnlyCategories()
+        public async Task< List<LightCategoryDTO>> GetReadOnlyCategories()
         {
-            return await _context.Categories.AsNoTracking().ToListAsync();
+            return await _context.Categories.Select(ToLightDTO).AsNoTracking().ToListAsync();
         }
         public async Task<List<CategoryReportDTO>> GetCategoriesDetails()
         {
