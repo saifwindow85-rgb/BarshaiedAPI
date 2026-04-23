@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
+using Domain.PagedResult;
 using Domain.ReadOnlyModels.Product_Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +18,17 @@ namespace BarshaiedAPI.Controllers
         {
             _service = service;
         }
-        [HttpGet("{pageNumber}")]
+        [HttpGet("{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ReadOnlyProductDTO>>>GetAllProducts(int pageNumber)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>>GetAllProducts(int pageNumber,int pageSize)
         {
-            if (pageNumber < 1)
+            if (pageNumber < 1 || pageSize <1)
             {
-                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
+                return BadRequest($"Invalid Inputs PageNumber And Size Must Be > 0");
             }
-            var products = await _service.GetAllProducts(pageNumber);
-            if(products == null || !products.Any())
+            var products = await _service.GetAllProducts(pageNumber, pageSize);
+            if(products == null || !products.Data.Any())
             {
                 return NotFound("No Products Found");
             }

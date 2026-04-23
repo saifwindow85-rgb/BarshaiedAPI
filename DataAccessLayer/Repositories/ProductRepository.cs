@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.PagedResult;
 using Domain.ReadOnlyModels.Product_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -70,9 +71,17 @@ namespace DataAccessLayer.Repositories
             return await _context.Products.Skip((pageNumber-1)*pageSize).Take(pageSize).Select(ToLightObject).ToListAsync();
         }
 
-        public async Task<List<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber,int pageSize)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber,int pageSize)
         {
-            return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().Select(ToLightObject).ToListAsync();
+            var data =  await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().Select(ToLightObject).ToListAsync();
+            var totalRecords = await _context.Products.CountAsync();
+            var totalPages = (int)(Math.Ceiling((double)totalRecords / pageSize));
+            return new PagedResult<ReadOnlyProductDTO>
+            {
+                Data = data,
+                TotalRecords = totalRecords,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<DetailedProductDTO>GetProdutcById(int Id)

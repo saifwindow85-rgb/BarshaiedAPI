@@ -14,6 +14,7 @@ using BusinessLayer.Mappers;
 using BusinessLayer.Helpper_Classes;
 using Domain.ReadOnlyModels.Product_Models;
 using BusinessLayer.Helpper_Classes.Product_Hellper_Methods;
+using Domain.PagedResult;
 
 namespace BusinessLayer.Services
 {
@@ -57,10 +58,9 @@ namespace BusinessLayer.Services
         //    UpdatedAt = p.UpdatedAt
         //};
 
-        public async Task<List<ReadOnlyProductDTO>> GetAllProducts(int pageNumber)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetAllProducts(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Products.GetReadOnlyProducts(pageNumber, _pageSize);
-            
+            return await _unitOfWork.Products.GetReadOnlyProducts(pageNumber, pageSize);
         }
 
         public async Task<DetailedProductDTO> GetProductById(int Id)

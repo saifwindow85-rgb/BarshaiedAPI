@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.PagedResult;
 using Domain.ReadOnlyModels.Product_Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Domain.Interfaces
     public interface IProductRepository
     {
         public Task<List<ReadOnlyProductDTO>> GetAllProducts(int pageNumber,int pageSize);
-        public Task< List<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber, int pageSize);
+        public Task<PagedResult<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber, int pageSize);
         public Task<DetailedProductDTO> GetProdutcById(int Id);
         public Task<List<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string Name, int pageNumber, int pageSize);
         public Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize);
