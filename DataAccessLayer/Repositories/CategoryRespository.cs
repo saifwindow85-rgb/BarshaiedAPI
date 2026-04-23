@@ -64,7 +64,7 @@ namespace DataAccessLayer.Repositories
 
         public Task<List<LightCategoryDTO>> FindByName(string Name)
         {
-            var categories = _context.Categories.Select(ToLightDTO).Where(c => EF.Functions.Like(c.CategoryName, $"%{Name}%")).ToListAsync();
+            var categories = _context.Categories.AsNoTracking().Select(ToLightDTO).Where(c => EF.Functions.Like(c.CategoryName, $"%{Name}%")).ToListAsync();
             return categories;
         }
 
@@ -96,6 +96,11 @@ namespace DataAccessLayer.Repositories
         public async Task<Category> GetCategoryById(int Id)
         {
             return await _context.Categories.SingleOrDefaultAsync(c => c.CategoryId == Id);
+        }
+
+        public async Task<bool> IsCategoryExist(int Id)
+        {
+            return await _context.Categories.AnyAsync(c => c.CategoryId == Id);
         }
     }
 }

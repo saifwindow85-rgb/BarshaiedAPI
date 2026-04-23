@@ -13,6 +13,7 @@ using BusinessLayer.Enums;
 using BusinessLayer.Mappers;
 using BusinessLayer.Helpper_Classes;
 using Domain.ReadOnlyModels.Product_Models;
+using BusinessLayer.Helpper_Classes.Product_Hellper_Methods;
 
 namespace BusinessLayer.Services
 {
@@ -84,6 +85,10 @@ namespace BusinessLayer.Services
                 return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
+            if(! await ProductHelpper.CheckRelatedData(newProduct.CreatedByUserId,newProduct.CategoryId,_unitOfWork))
+            {
+                return AddUpdateServiceResponse<DetailedProductDTO>.InvalidRelatedData();
+            }
             var productEntity = newProduct.ToEntity();
 
             await _unitOfWork.Products.Add(productEntity);
@@ -129,7 +134,10 @@ namespace BusinessLayer.Services
                 return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-
+            if(! await ProductHelpper.CheckRelatedData(updatedProduct.UpdatedByUserId,updatedProduct.CategoryId,_unitOfWork))
+            {
+                return AddUpdateServiceResponse<DetailedProductDTO>.InvalidRelatedData();
+            }
             var productEntity = await _unitOfWork.Products.GetProductEntityById(ProductId);
             if(productEntity == null)
             {

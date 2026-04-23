@@ -126,7 +126,10 @@ namespace DataAccessLayer.Repositories
             return await _context.Products.SingleOrDefaultAsync(p => p.ProductId == Id);
         }
 
-       
+        public async Task<bool> IsProductExist(int Id)
+        {
+            return await _context.Products.AnyAsync(p => p.ProductId == Id);
+        }
     }
 
 

@@ -21,5 +21,6 @@ namespace Domain.Interfaces
         public Task<Product> GetProductEntityById(int Id);
         public Task<bool> Delete(int Id);
         public Task Add(Product newProduct);
+        public Task<bool> IsProductExist(int Id);
     }
 }
