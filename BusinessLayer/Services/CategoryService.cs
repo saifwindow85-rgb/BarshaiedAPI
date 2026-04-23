@@ -51,8 +51,7 @@ namespace BusinessLayer.Services
             var categoryEntity = newCategory.ToEntity();
             if(!await _unitOfWork.Users.IsUserExsist(categoryEntity.CreatedByUserId))
             {
-                return AddUpdateServiceResponse<CategoryDTO>.
-                    Failure(new List<string> { $"User With Id = {categoryEntity.CreatedByUserId} Dose Not Exist !!!" }, EnErrorTypes.InvalidData);
+                return AddUpdateServiceResponse<CategoryDTO>.InvalidRelatedData();
             }
             await _unitOfWork.Categories.Add(categoryEntity);
             await _unitOfWork.CompleteAsync();
@@ -82,6 +81,10 @@ namespace BusinessLayer.Services
             if (categoryEntity == null)
             {
                 return AddUpdateServiceResponse<CategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
+            }
+            if(!await _unitOfWork.Users.IsUserExsist(updatedCategory.UpdatedByUserId))
+            {
+                return AddUpdateServiceResponse<CategoryDTO>.InvalidRelatedData();
             }
             categoryEntity.Name = updatedCategory.CategoryName;
             categoryEntity.UpdatedByUserId = updatedCategory.UpdatedByUserId;

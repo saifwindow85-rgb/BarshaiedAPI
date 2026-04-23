@@ -26,5 +26,11 @@ namespace BusinessLayer.Results
             ErrorType = errorType,
             IsSuccess = false
         };
+
+        public static AddUpdateServiceResponse<T> InvalidRelatedData() => new AddUpdateServiceResponse<T>
+        {
+            ErrorType = EnErrorTypes.InvalidData,
+            Errors = new List<string>() { "The operation failed due to invalid related data. One or more referenced records do not exist" }
+        };
     }
 }
