@@ -52,10 +52,6 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-        public Task Add(Category newCategory)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<bool> Delete(int Id)
         {
@@ -91,34 +87,35 @@ namespace DataAccessLayer.Repositories
 
         public async Task<List<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string nameOrBarcode,int pageNumber,int pageSize)
         {
-            return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
-                .Where(p => EF.Functions.Like(p.ProductName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode).ToListAsync();
+            return await _context.Products.Where(p => EF.Functions.Like(p.ProductName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode)
+                .Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
+                .ToListAsync();
         }
 
         public async Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize)
         {
-           return await _context.Products.Skip((pageNumber - 1) * pageSize).
-                Take(pageSize).Select(ToLightObject).Where(p=>p.ExpiryDate <= DateTime.UtcNow).ToListAsync();
+           return await _context.Products.Where(p => p.ExpiryDate <= DateTime.UtcNow).Skip((pageNumber - 1) * pageSize).
+                Take(pageSize).Select(ToLightObject).ToListAsync();
         }
 
         public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize)
         {
-            return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize)
-                .Select(ToLightObject).Where(p => p.Quantity <= 0).ToListAsync();
+            return await _context.Products.Where(p => p.Quantity <= 0).Skip((pageNumber - 1) * pageSize).Take(pageSize)
+                .Select(ToLightObject).ToListAsync();
         }
 
         public Task<List<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize)
         {
-            return _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
-                .Where(p => p.Quantity < p.MinQuantity).ToListAsync();
+            return _context.Products.Where(p => p.Quantity < p.MinQuantity).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
+               .ToListAsync();
         }
 
         public  async Task<List<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize)
         {
             var toDay = DateTime.Now.Date;
             var maxDate = toDay.AddDays(10);
-            return await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize)
-                .Select(ToLightObject).Where(p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).ToListAsync();
+            return await _context.Products.Where(p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).Skip((pageNumber - 1) * pageSize).Take(pageSize)
+                .Select(ToLightObject).ToListAsync();
         }
 
         public  async Task<Product> GetProductEntityById(int Id)
