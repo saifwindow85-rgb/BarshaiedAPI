@@ -10,7 +10,7 @@ namespace Domain.Entities
     {
         public int UserId { get; set; }
         public string UserName { get; set; } = null!;
-        public string Password { get; set; } = null!; 
+        public string PasswordHash { get; set; } = null!; 
         public bool IsActive { get; set; }
         public int ?CreatedByUserId { get; set; }
         public User ? Creator { get; set; }

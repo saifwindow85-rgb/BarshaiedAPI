@@ -95,7 +95,7 @@ namespace DataAccessLayer.Seeds
     {
         new ShoppingListItem
         {
-            Id = 1,
+            ShoppingListItemId = 1,
             ProductId = 1,
             Quantity = 2,
             Notes = "For breakfast",
@@ -104,7 +104,7 @@ namespace DataAccessLayer.Seeds
         },
         new ShoppingListItem
         {
-            Id = 2,
+            ShoppingListItemId = 2,
             ProductId = 2,
             Quantity = 1,
             Notes = "Fresh juice",
@@ -113,7 +113,7 @@ namespace DataAccessLayer.Seeds
         },
         new ShoppingListItem
         {
-            Id = 3,
+            ShoppingListItemId = 3,
             ProductId = 3,
             Quantity = 5,
             Notes = null,
@@ -122,7 +122,7 @@ namespace DataAccessLayer.Seeds
         },
         new ShoppingListItem
         {
-            Id = 4,
+            ShoppingListItemId = 4,
             ProductId = 1,
             Quantity = 3,
             Notes = "Extra stock",

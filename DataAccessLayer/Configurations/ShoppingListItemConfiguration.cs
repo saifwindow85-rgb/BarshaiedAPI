@@ -13,8 +13,8 @@ namespace DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<ShoppingListItem> builder)
         {
-            builder.HasKey(l => l.Id);
-            builder.Property(l => l.Id).ValueGeneratedOnAdd();
+            builder.HasKey(l => l.ShoppingListItemId);
+            builder.Property(l => l.ShoppingListItemId).ValueGeneratedOnAdd();
 
             builder.HasMany(l => l.Transactions).WithOne(l=>l.ShoppingListItem).HasForeignKey(s => s.ShoppingListItemId)
                 .IsRequired(false).OnDelete(DeleteBehavior.Cascade);
