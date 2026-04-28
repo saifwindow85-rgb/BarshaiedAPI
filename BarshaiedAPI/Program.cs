@@ -8,6 +8,7 @@ using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.UnitOfWork;
+using BusinessLayer.AddUpdateDTOs.UserDTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +21,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BarshaiedDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<UserService>();
+
 builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -31,6 +35,7 @@ builder.Services.AddScoped<IValidator<AddCategoryDTO>, AddCategoryValidator>();
 builder.Services.AddScoped<IValidator<AddProductDTO>, AddProductValidator>();
 builder.Services.AddScoped<IValidator<UpdateCategoryDTO>, UpdateCategoryValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductDTO>, UpdateProductValidator>();
+builder.Services.AddScoped<IValidator<AddUserDTO>, AddUserValidator>();
 
 builder.Services.AddCors(options =>
 {
