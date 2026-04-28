@@ -32,6 +32,20 @@ builder.Services.AddScoped<IValidator<AddProductDTO>, AddProductValidator>();
 builder.Services.AddScoped<IValidator<UpdateCategoryDTO>, UpdateCategoryValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductDTO>, UpdateProductValidator>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("BarshiedAPIPolicy", policy =>
+    {
+        policy
+            .WithOrigins(
+                " https://localhost:7013",
+                "http://localhost:5071"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 
@@ -44,6 +58,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("BarshiedAPIPolicy");
 
 app.UseAuthorization();
 

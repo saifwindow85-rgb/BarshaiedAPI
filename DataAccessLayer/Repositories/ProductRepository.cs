@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.AppDbContext;
+using DataAccessLayer.Extensions;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.PagedResult;
@@ -73,15 +74,7 @@ namespace DataAccessLayer.Repositories
 
         public async Task<PagedResult<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber,int pageSize)
         {
-            var data =  await _context.Products.Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().Select(ToLightObject).ToListAsync();
-            var totalRecords = await _context.Products.CountAsync();
-            var totalPages = (int)(Math.Ceiling((double)totalRecords / pageSize));
-            return new PagedResult<ReadOnlyProductDTO>
-            {
-                Data = data,
-                TotalRecords = totalRecords,
-                TotalPages = totalPages
-            };
+            return await _context.Products.AsNoTracking().Select(ToLightObject).ToPagedResultAsync(pageNumber, pageSize);
         }
 
         public async Task<DetailedProductDTO>GetProdutcById(int Id)
@@ -94,11 +87,11 @@ namespace DataAccessLayer.Repositories
             await _context.AddAsync(product);
         }
 
-        public async Task<List<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string nameOrBarcode,int pageNumber,int pageSize)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string nameOrBarcode,int pageNumber,int pageSize)
         {
-            return await _context.Products.Where(p => EF.Functions.Like(p.ProductName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode)
-                .Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
-                .ToListAsync();
+            return await _context.Products.AsNoTracking().Select(ToLightObject).
+                 Where(p => EF.Functions.Like(p.CategoryName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode)
+                 .ToPagedResultAsync(pageNumber, pageSize);
         }
 
         public async Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize)

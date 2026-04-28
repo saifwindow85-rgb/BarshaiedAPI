@@ -11,5 +11,6 @@ namespace Domain.PagedResult
         public List<T>? Data { get; set; }
         public int TotalRecords { get; set; }
         public int TotalPages { get; set; }
+        public int CurrentPage {  get; set; }
     }
 }

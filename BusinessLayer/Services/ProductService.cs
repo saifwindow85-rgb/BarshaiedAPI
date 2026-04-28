@@ -114,9 +114,9 @@ namespace BusinessLayer.Services
             return await _unitOfWork.Products.GetProductsUnderMinQuantity(pageNumber,_pageSize);
         }
 
-        public async Task<List<ReadOnlyProductDTO>>GetProductByNameOrBarcode(int pageNumber,string value)
+        public async Task<PagedResult<ReadOnlyProductDTO>>GetProductByNameOrBarcode(int pageNumber,int pageSize,string value)
         {
-            return await _unitOfWork.Products.GetProductByNameOrBarcode(value, pageNumber, _pageSize);
+            return await _unitOfWork.Products.GetProductByNameOrBarcode(value, pageNumber, pageSize);
         }
 
 

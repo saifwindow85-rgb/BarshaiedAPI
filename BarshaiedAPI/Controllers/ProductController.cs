@@ -141,10 +141,10 @@ namespace BarshaiedAPI.Controllers
             return Ok(products);
         }
 
-        [HttpGet("get-by-name-barcode{pageNumber}/{nameOrBarcode}")]
+        [HttpGet("get-by-name-barcode{pageNumber}/{pageSize}/{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetProductsByNameOrBarcode(int pageNumber,string nameOrBarcode)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetProductsByNameOrBarcode(int pageNumber,int pageSize,string nameOrBarcode)
         {
             if (pageNumber < 1)
             {
@@ -154,8 +154,8 @@ namespace BarshaiedAPI.Controllers
             {
                 return BadRequest("Name Or Barcode Can Not Be Null!");
             }
-            var products = await _service.GetProductByNameOrBarcode(pageNumber,nameOrBarcode);
-            if (products == null || !products.Any())
+            var products = await _service.GetProductByNameOrBarcode(pageNumber,pageSize,nameOrBarcode);
+            if (products == null || !products.Data.Any())
             {
                 return NotFound("No Products Under The Min Quantity Found !");
             }

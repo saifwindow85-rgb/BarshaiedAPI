@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Results;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace BusinessLayer.Helpper_Classes
             }
             return false;
         }
+
+
     }
 }
