@@ -32,32 +32,6 @@ namespace BusinessLayer.Services
         private int _pageSize = 10;
 
 
-        //private Expression<Func<Product, ProductDTO>> ProductToDTO = p => new ProductDTO
-        //{
-        //    Id = p.ProductId,
-        //    ProductName = p.ProductName,
-        //    CategoryName = p.Category.Name,
-        //    Barcode = p.Barcode,
-        //    Quantity = p.Quantity,
-        //    MinQuantity = p.MinQuantity,
-        //    ExpiryDate = p.ExpiryDate,
-        //};
-
-        //private Expression<Func<Product, ProductDetailsDTO>> ProductDetailsDTO = p => new ProductDetailsDTO
-        //{
-        //    ProductId = p.ProductId,
-        //    ProductName = p.ProductName,
-        //    Barcode = p.Barcode,
-        //    Quantity = p.Quantity,
-        //    MinQuantity = p.MinQuantity,
-        //    CreatedAt = p.CreatedAt,
-        //    CostPrice = p.CostPrice,
-        //    SellPrice = p.SellPrice,
-        //    ProfitMargin = p.ProfitMargin,
-        //    ExpiryDate = p.ExpiryDate,
-        //    UpdatedAt = p.UpdatedAt
-        //};
-
         public async Task<PagedResult<ReadOnlyProductDTO>> GetAllProducts(int pageNumber,int pageSize)
         {
             return await _unitOfWork.Products.GetReadOnlyProducts(pageNumber, pageSize);

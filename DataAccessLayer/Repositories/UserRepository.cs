@@ -37,7 +37,7 @@ namespace DataAccessLayer.Repositories
             return await _context.Users.AsNoTracking().Select(ToDTO).ToPagedResultAsync(pageNumber, pageSize);
         }
 
-        public async Task<bool> IsUserExsist(int Id)
+        public async Task<bool> IsUserExsist(int ?Id)
         {
             return await _context.Users.AnyAsync(u => u.UserId == Id);
         }
@@ -45,6 +45,11 @@ namespace DataAccessLayer.Repositories
         public async Task<UserDTO> GetUserById(int Id)
         {
             return await _context.Users.Select(ToDTO).SingleOrDefaultAsync(u => u.Id == Id);
+        }
+
+        public async Task Add(User user)
+        {
+            await _context.Users.AddAsync(user);
         }
     }
 }

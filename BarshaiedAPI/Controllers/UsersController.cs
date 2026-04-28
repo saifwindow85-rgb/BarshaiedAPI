@@ -1,4 +1,6 @@
-﻿using BusinessLayer.Services;
+﻿using BusinessLayer.AddUpdateDTOs.UserDTOs;
+using BusinessLayer.Results;
+using BusinessLayer.Services;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.UserDTOs;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +32,7 @@ namespace BarshaiedAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name ="GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDTO>>GetUserById(int Id)
@@ -41,6 +43,24 @@ namespace BarshaiedAPI.Controllers
                 return NotFound($"No User Found With Id = {Id}");
             }
             return Ok(user);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public async Task<ActionResult<AddUpdateServiceResponse<UserDTO>>>AddUser(AddUserDTO newUser)
+        {
+            var response = await _service.AddUser(newUser);
+            if(!response.IsSuccess)
+            {
+                return BadRequest(new
+                {
+                    Message = response.ErrorType.ToString(),
+                    Errors = response.Errors
+                });
+            }
+            return CreatedAtRoute("GetUserById", new { Id = response.Data!.Id }, response.Data);
         }
     }
 }
