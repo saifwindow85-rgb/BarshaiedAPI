@@ -1,4 +1,5 @@
 ﻿using BarshaiedAPI.Extensions;
+using BarshaiedAPI.First_Validations;
 using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
@@ -19,37 +20,27 @@ namespace BarshaiedAPI.Controllers
         {
             _service = service;
         }
-        [HttpGet("{pageNumber}/{pageSize}")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>>GetAllProducts(int pageNumber,int pageSize)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetAllProducts([FromQuery]PaginationParams @params)
         {
-            if (pageNumber < 1 || pageSize <1)
-            {
-                return BadRequest($"Invalid Inputs PageNumber And Size Must Be > 0");
-            }
-            var products = await _service.GetAllProducts(pageNumber, pageSize);
-            if(products == null || !products.Data.Any())
-            {
-                return NotFound("No Products Found");
-            }
-            return Ok(products);
+
+            var products = await _service.GetAllProducts(@params.PageNumber, @params.PageSize);
+            return products.ToPagedActioneResult();
         }
 
         [HttpGet("by-Id{Id}",Name = "GetProductById")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<DetailedProductDTO>>GetProductById(int Id)
+         public async Task<ActionResult<DetailedProductDTO>> GetProductById([FromQuery]IdInputValidator @param)
         {
-            if(Id < 1)
-            {
-                return BadRequest($"Not Accepted Id {Id}");
-            }
-            var productDetails = await _service.GetProductById(Id);
+         
+            var productDetails = await _service.GetProductById(param.Id);
             if(productDetails == null)
             {
-                return NotFound($"No Product Found With Id = {Id}");
+                return NotFound($"No Product Found With Id = {param.Id}");
             }
             return Ok(productDetails);
         }
@@ -58,18 +49,15 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<bool>>DeleteProduct(int Id)
+        public async Task<ActionResult<bool>>DeleteProduct([FromQuery] IdInputValidator @param)
         {
-            if(Id < 1)
-            {
-                return BadRequest($"Not Accepted Id {Id}");
-            }
-            var IsDeleted = await _service.Delete(Id);
+           
+            var IsDeleted = await _service.Delete(param.Id);
             if(!IsDeleted)
             {
-                return NotFound($"No Product Found With Id = {Id}");
+                return NotFound($"No Product Found With Id = {param.Id}");
             }
-            return Ok($"Product With Id = {Id} Deleted Succesfully");
+            return Ok($"Product With Id = {param.Id} Deleted Succesfully");
         }
 
         [HttpPost]
@@ -134,25 +122,18 @@ namespace BarshaiedAPI.Controllers
             return Ok(products);
         }
 
-        [HttpGet("get-by-name-barcode{pageNumber}/{pageSize}/{nameOrBarcode}")]
+        [HttpGet("get-by-name-barcode{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetProductsByNameOrBarcode(int pageNumber,int pageSize,string nameOrBarcode)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetProductsByNameOrBarcode([FromQuery]PaginationParams @params,string nameOrBarcode)
         {
-            if (pageNumber < 1)
-            {
-                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
-            }
+        
             if(string.IsNullOrWhiteSpace(nameOrBarcode))
             {
                 return BadRequest("Name Or Barcode Can Not Be Null!");
             }
-            var products = await _service.GetProductByNameOrBarcode(pageNumber,pageSize,nameOrBarcode);
-            if (products == null || !products.Data.Any())
-            {
-                return NotFound("No Products Under The Min Quantity Found !");
-            }
-            return Ok(products);
+            var products = await _service.GetProductByNameOrBarcode(@params.PageNumber,@params.PageSize,nameOrBarcode);
+           return  products.ToPagedActioneResult();
         }
 
         [HttpGet("get-nearing-expiry-products{pageNumber}")]
@@ -177,13 +158,10 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> UpdateProduct(int Id,UpdateProductDTO updatedProduct)
+         public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> UpdateProduct([FromQuery] IdInputValidator @param, UpdateProductDTO updatedProduct)
         {
-            if(Id < 1)
-            {
-                return BadRequest($"Not Accepted Id {Id}");
-            }
-            var updateResponse = await _service.UpdateProduct(Id, updatedProduct);
+          
+            var updateResponse = await _service.UpdateProduct(param.Id, updatedProduct);
             return updateResponse.ToActionResult();
         }
     }

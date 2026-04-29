@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Enums;
 using BusinessLayer.Results;
+using Domain.PagedResult;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BarshaiedAPI.Extensions
@@ -39,5 +40,14 @@ namespace BarshaiedAPI.Extensions
                 _ => new ObjectResult(new { Status = 500, Title = "Server Error" }) { StatusCode = 500 }
             };
         }
+
+
+        public static ActionResult<PagedResult<T>>ToPagedActioneResult<T>(this PagedResult<T>pagedResult)
+        {
+            return pagedResult.Data != null ? new ObjectResult(pagedResult) : new NoContentResult();
+        }
+      
+
+     
     }
 }
