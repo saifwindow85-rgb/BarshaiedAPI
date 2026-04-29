@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Results;
+﻿using BarshaiedAPI.Extensions;
+using BusinessLayer.Results;
 using BusinessLayer.Services;
 using DataAccessLayer.DTOs.CategoryDTOs;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
@@ -51,18 +52,10 @@ namespace BarshaiedAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<LightCategoryDTO>>AddCategory(AddCategoryDTO newCategory)
+        public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>>AddCategory(AddCategoryDTO newCategory)
         {
             var categoryResponse = await _service.AddCategory(newCategory);
-            if(!categoryResponse.IsSuccess)
-            {
-                return BadRequest(new
-                {
-                    Message = categoryResponse.ErrorType.ToString(),
-                    Errors = categoryResponse.Errors
-                });
-            }
-            return CreatedAtRoute("GetCategoryById", new { Id = categoryResponse.Data!.Id },categoryResponse.Data);
+            return categoryResponse.ToActionResult();
         }
 
 
@@ -88,41 +81,14 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<LightCategoryDTO>>UpdateCategory(int Id,UpdateCategoryDTO updateCategoryDTO)
+        public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>>UpdateCategory(int Id,UpdateCategoryDTO updateCategoryDTO)
         {
             if( Id < 1)
             {
                 return BadRequest($"Not Accepted Id {Id}");
             }
             AddUpdateServiceResponse<LightCategoryDTO> categoryResponse = await _service.UpdateCategory(Id, updateCategoryDTO);
-            if(categoryResponse.Data == null)
-            {
-                return NotFound(new
-                {
-                    Message = categoryResponse.ErrorType.ToString(),
-                    Errors = categoryResponse.Errors
-                });
-            }
-            if(!categoryResponse.IsSuccess)
-            {
-                if(categoryResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.NotFound)
-                {
-                    return NotFound(new
-                    {
-                        Message = categoryResponse.ErrorType.ToString(),
-                        Errors = categoryResponse.Errors
-                    });
-                }
-                else if(categoryResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.InvalidData)
-                {
-                    return BadRequest(new
-                    {
-                        Message = categoryResponse.ErrorType.ToString(),
-                        Errors = categoryResponse.Errors
-                    });
-                }
-            }
-                return Ok(categoryResponse.Data);
+            return categoryResponse.ToActionResult();
         }
 
         [HttpGet("by-name/{Name}", Name = "GetCategoryByName")]

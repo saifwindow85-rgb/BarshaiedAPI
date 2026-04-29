@@ -1,4 +1,5 @@
-﻿using BusinessLayer.AddUpdateDTOs.UserDTOs;
+﻿using BarshaiedAPI.Extensions;
+using BusinessLayer.AddUpdateDTOs.UserDTOs;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
 using Domain.PagedResult;
@@ -52,15 +53,7 @@ namespace BarshaiedAPI.Controllers
         public async Task<ActionResult<AddUpdateServiceResponse<UserDTO>>>AddUser(AddUserDTO newUser)
         {
             var response = await _service.AddUser(newUser);
-            if(!response.IsSuccess)
-            {
-                return BadRequest(new
-                {
-                    Message = response.ErrorType.ToString(),
-                    Errors = response.Errors
-                });
-            }
-            return CreatedAtRoute("GetUserById", new { Id = response.Data!.Id }, response.Data);
+            return response.ToActionResult();
         }
     }
 }

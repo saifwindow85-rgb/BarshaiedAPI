@@ -1,4 +1,5 @@
-﻿using BusinessLayer.DTOs.ProductDTOs;
+﻿using BarshaiedAPI.Extensions;
+using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
 using Domain.PagedResult;
@@ -74,19 +75,11 @@ namespace BarshaiedAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>>AddProduct(AddProductDTO newProduct)
+        public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> AddProduct(AddProductDTO newProduct)
         {
 
             var postResponse = await _service.AddProduct(newProduct);
-            if(!postResponse.IsSuccess)
-            {
-                return BadRequest(new
-                {
-                    Message = postResponse.ErrorType.ToString(),
-                    Errors = postResponse.Errors
-                });
-            }
-            return CreatedAtRoute("GetProductById", new { Id = postResponse.Data!.ProductId}, postResponse.Data);
+            return postResponse.ToActionResult();
         }
 
         [HttpGet("get-expired-products{pageNumber}")]
@@ -184,34 +177,14 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<DetailedProductDTO>>UpdateProduct(int Id,UpdateProductDTO updatedProduct)
+         public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> UpdateProduct(int Id,UpdateProductDTO updatedProduct)
         {
             if(Id < 1)
             {
                 return BadRequest($"Not Accepted Id {Id}");
             }
-            var productResponse = await _service.UpdateProduct(Id, updatedProduct);
-            if(!productResponse.IsSuccess)
-            {
-                if(productResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.NotFound)
-                {
-                    return NotFound(new
-                    {
-                        Message = productResponse.ErrorType.ToString(),
-                        Error = $"No Product Found With Id = {Id}"
-                    });
-                }
-                else if(productResponse.ErrorType == BusinessLayer.Enums.EnErrorTypes.InvalidData)
-                {
-                    return BadRequest(new
-                    {
-                        Message = productResponse.ErrorType.ToString(),
-                        Errors = productResponse.Errors
-                    });
-                }
-            }
-             var productDTO = productResponse.Data;
-            return Ok(productDTO);
+            var updateResponse = await _service.UpdateProduct(Id, updatedProduct);
+            return updateResponse.ToActionResult();
         }
     }
 }

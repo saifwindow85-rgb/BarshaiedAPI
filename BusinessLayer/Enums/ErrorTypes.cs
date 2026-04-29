@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Enums
 {
-    public enum EnErrorTypes { NotFound = 1, InvalidData = 2,}
+    public enum EnErrorTypes { NotFound = 1, InvalidData = 2, InvalidRefrenceData}
     
 }
