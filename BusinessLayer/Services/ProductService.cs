@@ -72,9 +72,9 @@ namespace BusinessLayer.Services
         }
 
 
-        public async Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Products.GetExpiredProducts(pageNumber, _pageSize);
+            return await _unitOfWork.Products.GetExpiredProducts(pageNumber, pageSize);
         }
 
         public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber)

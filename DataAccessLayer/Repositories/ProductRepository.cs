@@ -94,10 +94,10 @@ namespace DataAccessLayer.Repositories
                  .ToPagedResultAsync(pageNumber, pageSize);
         }
 
-        public async Task<List<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize)
         {
-           return await _context.Products.Where(p => p.ExpiryDate <= DateTime.UtcNow).Skip((pageNumber - 1) * pageSize).
-                Take(pageSize).Select(ToLightObject).ToListAsync();
+            return await _context.Products.AsNoTracking().Select(ToLightObject)
+                 .Where(p => p.ExpiryDate <= DateTime.Now.Date).ToPagedResultAsync(pageNumber, pageSize);
         }
 
         public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize)

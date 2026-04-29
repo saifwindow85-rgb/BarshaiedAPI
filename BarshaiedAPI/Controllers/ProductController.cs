@@ -73,18 +73,11 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("get-expired-products{pageNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetExpiredProducts(int pageNumber)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetExpiredProducts([FromQuery]PaginationParams @param)
         {
-            if (pageNumber < 1)
-            {
-                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
-            }
-            var ExpierdProducts = await _service.GetExpiredProducts(pageNumber);
-            if (ExpierdProducts == null || !ExpierdProducts.Any())
-            {
-                return NotFound("No Products Found");
-            }
-            return Ok(ExpierdProducts);
+          
+            var ExpierdProducts = await _service.GetExpiredProducts(param.PageNumber,param.PageSize);
+            return ExpierdProducts.ToPagedActioneResult();
         }
 
         [HttpGet("get-zero-Quantity-products{pageNumber}")]

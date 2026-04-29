@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Enums;
 using BusinessLayer.Results;
 using Domain.PagedResult;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BarshaiedAPI.Extensions
@@ -27,7 +28,7 @@ namespace BarshaiedAPI.Extensions
                 {
                     Status = 400,
                     Title = "Validation Error",
-                    Errors = response.Errors // قائمة الأخطاء من الـ Validator
+                    Errors = response.Errors 
                 }),
 
                 EnErrorTypes.InvalidRefrenceData => new BadRequestObjectResult(new
