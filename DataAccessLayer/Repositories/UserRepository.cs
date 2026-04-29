@@ -51,5 +51,10 @@ namespace DataAccessLayer.Repositories
         {
             await _context.Users.AddAsync(user);
         }
+
+        public async Task<User> GetUserByUserName(string userName)
+        {
+            return await _context.Users.AsNoTracking().SingleOrDefaultAsync(p => p.UserName == userName);
+        }
     }
 }

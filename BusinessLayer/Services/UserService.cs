@@ -62,6 +62,16 @@ namespace BusinessLayer.Services
             return AddUpdateServiceResponse<UserDTO>.Success(userDTO);
         }
 
+
+        public async Task<User>GetUserByUserName(string userName)
+        {
+            return await _unitOfWork.Users.GetUserByUserName(userName);
+        }
+
+        public bool VerifyPassword(string password,string passwordHash)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+        }
     }
 }
 

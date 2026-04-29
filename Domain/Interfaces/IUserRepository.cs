@@ -14,6 +14,7 @@ namespace Domain.Interfaces
         public Task<bool> IsUserExsist(int ?Id);
         public Task<PagedResult<UserDTO>> GetAllUsers(int pageNumber, int pageSize);
         public Task<UserDTO>GetUserById(int Id);
+        public Task<User> GetUserByUserName(string userName);
         public Task Add(User user);
     }
 }
