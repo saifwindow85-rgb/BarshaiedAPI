@@ -77,15 +77,15 @@ namespace BusinessLayer.Services
             return await _unitOfWork.Products.GetExpiredProducts(pageNumber, pageSize);
         }
 
-        public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Products.GetZeroQuantityProducts(pageNumber, _pageSize);
+            return await _unitOfWork.Products.GetZeroQuantityProducts(pageNumber, pageSize);
         }
 
 
-        public async Task<List<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Products.GetProductsUnderMinQuantity(pageNumber,_pageSize);
+            return await _unitOfWork.Products.GetProductsUnderMinQuantity(pageNumber,pageSize);
         }
 
         public async Task<PagedResult<ReadOnlyProductDTO>>GetProductByNameOrBarcode(int pageNumber,int pageSize,string value)
@@ -94,9 +94,9 @@ namespace BusinessLayer.Services
         }
 
 
-        public async Task<List<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber)
+        public async Task<PagedResult<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Products.ProductsNearingExpiry(pageNumber, _pageSize);
+            return await _unitOfWork.Products.ProductsNearingExpiry(pageNumber, pageSize);
         }
 
 

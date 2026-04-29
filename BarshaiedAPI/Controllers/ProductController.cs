@@ -82,39 +82,25 @@ namespace BarshaiedAPI.Controllers
             return ExpierdProducts.ToPagedActioneResult();
         }
 
-        [HttpGet("get-zero-Quantity-products{pageNumber}")]
+        [HttpGet("get-zero-Quantity-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetZeroQuantityProducts(int pageNumber)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetZeroQuantityProducts([FromQuery] PaginationParams @param)
         {
-            if(pageNumber < 1)
-            {
-                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
-            }
-            var zeroQuantityProducts = await _service.GetZeroQuantityProducts(pageNumber);
-            if (zeroQuantityProducts == null || !zeroQuantityProducts.Any())
-            {
-                return NotFound("No Products With Zero Quantity Found");
-            }
-            return Ok(zeroQuantityProducts);
+            var zeroQuantityProducts = await _service.GetZeroQuantityProducts(param.PageNumber,param.PageSize);
+            return zeroQuantityProducts.ToPagedActioneResult();
         }
 
 
-        [HttpGet("get-under-min-quantity{pageNumber}")]
+        [HttpGet("get-under-min-quantity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ReadOnlyProductDTO>>>GetProductsUnderMinQuantity(int pageNumber)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetProductsUnderMinQuantity([FromQuery]PaginationParams @param)
         {
-            if (pageNumber < 1)
-            {
-                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
-            }
-            var products = await _service.GetProductsUnderMinQuantity(pageNumber);
-            if(products == null || ! products.Any())
-            {
-                return NotFound("No Products Under The Min Quantity Found !");
-            }
-            return Ok(products);
+         
+            var products = await _service.GetProductsUnderMinQuantity(param.PageNumber,param.PageSize);
+
+            return products.ToPagedActioneResult();
         }
 
         [HttpGet("get-by-name-barcode{nameOrBarcode}")]
@@ -131,21 +117,14 @@ namespace BarshaiedAPI.Controllers
            return  products.ToPagedActioneResult();
         }
 
-        [HttpGet("get-nearing-expiry-products{pageNumber}")]
+        [HttpGet("get-nearing-expiry-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ReadOnlyProductDTO>>> GetNearingExpiryProduct(int pageNumber)
+        public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetNearingExpiryProduct([FromQuery] PaginationParams @param)
         {
-            if (pageNumber < 1)
-            {
-                return BadRequest($"Not Accepted PageNumber !{pageNumber}");
-            }
-            var products = await _service.ProductsNearingExpiry(pageNumber);
-            if (products == null || !products.Any())
-            {
-                return NotFound("No Products Under The Min Quantity Found !");
-            }
-            return Ok(products);
+
+            var products = await _service.ProductsNearingExpiry(param.PageNumber, param.PageSize);
+            return products.ToPagedActioneResult();
         }
 
 

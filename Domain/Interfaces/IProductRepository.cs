@@ -16,9 +16,9 @@ namespace Domain.Interfaces
         public Task<DetailedProductDTO> GetProdutcById(int Id);
         public Task<PagedResult<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string Name, int pageNumber, int pageSize);
         public Task<PagedResult<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize);
-        public Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize);
-        public Task<List<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize);
-        public Task<List<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize);
+        public Task<PagedResult<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize);
+        public Task<PagedResult<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize);
+        public Task<PagedResult<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize);
         public Task<Product> GetProductEntityById(int Id);
         public Task<bool> Delete(int Id);
         public Task Add(Product newProduct);

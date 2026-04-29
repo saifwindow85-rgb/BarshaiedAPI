@@ -100,24 +100,24 @@ namespace DataAccessLayer.Repositories
                  .Where(p => p.ExpiryDate <= DateTime.Now.Date).ToPagedResultAsync(pageNumber, pageSize);
         }
 
-        public async Task<List<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize)
         {
-            return await _context.Products.Where(p => p.Quantity <= 0).Skip((pageNumber - 1) * pageSize).Take(pageSize)
-                .Select(ToLightObject).ToListAsync();
+            return await _context.Products.AsNoTracking().Select(ToLightObject)
+                .Where(p => p.Quantity >= 0).ToPagedResultAsync(pageNumber,pageSize);
         }
 
-        public Task<List<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize)
+        public async Task<PagedResult<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize)
         {
-            return _context.Products.Where(p => p.Quantity < p.MinQuantity).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(ToLightObject)
-               .ToListAsync();
+            return await _context.Products.AsNoTracking().Select(ToLightObject)
+                .Where(p => p.Quantity < p.MinQuantity).ToPagedResultAsync(pageNumber, pageSize);
         }
 
-        public  async Task<List<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize)
+        public  async Task<PagedResult<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize)
         {
             var toDay = DateTime.Now.Date;
             var maxDate = toDay.AddDays(10);
-            return await _context.Products.Where(p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).Skip((pageNumber - 1) * pageSize).Take(pageSize)
-                .Select(ToLightObject).ToListAsync();
+            return await _context.Products.Select(ToLightObject)
+                .Where(p => p.ExpiryDate >= toDay && p.ExpiryDate <= maxDate).ToPagedResultAsync(pageNumber, pageSize);
         }
 
         public  async Task<Product> GetProductEntityById(int Id)
