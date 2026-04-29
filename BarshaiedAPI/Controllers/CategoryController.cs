@@ -3,11 +3,13 @@ using BusinessLayer.Results;
 using BusinessLayer.Services;
 using DataAccessLayer.DTOs.CategoryDTOs;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BarshaiedAPI.Controllers
 {
+    [Authorize]
     [Route("api/CategoryController")]
     [ApiController]
     public class CategoryController : ControllerBase

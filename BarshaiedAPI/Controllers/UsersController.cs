@@ -4,11 +4,13 @@ using BusinessLayer.Results;
 using BusinessLayer.Services;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.UserDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BarshaiedAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
