@@ -35,7 +35,7 @@ namespace BarshaiedAPI.Controllers.Auth
 
                 new Claim(ClaimTypes.Name,user.UserName), // Is This Right No Email In User Entity
 
-                new Claim("UserName",user.Role.ToString())
+                new Claim(ClaimTypes.Role,user.Role.ToString())
             };
 
             var key = new SymmetricSecurityKey(
@@ -48,7 +48,7 @@ namespace BarshaiedAPI.Controllers.Auth
              issuer: "BarshiedAPI",
              audience: "BarshiedAPIUsers",
              claims: claims,
-             expires: DateTime.Now.AddMinutes(30),
+             expires: DateTime.UtcNow.AddMinutes(30),
              signingCredentials: creds
          );
             return Ok(new
