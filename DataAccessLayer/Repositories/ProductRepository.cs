@@ -90,7 +90,7 @@ namespace DataAccessLayer.Repositories
         public async Task<PagedResult<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string nameOrBarcode,int pageNumber,int pageSize)
         {
             return await _context.Products.AsNoTracking().Select(ToLightObject).
-                 Where(p => EF.Functions.Like(p.CategoryName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode)
+                 Where(p => EF.Functions.Like(p.ProductName, $"%{nameOrBarcode}%") || p.Barcode == nameOrBarcode)
                  .ToPagedResultAsync(pageNumber, pageSize);
         }
 
@@ -103,7 +103,7 @@ namespace DataAccessLayer.Repositories
         public async Task<PagedResult<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize)
         {
             return await _context.Products.AsNoTracking().Select(ToLightObject)
-                .Where(p => p.Quantity >= 0).ToPagedResultAsync(pageNumber,pageSize);
+                .Where(p => p.Quantity <= 0).ToPagedResultAsync(pageNumber,pageSize);
         }
 
         public async Task<PagedResult<ReadOnlyProductDTO>> GetProductsUnderMinQuantity(int pageNumber, int pageSize)
