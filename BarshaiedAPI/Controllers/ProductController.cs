@@ -22,9 +22,12 @@ namespace BarshaiedAPI.Controllers
         {
             _service = service;
         }
+
+        [Authorize(Roles ="Admin,User,Viewer")]
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetAllProducts([FromQuery]PaginationParams @params)
         {
 
@@ -32,11 +35,13 @@ namespace BarshaiedAPI.Controllers
             return products.ToPagedActioneResult();
         }
 
-        [HttpGet("by-Id{Id}",Name = "GetProductById")]
+        [Authorize(Roles = "Admin,User,Viewer")]
+        [HttpGet("by-Id",Name = "GetProductById")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-         public async Task<ActionResult<DetailedProductDTO>> GetProductById([FromQuery]IdInputValidator @param)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<DetailedProductDTO>> GetProductById([FromQuery]IdInputValidator @param)
         {
          
             var productDetails = await _service.GetProductById(param.Id);
@@ -47,10 +52,12 @@ namespace BarshaiedAPI.Controllers
             return Ok(productDetails);
         }
 
-        [HttpDelete("{Id}")]
+        [Authorize(Roles ="Admin,User")]
+        [HttpDelete("")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<bool>>DeleteProduct([FromQuery] IdInputValidator @param)
         {
            
@@ -62,9 +69,11 @@ namespace BarshaiedAPI.Controllers
             return Ok($"Product With Id = {param.Id} Deleted Succesfully");
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> AddProduct(AddProductDTO newProduct)
         {
 
@@ -72,9 +81,11 @@ namespace BarshaiedAPI.Controllers
             return postResponse.ToActionResult();
         }
 
-        [HttpGet("get-expired-products{pageNumber}")]
+        [Authorize(Roles = "Admin,User,Viewer")]
+        [HttpGet("get-expired-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetExpiredProducts([FromQuery]PaginationParams @param)
         {
           
@@ -82,9 +93,11 @@ namespace BarshaiedAPI.Controllers
             return ExpierdProducts.ToPagedActioneResult();
         }
 
+        [Authorize(Roles = "Admin,User,Viewer")]
         [HttpGet("get-zero-Quantity-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetZeroQuantityProducts([FromQuery] PaginationParams @param)
         {
             var zeroQuantityProducts = await _service.GetZeroQuantityProducts(param.PageNumber,param.PageSize);
@@ -92,9 +105,11 @@ namespace BarshaiedAPI.Controllers
         }
 
 
+        [Authorize(Roles = "Admin,User,Viewer")]
         [HttpGet("get-under-min-quantity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetProductsUnderMinQuantity([FromQuery]PaginationParams @param)
         {
          
@@ -103,9 +118,11 @@ namespace BarshaiedAPI.Controllers
             return products.ToPagedActioneResult();
         }
 
+        [Authorize(Roles = "Admin,User,Viewer")]
         [HttpGet("get-by-name-barcode{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetProductsByNameOrBarcode([FromQuery]PaginationParams @params,string nameOrBarcode)
         {
         
@@ -117,9 +134,11 @@ namespace BarshaiedAPI.Controllers
            return  products.ToPagedActioneResult();
         }
 
+        [Authorize(Roles = "Admin,User,Viewer")]
         [HttpGet("get-nearing-expiry-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<ReadOnlyProductDTO>>> GetNearingExpiryProduct([FromQuery] PaginationParams @param)
         {
 
@@ -127,11 +146,12 @@ namespace BarshaiedAPI.Controllers
             return products.ToPagedActioneResult();
         }
 
-
-        [HttpPut("{Id}",Name ="UpdateProduct")]
+        [Authorize(Roles = "Admin,User")]
+        [HttpPut("",Name ="UpdateProduct")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
          public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> UpdateProduct([FromQuery] IdInputValidator @param, UpdateProductDTO updatedProduct)
         {
           

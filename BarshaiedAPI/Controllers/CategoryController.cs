@@ -33,7 +33,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{Id}",Name ="GetCategoryById")]
+        [HttpGet("",Name ="GetCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,7 +59,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{Id}",Name = "DeleteCategoryById")]
+        [HttpDelete("",Name = "DeleteCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -75,7 +75,7 @@ namespace BarshaiedAPI.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("{Id}",Name ="UpdateCategory")]
+        [HttpPut("",Name ="UpdateCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
