@@ -8,6 +8,7 @@ using Domain.ReadOnlyModels.UserDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BarshaiedAPI.Controllers
 {
@@ -41,10 +42,30 @@ namespace BarshaiedAPI.Controllers
         public async Task<ActionResult<UserDTO>> GetUserById([FromQuery]IdInputValidator @param)
         {
             var user = await _service.GetUserById(param.Id);
+
+
             if(user == null)
             {
                 return NotFound($"No User Found With Id = {param.Id}");
             }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+            int authenticatedUserId = -1;
+            if(int.TryParse(userId,out int validId))
+            {
+                authenticatedUserId = validId;
+            }
+            else
+            {
+                return NotFound($"No User Found With Id = {param.Id}");
+            }
+
+            bool IsAdmin = userRole == "Admin";
+            if(!IsAdmin && authenticatedUserId != param.Id)
+                return NotFound($"No User Found With Id = {param.Id}");
+
             return Ok(user);
         }
 
