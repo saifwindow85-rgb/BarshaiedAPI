@@ -53,7 +53,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles ="Admin,User")]
-        [HttpDelete("")]
+        [HttpDelete("Delete")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

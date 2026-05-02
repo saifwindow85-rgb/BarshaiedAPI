@@ -23,7 +23,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("All")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PagedResult<LightCategoryDTO>>> GetCategories([FromQuery]PaginationParams @param)
@@ -33,7 +33,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("",Name ="GetCategoryById")]
+        [HttpGet("By-Id",Name ="GetCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

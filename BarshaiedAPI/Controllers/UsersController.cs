@@ -1,4 +1,5 @@
 ﻿using BarshaiedAPI.Extensions;
+using BarshaiedAPI.First_Validations;
 using BusinessLayer.AddUpdateDTOs.UserDTOs;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
@@ -21,37 +22,38 @@ namespace BarshaiedAPI.Controllers
             _service = service;
         }
 
-
-        [HttpGet("{pageNumber}/{pageSize}")]
+        [Authorize(Roles ="Admin,User")]
+        [HttpGet("all",Name ="GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PagedResult<UserDTO>>>GetAllUsers(int pageNumber,int pageSize)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<PagedResult<UserDTO>>> GetAllUsers([FromQuery]PaginationParams @param)
         {
-            var users = await _service.GetAllUsers(pageNumber, pageSize);
-            if(users.Data == null || !users.Data.Any())
-            {
-                return NotFound("No Result Found");
-            }
-            return Ok(users);
+            var users = await _service.GetAllUsers(param.PageNumber, param.PageSize);
+            return users.ToPagedActioneResult();
         }
 
-        [HttpGet("{Id}",Name ="GetUserById")]
+        [Authorize(Roles = "Admin,User")]
+        [HttpGet("By-Id",Name ="GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserDTO>>GetUserById(int Id)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<UserDTO>> GetUserById([FromQuery]IdInputValidator @param)
         {
-            var user = await _service.GetUserById(Id);
+            var user = await _service.GetUserById(param.Id);
             if(user == null)
             {
-                return NotFound($"No User Found With Id = {Id}");
+                return NotFound($"No User Found With Id = {param.Id}");
             }
             return Ok(user);
         }
 
+
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<UserDTO>>>AddUser(AddUserDTO newUser)
         {
             var response = await _service.AddUser(newUser);
