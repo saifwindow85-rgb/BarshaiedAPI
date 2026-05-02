@@ -37,16 +37,12 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CategoryDetailsDTO>> GetCategoryById(int Id)
+        public async Task<ActionResult<CategoryDetailsDTO>> GetCategoryById([FromQuery] IdInputValidator @param)
         {
-          if(Id < 1)
-            {
-                return BadRequest($"Not Accepted Id {Id}");
-            }
-            var categorie = await _service.GetCategoryById(Id);
+            var categorie = await _service.GetCategoryById(param.Id);
             if(categorie == null)
             {
-                return NotFound($"No Student Found With Id = {Id}");
+                return NotFound($"No Student Found With Id = {param.Id}");
             }
             return Ok(categorie);
         }
@@ -67,16 +63,12 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>>DeleteCategory(int Id)
+        public async Task<ActionResult<bool>>DeleteCategory([FromQuery] IdInputValidator @param)
         {
-            if(Id < 1)
-            {
-                return BadRequest($"Not Accepted Id {Id}");
-            }
-            var IsDeleted = await _service.Delete(Id);
+            var IsDeleted = await _service.Delete(param.Id);
             if(!IsDeleted)
             {
-                return NotFound($"No Category Found With Id = {Id}");
+                return NotFound($"No Category Found With Id = {param.Id}");
             }
             return Ok($"Category Deleted Succesfuly");
         }
@@ -87,13 +79,10 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>>UpdateCategory(int Id,UpdateCategoryDTO updateCategoryDTO)
+        public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>> UpdateCategory([FromQuery]IdInputValidator @param,UpdateCategoryDTO updateCategoryDTO)
         {
-            if( Id < 1)
-            {
-                return BadRequest($"Not Accepted Id {Id}");
-            }
-            AddUpdateServiceResponse<LightCategoryDTO> categoryResponse = await _service.UpdateCategory(Id, updateCategoryDTO);
+            
+            AddUpdateServiceResponse<LightCategoryDTO> categoryResponse = await _service.UpdateCategory(param.Id, updateCategoryDTO);
             return categoryResponse.ToActionResult();
         }
 
@@ -112,12 +101,10 @@ namespace BarshaiedAPI.Controllers
         [HttpGet("by-category", Name = "GetCategoriesDetails")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-       public async Task<ActionResult<List<CategoryDetailsDTO>>>GetCategoriesDetails()
+       public async Task<ActionResult<PagedResult<CategoryReportDTO>>> GetCategoriesDetails([FromQuery]PaginationParams @param)
         {
-            var categoriesDetails = await _service.GetCategoriesDetails();
-            if (categoriesDetails == null || !categoriesDetails.Any())
-                return NotFound("No Result Found !");
-            return Ok(categoriesDetails);
+            var categoriesDetails = await _service.GetCategoriesDetails(param.PageNumber,param.PageSize);
+            return categoriesDetails.ToPagedActioneResult();
         }
     }
 }

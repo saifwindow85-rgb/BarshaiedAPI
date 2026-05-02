@@ -93,9 +93,9 @@ namespace BusinessLayer.Services
             return await _unitOfWork.Categories.FindByName(Name,pageNumber,pageSize);
         }
 
-        public async Task<List<CategoryReportDTO>>GetCategoriesDetails()
+        public async Task<PagedResult<CategoryReportDTO>>GetCategoriesDetails(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Categories.GetCategoriesDetails();
+            return await _unitOfWork.Categories.GetCategoriesDetails(pageNumber,pageSize);
         }
     }
 }

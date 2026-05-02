@@ -17,7 +17,7 @@ namespace Domain.Interfaces
         public Task<Category> GetCategoryById(int Id);
         public Task<PagedResult<LightCategoryDTO>> FindByName(string Name,int pageNumber,int pageSize);
         public Task Add(Category newCategory);
-        public Task<List<CategoryReportDTO>> GetCategoriesDetails();
+        public Task<PagedResult<CategoryReportDTO>> GetCategoriesDetails(int pageNumber,int pageSize);
         public Task<bool> IsCategoryExist(int Id);
     }
 }

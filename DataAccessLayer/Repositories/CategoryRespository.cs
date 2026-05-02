@@ -79,7 +79,7 @@ namespace DataAccessLayer.Repositories
             return await _context.Categories.AsNoTracking().Select
              (ToLightDTO).ToPagedResultAsync(pageNumber, pageSize);
         }
-        public async Task<List<CategoryReportDTO>> GetCategoriesDetails()
+        public async Task<PagedResult<CategoryReportDTO>> GetCategoriesDetails(int pageNumber,int pageSize)
         {
             return await _context.Categories.AsNoTracking().Select(c => new CategoryReportDTO
             {
@@ -91,7 +91,7 @@ namespace DataAccessLayer.Repositories
                 AvrageCostPrice = c.Products.Any() ? c.Products.Average(p => p.CostPrice) : 0,
                 AvrageSellPrice = c.Products.Any() ? c.Products.Average(p => p.SellPrice) : 0,
                 AvrageProfitMargin = c.Products.Any() ? c.Products.Average(p => p.ProfitMargin) : 0
-            }).OrderBy(c => c.Id).ToListAsync();
+            }).OrderBy(c => c.Id).ToPagedResultAsync(pageNumber, pageSize);
         }
 
         public async Task<Category> GetCategoryById(int Id)
