@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.PagedResult;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,11 @@ namespace Domain.Interfaces
 {
     public interface ICategoryRepository
     {
-        public Task<List<Category>> GetCategories();
-        public Task<List<LightCategoryDTO>> GetReadOnlyCategories();
+        public Task<PagedResult<LightCategoryDTO>> GetReadOnlyCategories(int pageNumber,int pageSize);
         public Task<bool> Delete(int Id);
         public Task<CategoryDetailsDTO> FindById(int Id);
         public Task<Category> GetCategoryById(int Id);
-        public Task<List<LightCategoryDTO>> FindByName(string Name);
+        public Task<PagedResult<LightCategoryDTO>> FindByName(string Name,int pageNumber,int pageSize);
         public Task Add(Category newCategory);
         public Task<List<CategoryReportDTO>> GetCategoriesDetails();
         public Task<bool> IsCategoryExist(int Id);

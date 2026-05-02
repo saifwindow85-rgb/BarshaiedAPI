@@ -1,7 +1,9 @@
 ﻿using BarshaiedAPI.Extensions;
+using BarshaiedAPI.First_Validations;
 using BusinessLayer.Results;
 using BusinessLayer.Services;
 using DataAccessLayer.DTOs.CategoryDTOs;
+using Domain.PagedResult;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,18 +22,17 @@ namespace BarshaiedAPI.Controllers
             _service = service;
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<LightCategoryDTO>>>GetCategories()
+        public async Task<ActionResult<PagedResult<LightCategoryDTO>>> GetCategories([FromQuery]PaginationParams @param)
         {
-            var categories = await _service.GetCategories();
-            if (categories == null || !categories.Any())
-                return NotFound("No Categories Found");
-            return Ok(categories);
+            var categories = await _service.GetCategories(param.PageNumber,param.PageSize);
+            return categories.ToPagedActioneResult();
         }
 
+        [AllowAnonymous]
         [HttpGet("{Id}",Name ="GetCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,17 +51,18 @@ namespace BarshaiedAPI.Controllers
             return Ok(categorie);
         }
 
-
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>>AddCategory(AddCategoryDTO newCategory)
         {
             var categoryResponse = await _service.AddCategory(newCategory);
             return categoryResponse.ToActionResult();
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{Id}",Name = "DeleteCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -79,6 +81,8 @@ namespace BarshaiedAPI.Controllers
             return Ok($"Category Deleted Succesfuly");
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("{Id}",Name ="UpdateCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -93,24 +97,18 @@ namespace BarshaiedAPI.Controllers
             return categoryResponse.ToActionResult();
         }
 
+        [AllowAnonymous]
         [HttpGet("by-name/{Name}", Name = "GetCategoryByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<LightCategoryDTO>>> GetCategoryByName(string Name)
+        public async Task<ActionResult<PagedResult<LightCategoryDTO>>> GetCategoryByName(string Name, [FromQuery]PaginationParams @param)
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                return BadRequest("Name Can Not Be Null Or WitheSpace");
-            }
-            var categorie = await _service.GetCategoryByName(Name);
-            if (categorie == null || !categorie.Any())
-            {
-                return NotFound($"No Category Found With Name = {Name}");
-            }
-            return Ok(categorie);
+            var categories = await _service.GetCategoryByName(Name, param.PageNumber, param.PageSize);
+            return categories.ToPagedActioneResult();
         }
 
+        [Authorize(Roles ="Admin,User")]
         [HttpGet("by-category", Name = "GetCategoriesDetails")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

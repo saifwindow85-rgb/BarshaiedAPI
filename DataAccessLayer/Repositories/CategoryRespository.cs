@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
+using Domain.PagedResult;
+using DataAccessLayer.Extensions;
 
 namespace DataAccessLayer.Repositories
 {
@@ -62,21 +64,20 @@ namespace DataAccessLayer.Repositories
             return await _context.Categories.Select(ToDetailsDTO).SingleOrDefaultAsync(c => c.Id == Id);
         }
 
-        public Task<List<LightCategoryDTO>> FindByName(string Name)
+        public async Task<PagedResult<LightCategoryDTO>> FindByName(string Name,int pageNumber,int pageSize)
         {
-            var categories = _context.Categories.AsNoTracking().Select(ToLightDTO).Where(c => EF.Functions.Like(c.CategoryName, $"%{Name}%")).ToListAsync();
+            var categories = await _context.Categories.AsNoTracking().Select(ToLightDTO)
+                .Where(p=>EF.Functions.Like(p.CategoryName,$"%{Name}%")).ToPagedResultAsync(pageNumber, pageSize);
             return categories;
         }
 
-        public async Task<List<Category>> GetCategories()
-        {
-            return await _context.Categories.ToListAsync();
-        }
+     
 
 
-        public async Task< List<LightCategoryDTO>> GetReadOnlyCategories()
+        public async Task<PagedResult<LightCategoryDTO>> GetReadOnlyCategories(int pageNumber,int pageSize)
         {
-            return await _context.Categories.Select(ToLightDTO).AsNoTracking().ToListAsync();
+            return await _context.Categories.AsNoTracking().Select
+             (ToLightDTO).ToPagedResultAsync(pageNumber, pageSize);
         }
         public async Task<List<CategoryReportDTO>> GetCategoriesDetails()
         {

@@ -7,16 +7,18 @@ using DataAccessLayer.DTOs.CategoryDTOs;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.UnitOfWork;
 using Domain.Interfaces;
-using Microsoft.OpenApi.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -52,7 +54,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes("THIS_IS_A_VERY_SECRET_KEY_123456"))
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnForbidden = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.Response.ContentType = "application/json";
+
+                var result = JsonSerializer.Serialize(new
+                {
+                    status = 403,
+                    message = "Access denied: You do not have the required role."
+                });
+
+                return context.Response.WriteAsync(result);
+            },
+
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+
+                var result = JsonSerializer.Serialize(new
+                {
+                    status = 401,
+                    message = "Unauthorized: Please login first."
+                });
+
+                return context.Response.WriteAsync(result);
+            }
+        };
     });
+
+
+      
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

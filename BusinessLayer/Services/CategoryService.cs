@@ -9,6 +9,7 @@ using FluentValidation;
 using System.Linq.Expressions;
 using System.Linq;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
+using Domain.PagedResult;
 namespace BusinessLayer.Services
 {
     public class CategoryService
@@ -23,9 +24,9 @@ namespace BusinessLayer.Services
             _validator = validator;
             _updateValidator = updateValidator;
         }
-        public async Task<List<LightCategoryDTO>>GetCategories()
+        public async Task<PagedResult<LightCategoryDTO>>GetCategories(int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Categories.GetReadOnlyCategories();
+            return await _unitOfWork.Categories.GetReadOnlyCategories(pageNumber,pageSize);
         }
 
         public async Task<CategoryDetailsDTO>GetCategoryById(int Id)
@@ -87,9 +88,9 @@ namespace BusinessLayer.Services
             return AddUpdateServiceResponse<LightCategoryDTO>.Success(categoryDTO);
         }
 
-        public async Task<List<LightCategoryDTO>>GetCategoryByName(string Name)
+        public async Task<PagedResult<LightCategoryDTO>>GetCategoryByName(string Name,int pageNumber,int pageSize)
         {
-            return await _unitOfWork.Categories.FindByName(Name);
+            return await _unitOfWork.Categories.FindByName(Name,pageNumber,pageSize);
         }
 
         public async Task<List<CategoryReportDTO>>GetCategoriesDetails()
