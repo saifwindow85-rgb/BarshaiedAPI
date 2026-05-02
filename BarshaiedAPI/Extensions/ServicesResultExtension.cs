@@ -45,7 +45,7 @@ namespace BarshaiedAPI.Extensions
 
         public static ActionResult<PagedResult<T>>ToPagedActioneResult<T>(this PagedResult<T>pagedResult)
         {
-            return pagedResult.Data != null ? new ObjectResult(pagedResult) : new NoContentResult();
+            return pagedResult.Data != null ? new ObjectResult(pagedResult) : new NotFoundObjectResult(new { Status = 404, Title = "No Result Found ?" });
         }
       
 

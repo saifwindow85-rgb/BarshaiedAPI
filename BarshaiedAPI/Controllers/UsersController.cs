@@ -23,7 +23,7 @@ namespace BarshaiedAPI.Controllers
             _service = service;
         }
 
-        [Authorize(Roles ="Admin,User")]
+        [Authorize(Roles ="Admin")]
         [HttpGet("all",Name ="GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -34,7 +34,7 @@ namespace BarshaiedAPI.Controllers
             return users.ToPagedActioneResult();
         }
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,Viewer")]
         [HttpGet("By-Id",Name ="GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -70,15 +70,25 @@ namespace BarshaiedAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<UserDTO>>>AddUser(AddUserDTO newUser)
         {
-            var response = await _service.AddUser(newUser);
-            return response.ToActionResult();
+            int CreatorId = -1;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(int.TryParse(userId,out int validId))
+            {
+                CreatorId = validId;
+            }
+            else
+            {
+                return BadRequest("Invalid authenticatedUserId !");
+            }
+            var response = await _service.AddUser(newUser,CreatorId);
+                return response.ToActionResult();
         }
     }
 }

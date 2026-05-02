@@ -11,7 +11,6 @@ namespace BusinessLayer.AddUpdateDTOs.UserDTOs
         public string UserName { get; set; } = null!;
         public string Password { get; set; } = null!;
         public bool IsActive { get; set; }
-        public int? CreatedByUserId { get; set; }
         public byte Permissions { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace BusinessLayer.Services
         }
 
 
-        public async Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser)
+        public async Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser,int creatorId)
         {
             var validatorResult = await _validator.ValidateAsync(newUser);
             if (!validatorResult.IsValid)
@@ -43,14 +43,14 @@ namespace BusinessLayer.Services
                 return AddUpdateServiceResponse<UserDTO>.Failure(validatorResult.Errors.
                     Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            if (!await _unitOfWork.Users.IsUserExsist(newUser.CreatedByUserId))
+            if (!await _unitOfWork.Users.IsUserExsist(creatorId))
             {
                 return AddUpdateServiceResponse<UserDTO>.InvalidRelatedData();
             }
             var userEntity = new User
             {
                 UserName = newUser.UserName,
-                CreatedByUserId = newUser.CreatedByUserId,
+                CreatedByUserId = creatorId,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password),
                 Permissions = newUser.Permissions,
                 IsActive = newUser.IsActive,
