@@ -1,11 +1,10 @@
-﻿using Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLayer.DTOs.ProductDTOs
+namespace Domain.DTOs.ProductDTOs
 {
     public class AddProductDTO
     {
@@ -35,5 +34,4 @@ namespace BusinessLayer.DTOs.ProductDTOs
         public DateTime? ExpiryDate { get; set; }
         public int UpdatedByUserId { get; set; }
     }
-
 }

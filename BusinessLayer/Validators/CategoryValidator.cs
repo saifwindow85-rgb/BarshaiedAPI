@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.DTOs.CategoryDTOs;
+﻿using Domain.DTOs.CategoryDTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

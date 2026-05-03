@@ -1,5 +1,5 @@
-﻿using BusinessLayer.DTOs.ProductDTOs;
-using FluentValidation;
+﻿using FluentValidation;
+using Domain.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

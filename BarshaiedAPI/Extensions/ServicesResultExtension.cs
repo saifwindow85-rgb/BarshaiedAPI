@@ -1,5 +1,5 @@
-﻿using BusinessLayer.Enums;
-using BusinessLayer.Results;
+﻿using Domain.Enums;
+using Domain.Results;
 using Domain.PagedResult;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

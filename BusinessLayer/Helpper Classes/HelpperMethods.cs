@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Results;
+﻿using Domain.Results;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System;
 using System.Collections.Generic;

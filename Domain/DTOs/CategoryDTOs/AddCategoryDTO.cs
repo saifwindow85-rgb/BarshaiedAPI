@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.DTOs.CategoryDTOs
+namespace Domain.DTOs.CategoryDTOs
 {
     public class AddCategoryDTO
     {
@@ -17,5 +17,4 @@ namespace DataAccessLayer.DTOs.CategoryDTOs
         public string CategoryName { get; set; } = null!;
         public int UpdatedByUserId { get; set; }
     }
-
 }

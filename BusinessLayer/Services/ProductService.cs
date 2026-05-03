@@ -1,5 +1,4 @@
-﻿using BusinessLayer.DTOs.ProductDTOs;
-using Domain.Entities;
+﻿using Domain.DTOs.ProductDTOs;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,18 +6,19 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLayer.Results;
+using Domain.Enums;
+using Domain.Results;
 using FluentValidation;
-using BusinessLayer.Enums;
 using BusinessLayer.Mappers;
 using BusinessLayer.Helpper_Classes;
 using Domain.ReadOnlyModels.Product_Models;
 using BusinessLayer.Helpper_Classes.Product_Hellper_Methods;
 using Domain.PagedResult;
+using Domain.Interfaces.Services_Interfaces;
 
 namespace BusinessLayer.Services
 {
-    public class ProductService
+    public class ProductService :IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
         private IValidator<AddProductDTO> _validator;

@@ -1,4 +1,4 @@
-﻿using BusinessLayer.DTOs.ProductDTOs;
+﻿using Domain.DTOs.ProductDTOs;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;

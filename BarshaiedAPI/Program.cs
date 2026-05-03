@@ -1,10 +1,10 @@
 using BarshaiedAPI.Authorization;
-using BusinessLayer.AddUpdateDTOs.UserDTOs;
-using BusinessLayer.DTOs.ProductDTOs;
+using Domain.DTOs.ProductDTOs;
+using Domain.DTOs.CategoryDTOs;
+using Domain.DTOs.UserDTOs;
 using BusinessLayer.Services;
 using BusinessLayer.Validators;
 using DataAccessLayer.AppDbContext;
-using DataAccessLayer.DTOs.CategoryDTOs;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.UnitOfWork;
 using Domain.Interfaces;
@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json;
+using Domain.Interfaces.Services_Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -169,9 +170,9 @@ builder.Services.AddDbContext<BarshaiedDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ICategoryServices,CategoryService>();
+builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<IUserService,UserService>();
 
 builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

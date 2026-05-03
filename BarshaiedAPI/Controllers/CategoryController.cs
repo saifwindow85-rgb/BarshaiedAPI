@@ -1,13 +1,14 @@
 ﻿using BarshaiedAPI.Extensions;
 using BarshaiedAPI.First_Validations;
-using BusinessLayer.Results;
+using Domain.Results;
 using BusinessLayer.Services;
-using DataAccessLayer.DTOs.CategoryDTOs;
+using Domain.DTOs.CategoryDTOs;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Interfaces.Services_Interfaces;
 
 namespace BarshaiedAPI.Controllers
 {
@@ -16,8 +17,8 @@ namespace BarshaiedAPI.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private CategoryService _service;
-        public CategoryController(CategoryService service)
+        private ICategoryServices _service;
+        public CategoryController(ICategoryServices service)
         {
             _service = service;
         }

@@ -1,13 +1,14 @@
 ﻿using BarshaiedAPI.Extensions;
 using BarshaiedAPI.First_Validations;
-using BusinessLayer.DTOs.ProductDTOs;
-using BusinessLayer.Results;
+using Domain.DTOs.ProductDTOs;
+using Domain.Results;
 using BusinessLayer.Services;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.Product_Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Interfaces.Services_Interfaces;
 
 namespace BarshaiedAPI.Controllers
 {
@@ -17,8 +18,8 @@ namespace BarshaiedAPI.Controllers
     public class ProductController : ControllerBase
     {
 
-        private ProductService _service;
-        public ProductController(ProductService service)
+        private IProductService _service;
+        public ProductController(IProductService service)
         {
             _service = service;
         }

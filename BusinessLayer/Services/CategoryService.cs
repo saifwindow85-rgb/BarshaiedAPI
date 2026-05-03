@@ -1,8 +1,8 @@
-﻿using BusinessLayer.Enums;
-using BusinessLayer.Results;
+﻿using Domain.Enums;
+using Domain.Results;
 using BusinessLayer.Validators;
 using Domain.Entities;
-using DataAccessLayer.DTOs.CategoryDTOs;
+using Domain.DTOs.CategoryDTOs;
 using Domain.Interfaces;
 using DataAccessLayer.Mappers;
 using FluentValidation;
@@ -10,9 +10,10 @@ using System.Linq.Expressions;
 using System.Linq;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
 using Domain.PagedResult;
+using Domain.Interfaces.Services_Interfaces;
 namespace BusinessLayer.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryServices
     {
       
         private readonly IUnitOfWork _unitOfWork;

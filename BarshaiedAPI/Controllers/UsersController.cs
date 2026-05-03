@@ -1,7 +1,7 @@
 ﻿using BarshaiedAPI.Extensions;
 using BarshaiedAPI.First_Validations;
-using BusinessLayer.AddUpdateDTOs.UserDTOs;
-using BusinessLayer.Results;
+using Domain.DTOs.UserDTOs;
+using Domain.Results;
 using BusinessLayer.Services;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.UserDTOs;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Domain.Interfaces.Services_Interfaces;
 
 namespace BarshaiedAPI.Controllers
 {
@@ -17,8 +18,8 @@ namespace BarshaiedAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserService _service;
-        public UsersController(UserService service)
+        private readonly IUserService _service;
+        public UsersController(IUserService service)
         {
             _service = service;
         }

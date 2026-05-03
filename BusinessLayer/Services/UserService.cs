@@ -1,7 +1,7 @@
 ﻿using BCrypt.Net;
-using BusinessLayer.AddUpdateDTOs.UserDTOs;
-using BusinessLayer.Enums;
-using BusinessLayer.Results;
+using Domain.DTOs.UserDTOs;
+using Domain.Enums;
+using Domain.Results;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.PagedResult;
@@ -12,10 +12,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Interfaces.Services_Interfaces;
 
 namespace BusinessLayer.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<AddUserDTO> _validator;

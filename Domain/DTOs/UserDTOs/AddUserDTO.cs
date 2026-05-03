@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLayer.AddUpdateDTOs.UserDTOs
+namespace Domain.DTOs.UserDTOs
 {
     public class AddUserDTO
     {

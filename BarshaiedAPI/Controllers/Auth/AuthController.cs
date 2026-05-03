@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Login;
 using BusinessLayer.Services;
+using Domain.Interfaces.Services_Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,8 +14,8 @@ namespace BarshaiedAPI.Controllers.Auth
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserService _service;
-        public AuthController(UserService service)
+        private readonly IUserService _service;
+        public AuthController(IUserService service)
         {
             _service = service;
         }

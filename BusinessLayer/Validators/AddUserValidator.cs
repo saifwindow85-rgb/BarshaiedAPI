@@ -1,4 +1,4 @@
-﻿using BusinessLayer.AddUpdateDTOs.UserDTOs;
+﻿using Domain.DTOs.UserDTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
