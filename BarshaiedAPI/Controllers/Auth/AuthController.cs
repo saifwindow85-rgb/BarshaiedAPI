@@ -28,6 +28,8 @@ namespace BarshaiedAPI.Controllers.Auth
 
             if (!_service.VerifyPassword(request.Password, user.PasswordHash))
                 return Unauthorized("Invalid credentials");
+            if (!user.IsActive)
+                return new OkObjectResult(new { StatusCode = 403, Title = "Banned Account", Message = "Your Account Is Banned" });
 
             var claims = new[]
             {
