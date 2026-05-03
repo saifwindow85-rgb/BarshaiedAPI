@@ -39,7 +39,8 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<UserDTO>> GetUserById([FromQuery]IdInputValidator @param)
+        public async Task<ActionResult<UserDTO>> GetUserById([FromQuery]IdInputValidator @param,
+             [FromServices] IAuthorizationService authorizationService)
         {
             var user = await _service.GetUserById(param.Id);
 
@@ -52,18 +53,8 @@ namespace BarshaiedAPI.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRole = User.FindFirstValue(ClaimTypes.Role);
 
-            int authenticatedUserId = -1;
-            if(int.TryParse(userId,out int validId))
-            {
-                authenticatedUserId = validId;
-            }
-            else
-            {
-                return NotFound($"No User Found With Id = {param.Id}");
-            }
-
-            bool IsAdmin = userRole == "Admin";
-            if(!IsAdmin && authenticatedUserId != param.Id)
+            var authResult = await authorizationService.AuthorizeAsync(User, param.Id, "UserOwnerOrAdmin");
+            if(!authResult.Succeeded)
                 return NotFound($"No User Found With Id = {param.Id}");
 
             return Ok(user);
@@ -77,6 +68,8 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<UserDTO>>>AddUser(AddUserDTO newUser)
         {
+           
+
             int CreatorId = -1;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if(int.TryParse(userId,out int validId))

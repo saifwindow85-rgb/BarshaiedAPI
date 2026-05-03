@@ -1,3 +1,4 @@
+using BarshaiedAPI.Authorization;
 using BusinessLayer.AddUpdateDTOs.UserDTOs;
 using BusinessLayer.DTOs.ProductDTOs;
 using BusinessLayer.Services;
@@ -9,6 +10,7 @@ using DataAccessLayer.UnitOfWork;
 using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -18,7 +20,12 @@ using System.Text.Json;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserOwnerOrAdmin", policy =>
+        policy.Requirements.Add(new UserOwnerOrAdminRequirement()));
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -176,6 +183,7 @@ builder.Services.AddScoped<IValidator<AddProductDTO>, AddProductValidator>();
 builder.Services.AddScoped<IValidator<UpdateCategoryDTO>, UpdateCategoryValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductDTO>, UpdateProductValidator>();
 builder.Services.AddScoped<IValidator<AddUserDTO>, AddUserValidator>();
+builder.Services.AddSingleton<IAuthorizationHandler, UserOwnerOrAdminHandler>();
 
 builder.Services.AddCors(options =>
 {
