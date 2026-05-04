@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs.AuthDTOs;
+using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Interfaces.Services_Interfaces;
 using System;
@@ -19,14 +20,17 @@ namespace BusinessLayer.Services
         }
         public async Task AddRefreshToken(string refreshToken,int UserId)
         {
+            using var sha = SHA256.Create();
+            var hash = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(refreshToken)));
             var refrshTokenEntity = new RefreshToken
             {
-                TokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
-                ExpiresAt = DateTime.Now.AddDays(7),
+                TokenHash = hash,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
                 RevokedAt = null,
                UserId = UserId
             };
             await _unitOfWork.RfershTokens.Add(refrshTokenEntity);
+            await _unitOfWork.CompleteAsync();
         }
 
         public string GenerateRefreshToken()
@@ -37,6 +41,27 @@ namespace BusinessLayer.Services
             rng.GetBytes(bytes);
 
             return Convert.ToBase64String(bytes);
+        }
+
+        public async Task<UserTokenDTO> GetTokenDetails(string userName)
+        {
+            return await _unitOfWork.RfershTokens.GetTokenDetails(userName);
+        }
+
+        public async Task RefreshToken(string refreshedToken,int userId, int replacedByTokenId)
+        {
+            using var sha = SHA256.Create();
+            var hash = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(refreshedToken)));
+            var refrshTokenEntity = new RefreshToken
+            {
+                TokenHash = hash,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                RevokedAt = null,
+                UserId = userId,
+                ReplacedByTokenId = replacedByTokenId
+            };
+            await _unitOfWork.RfershTokens.Add(refrshTokenEntity);
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

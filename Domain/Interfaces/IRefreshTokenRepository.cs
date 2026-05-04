@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs.AuthDTOs;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Domain.Interfaces
     public interface IRefreshTokenRepository
     {
         public Task Add(RefreshToken refreshToken);
+        public Task<UserTokenDTO> GetTokenDetails(string userName);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs.UserDTOs;
+using Domain.Entities;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.UserDTOs;
 using System;

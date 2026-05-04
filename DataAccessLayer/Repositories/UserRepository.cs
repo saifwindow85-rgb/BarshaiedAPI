@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.AppDbContext;
 using DataAccessLayer.Extensions;
+using Domain.DTOs.UserDTOs;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.PagedResult;
@@ -31,6 +32,7 @@ namespace DataAccessLayer.Repositories
             CreatedByUser = u.Creator.UserName,
             Permissions = u.Permissions,
         };
+
 
         public async Task<PagedResult<UserDTO>> GetAllUsers(int pageNumber, int pageSize)
         {

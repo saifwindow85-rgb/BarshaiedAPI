@@ -3,11 +3,14 @@ using BusinessLayer.Services;
 using Domain.DTOs.AuthDTOs;
 using Domain.Interfaces.Services_Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MyLoginRequest = BusinessLayer.Login.LoginRequest;
+using MyRefreshRequest = Domain.DTOs.AuthDTOs.RefreshRequest;
 
 namespace BarshaiedAPI.Controllers.Auth
 {
@@ -24,7 +27,7 @@ namespace BarshaiedAPI.Controllers.Auth
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] MyLoginRequest request)
         {
             var user = await _service.GetUserByUserName(request.UserName);
             if (user == null)
@@ -68,6 +71,52 @@ namespace BarshaiedAPI.Controllers.Auth
                 AccessToken = accessToken,
                 RefreshToken = refrshToken,
             });
+        }
+
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] MyRefreshRequest request)
+        {
+            var user = await _refreshTokenService.GetTokenDetails(request.UserName);
+            if (user == null)
+                return Unauthorized("Invalid refresh request");
+
+            if (user.RevokedAt != null )
+                return Unauthorized("Refresh token is revoked");
+
+            if( user.ExpiresAt<=DateTime.UtcNow)
+                return Unauthorized("Refresh token is revoked");
+            bool refreshValid = BCrypt.Net.BCrypt.Verify(request.RefreshToken, user.TokenHash);
+            if(!refreshValid)
+                return Unauthorized("Invalid refresh token");
+
+            var claims = new[]
+         {
+                new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
+
+                new Claim(ClaimTypes.Name,user.UserName), // Is This Right No Email In User Entity
+
+                new Claim(ClaimTypes.Role,user.Role.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(
+           Encoding.UTF8.GetBytes("THIS_IS_A_VERY_SECRET_KEY_123456"));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(
+                issuer: "StudentApi",
+                audience: "StudentApiUsers",
+                claims: claims,
+                //expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddSeconds(10),
+                signingCredentials: creds
+            );
+
+            var newAccessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
+            await _refreshTokenService.RefreshToken(newRefreshToken, user.UserId, user.RefreshTokenId);
+            return Ok(new TokenResponseDTO { AccessToken = newAccessToken ,RefreshToken = newRefreshToken});
         }
     }
 }

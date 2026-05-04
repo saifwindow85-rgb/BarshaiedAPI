@@ -17,6 +17,7 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<User>Users { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionType>TransactionTypes { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public BarshaiedDbContext(DbContextOptions<BarshaiedDbContext> options)
         : base(options)
