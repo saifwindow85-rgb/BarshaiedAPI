@@ -13,15 +13,10 @@ namespace Domain.DTOs.AuthDTOs
     }
 
 
-    public class RefreshRequest
+    public class Refresh_LogOutRequest
     {
         public string RefreshToken { get; set; }
-        public string UserName { get; set; }
     }
 
-    public class LogoutRequest
-    {
-        public string UserName { get; set; }
-        public string RefreshToken { get; set; }
-    }
+
 }

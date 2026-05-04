@@ -21,10 +21,13 @@ namespace BusinessLayer.Services
         public async Task AddRefreshToken(string refreshToken,int UserId)
         {
             using var sha = SHA256.Create();
-            var hash = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(refreshToken)));
+
+            var incomingHash = Convert.ToBase64String(
+                sha.ComputeHash(Encoding.UTF8.GetBytes(refreshToken))
+            );
             var refrshTokenEntity = new RefreshToken
             {
-                TokenHash = hash,
+                TokenHash = incomingHash,
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
                 RevokedAt = null,
                UserId = UserId
@@ -43,24 +46,51 @@ namespace BusinessLayer.Services
             return Convert.ToBase64String(bytes);
         }
 
-        public async Task<UserTokenDTO> GetTokenDetails(string userName)
+        public async Task<UserTokenDTO> GetTokenDetails(string refreshToken)
         {
-            return await _unitOfWork.RfershTokens.GetTokenDetails(userName);
+            using var sha = SHA256.Create();
+
+            var incomingHash = Convert.ToBase64String(
+                sha.ComputeHash(Encoding.UTF8.GetBytes(refreshToken))
+            );
+            return await _unitOfWork.RfershTokens.GetTokenDetails(incomingHash);
         }
 
         public async Task RefreshToken(string refreshedToken,int userId, int replacedByTokenId)
         {
             using var sha = SHA256.Create();
-            var hash = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(refreshedToken)));
+
+            var incomingHash = Convert.ToBase64String(
+                sha.ComputeHash(Encoding.UTF8.GetBytes(refreshedToken))
+            );
             var refrshTokenEntity = new RefreshToken
             {
-                TokenHash = hash,
+                TokenHash = incomingHash,
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
                 RevokedAt = null,
                 UserId = userId,
                 ReplacedByTokenId = replacedByTokenId
             };
+            var oldToken = await _unitOfWork.RfershTokens.GetRefreshTokenById(replacedByTokenId);
+            oldToken.RevokedAt = DateTime.UtcNow;
             await _unitOfWork.RfershTokens.Add(refrshTokenEntity);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public string GetHash(string refreshToken)
+        {
+            using var sha = SHA256.Create();
+
+            var incomingHash = Convert.ToBase64String(
+                sha.ComputeHash(Encoding.UTF8.GetBytes(refreshToken))
+            );
+            return incomingHash;
+        }
+
+        public async Task Logout(int tokenId)
+        {
+            var refreshToken = await _unitOfWork.RfershTokens.GetRefreshTokenById(tokenId);
+            refreshToken.RevokedAt = DateTime.UtcNow;
             await _unitOfWork.CompleteAsync();
         }
     }

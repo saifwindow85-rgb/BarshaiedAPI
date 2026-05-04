@@ -40,9 +40,14 @@ namespace DataAccessLayer.Repositories
            await _context.AddAsync(refreshToken);
         }
 
-        public async Task<UserTokenDTO> GetTokenDetails(string userName)
+        public async Task<RefreshToken> GetRefreshTokenById(int RefreshtokenId)
         {
-            return await _context.RefreshTokens.Where(t => t.User.UserName == userName).Select(ToDetaieldTokenDTO).SingleOrDefaultAsync();
+            return await _context.RefreshTokens.FindAsync(RefreshtokenId);
+        }
+
+        public async Task<UserTokenDTO> GetTokenDetails(string RefreshToken)
+        {
+            return await _context.RefreshTokens.Select(ToDetaieldTokenDTO).SingleOrDefaultAsync(t => t.TokenHash == RefreshToken);
         }
 
       

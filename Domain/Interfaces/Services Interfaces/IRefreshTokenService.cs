@@ -13,5 +13,9 @@ namespace Domain.Interfaces.Services_Interfaces
         public string GenerateRefreshToken();
         public Task<UserTokenDTO> GetTokenDetails(string userName);
         public Task RefreshToken(string refreshedToken,int userId, int replacedTokenId);
+
+        public string GetHash(string refreshToken);
+        public  Task Logout(int tokenId);
+
     }
 }

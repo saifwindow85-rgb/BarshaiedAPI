@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using MyLoginRequest = BusinessLayer.Login.LoginRequest;
-using MyRefreshRequest = Domain.DTOs.AuthDTOs.RefreshRequest;
+using MyRefreshRequest = Domain.DTOs.AuthDTOs.Refresh_LogOutRequest;
 
 namespace BarshaiedAPI.Controllers.Auth
 {
@@ -75,9 +75,9 @@ namespace BarshaiedAPI.Controllers.Auth
 
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] MyRefreshRequest request)
+        public async Task<IActionResult> Refresh([FromBody]MyRefreshRequest request)
         {
-            var user = await _refreshTokenService.GetTokenDetails(request.UserName);
+            var user = await _refreshTokenService.GetTokenDetails(request.RefreshToken);
             if (user == null)
                 return Unauthorized("Invalid refresh request");
 
@@ -85,10 +85,8 @@ namespace BarshaiedAPI.Controllers.Auth
                 return Unauthorized("Refresh token is revoked");
 
             if( user.ExpiresAt<=DateTime.UtcNow)
-                return Unauthorized("Refresh token is revoked");
-            bool refreshValid = BCrypt.Net.BCrypt.Verify(request.RefreshToken, user.TokenHash);
-            if(!refreshValid)
-                return Unauthorized("Invalid refresh token");
+                return Unauthorized("Refresh token is revoked"); 
+
 
             var claims = new[]
          {
@@ -109,7 +107,7 @@ namespace BarshaiedAPI.Controllers.Auth
                 audience: "StudentApiUsers",
                 claims: claims,
                 //expires: DateTime.UtcNow.AddMinutes(30),
-                expires: DateTime.UtcNow.AddSeconds(10),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: creds
             );
 
@@ -117,6 +115,18 @@ namespace BarshaiedAPI.Controllers.Auth
             var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
             await _refreshTokenService.RefreshToken(newRefreshToken, user.UserId, user.RefreshTokenId);
             return Ok(new TokenResponseDTO { AccessToken = newAccessToken ,RefreshToken = newRefreshToken});
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogOut([FromBody]MyRefreshRequest request)
+        {
+            var user = await _refreshTokenService.GetTokenDetails(request.RefreshToken);
+            if (user == null)
+                return Ok();// we dont reveal anything to the user
+            if (user.RevokedAt != null)
+               return Ok(); // Until Adding Logging
+            await _refreshTokenService.Logout(user.RefreshTokenId);
+            return Ok("Logged out successfully");
         }
     }
 }
