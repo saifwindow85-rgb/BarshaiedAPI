@@ -10,6 +10,6 @@ namespace Domain.Interfaces.Services_Interfaces
     public interface IRefreshTokenService
     {
         public Task AddRefreshToken(string refreshToken,int UserId);
-
+        public string GenerateRefreshToken();
     }
 }

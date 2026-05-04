@@ -12,10 +12,10 @@ namespace BusinessLayer.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly IRefreshTokenRepository _refreshTokenRepository;
-        public RefreshTokenService(IRefreshTokenRepository refreshTokenRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public RefreshTokenService(IUnitOfWork unitOfWork)
         {
-            _refreshTokenRepository = refreshTokenRepository;
+           _unitOfWork = unitOfWork;
         }
         public async Task AddRefreshToken(string refreshToken,int UserId)
         {
@@ -26,7 +26,7 @@ namespace BusinessLayer.Services
                 RevokedAt = null,
                UserId = UserId
             };
-            await _refreshTokenRepository.Add(refrshTokenEntity);
+            await _unitOfWork.RfershTokens.Add(refrshTokenEntity);
         }
 
         public string GenerateRefreshToken()

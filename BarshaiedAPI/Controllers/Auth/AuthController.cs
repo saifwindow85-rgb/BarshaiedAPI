@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Login;
 using BusinessLayer.Services;
+using Domain.DTOs.AuthDTOs;
 using Domain.Interfaces.Services_Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,15 @@ namespace BarshaiedAPI.Controllers.Auth
     public class AuthController : ControllerBase
     {
         private readonly IUserService _service;
-        public AuthController(IUserService service)
+        private readonly IRefreshTokenService _refreshTokenService;
+        public AuthController(IUserService service,IRefreshTokenService refreshTokenService)
         {
             _service = service;
+            _refreshTokenService = refreshTokenService;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody]LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var user = await _service.GetUserByUserName(request.UserName);
             if (user == null)
@@ -30,7 +33,7 @@ namespace BarshaiedAPI.Controllers.Auth
             if (!_service.VerifyPassword(request.Password, user.PasswordHash))
                 return Unauthorized("Invalid credentials");
             if (!user.IsActive)
-                return new OkObjectResult(new { StatusCode = 403, Title = "Banned Account", Message = "Your Account Is Banned" });
+                return StatusCode(403, new { Title = "Banned Account", Message = "Your Account Is Banned" });
 
             var claims = new[]
             {
@@ -54,9 +57,16 @@ namespace BarshaiedAPI.Controllers.Auth
              expires: DateTime.UtcNow.AddMinutes(30),
              signingCredentials: creds
          );
-            return Ok(new
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var refrshToken = _refreshTokenService.GenerateRefreshToken();
+
+          
+            await _refreshTokenService.AddRefreshToken(refrshToken, user.UserId);
+
+            return Ok(new TokenResponseDTO
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
+                AccessToken = accessToken,
+                RefreshToken = refrshToken,
             });
         }
     }

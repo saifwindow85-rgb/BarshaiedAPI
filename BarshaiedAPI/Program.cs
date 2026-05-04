@@ -173,12 +173,14 @@ builder.Services.AddDbContext<BarshaiedDbContext>(options =>
 builder.Services.AddScoped<ICategoryServices,CategoryService>();
 builder.Services.AddScoped<IProductService,ProductService>();
 builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IRefreshTokenService,RefreshTokenService>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<AddCategoryDTO>, AddCategoryValidator>();
 builder.Services.AddScoped<IValidator<AddProductDTO>, AddProductValidator>();
 builder.Services.AddScoped<IValidator<UpdateCategoryDTO>, UpdateCategoryValidator>();
