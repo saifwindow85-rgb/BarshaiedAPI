@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Abstracts
 {
-    public abstract  class UserAbstract
+    public abstract  class UserAbstract // this is not dublicate its for later use for additonal informations
     {
         public int CreatedByUserId { get; set; }
         public User Creator { get; set; } = null!;
