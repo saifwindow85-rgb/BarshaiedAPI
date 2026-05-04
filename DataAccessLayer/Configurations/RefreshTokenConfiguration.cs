@@ -29,6 +29,8 @@ namespace DataAccessLayer.Configurations
                    .WithMany(u => u.RefreshTokens)
                    .HasForeignKey(r => r.UserId)
                    .IsRequired();
+
+            builder.ToTable("RefreshTokens");
         }
     }
 }
