@@ -1,10 +1,12 @@
 ﻿using BusinessLayer.Login;
 using BusinessLayer.Services;
+using DataAccessLayer.Configurations.Options;
 using Domain.DTOs.AuthDTOs;
 using Domain.Interfaces.Services_Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,10 +22,12 @@ namespace BarshaiedAPI.Controllers.Auth
     {
         private readonly IUserService _service;
         private readonly IRefreshTokenService _refreshTokenService;
-        public AuthController(IUserService service,IRefreshTokenService refreshTokenService)
+        private readonly JwtOption _jwt;
+        public AuthController(IUserService service,IRefreshTokenService refreshTokenService,IOptions<JwtOption>jwtOptions)
         {
             _service = service;
             _refreshTokenService = refreshTokenService;
+            _jwt = jwtOptions.Value;
         }
 
         [HttpPost("login")]
@@ -48,7 +52,7 @@ namespace BarshaiedAPI.Controllers.Auth
             };
 
             var key = new SymmetricSecurityKey(
-               Encoding.UTF8.GetBytes("THIS_IS_A_VERY_SECRET_KEY_123456")); // hardcoded just for test
+               Encoding.UTF8.GetBytes(_jwt.Key)); // hardcoded just for test
 
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -98,7 +102,7 @@ namespace BarshaiedAPI.Controllers.Auth
             };
 
             var key = new SymmetricSecurityKey(
-           Encoding.UTF8.GetBytes("THIS_IS_A_VERY_SECRET_KEY_123456"));
+           Encoding.UTF8.GetBytes(_jwt.Key));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

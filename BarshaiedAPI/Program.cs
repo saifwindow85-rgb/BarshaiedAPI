@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json;
 using Domain.Interfaces.Services_Interfaces;
+using DataAccessLayer.Configurations.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,13 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserOwnerOrAdmin", policy =>
         policy.Requirements.Add(new UserOwnerOrAdminRequirement()));
 });
+
+builder.Services.Configure<JwtOption>(
+    builder.Configuration.GetSection("Jwt")); builder.Services.AddControllers();
+
+var jwtSection = builder.Configuration.GetSection("Jwt");
+
+var jwtOptions = jwtSection.Get<JwtOption>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -50,17 +58,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
             // The expected issuer value (must match the issuer used when creating the JWT).
-            ValidIssuer = "BarshiedAPI",
+            ValidIssuer = jwtOptions!.Issuer,
 
 
             // The expected audience value (must match the audience used when creating the JWT).
-            ValidAudience = "BarshiedAPIUsers",
+            ValidAudience = jwtOptions.Audience,
 
 
             // The secret key used to validate the JWT signature.
             // This must be the same key used when generating the token.
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("THIS_IS_A_VERY_SECRET_KEY_123456"))
+                Encoding.UTF8.GetBytes(jwtOptions.Key))
         };
         options.Events = new JwtBearerEvents
         {
@@ -97,9 +105,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
-      
 
-builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // Register Swagger generator and customize its behavior.
@@ -194,9 +201,10 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                " https://localhost:7013",
+                "https://localhost:7013",
                 "http://localhost:5071"
             )
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
