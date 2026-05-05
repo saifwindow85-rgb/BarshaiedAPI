@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum EnErrorTypes { NotFound = 1, InvalidData = 2, InvalidRefrenceData }
+    public enum EnErrorTypes { NotFound = 1, InvalidData = 2, InvalidRefrenceData = 3, InvalidAuthenticatedUserId  = 4}
 
 }

@@ -69,19 +69,9 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<UserDTO>>>AddUser(AddUserDTO newUser)
         {
-           
 
-            int CreatorId = -1;
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if(int.TryParse(userId,out int validId))
-            {
-                CreatorId = validId;
-            }
-            else
-            {
-                return BadRequest("Invalid authenticatedUserId !");
-            }
-            var response = await _service.AddUser(newUser,CreatorId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString();
+            var response = await _service.AddUser(newUser,userId);
                 return response.ToActionResult();
         }
     }

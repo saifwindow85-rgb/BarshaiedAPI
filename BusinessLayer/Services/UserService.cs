@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces.Services_Interfaces;
+using BusinessLayer.Helpper_Classes;
 
 namespace BusinessLayer.Services
 {
@@ -36,22 +37,30 @@ namespace BusinessLayer.Services
         }
 
 
-        public async Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser,int creatorId)
+        public async Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser,string?creatorId)
         {
+            int validUserId = -1;
+            var isValidUserId = HelpperMethods.IsValidId(creatorId);
+            if(!isValidUserId)
+            {
+                return AddUpdateServiceResponse<UserDTO>.InValidUserId(EnErrorTypes.InvalidAuthenticatedUserId);
+            }
+
+            validUserId = int.Parse(creatorId);
             var validatorResult = await _validator.ValidateAsync(newUser);
             if (!validatorResult.IsValid)
             {
                 return AddUpdateServiceResponse<UserDTO>.Failure(validatorResult.Errors.
                     Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            if (!await _unitOfWork.Users.IsUserExsist(creatorId))
+            if (!await _unitOfWork.Users.IsUserExsist(validUserId))
             {
                 return AddUpdateServiceResponse<UserDTO>.InvalidRelatedData();
             }
             var userEntity = new User
             {
                 UserName = newUser.UserName,
-                CreatedByUserId = creatorId,
+                CreatedByUserId = validUserId,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password),
                 Permissions = newUser.Permissions,
                 IsActive = newUser.IsActive,

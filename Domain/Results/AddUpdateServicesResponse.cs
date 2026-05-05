@@ -13,6 +13,7 @@ namespace Domain.Results
         public bool IsSuccess { get; private set; }
         public List<string>? Errors { get; private set; }
         public EnErrorTypes? ErrorType { get; private set; }
+        public string ErrorMessage { get; private set; }
 
         public static AddUpdateServiceResponse<T> Success(T data) => new AddUpdateServiceResponse<T>
         {
@@ -31,6 +32,13 @@ namespace Domain.Results
         {
             ErrorType = EnErrorTypes.InvalidData,
             Errors = new List<string>() { "The operation failed due to invalid related data. One or more referenced records do not exist" }
+        };
+   
+
+        public static AddUpdateServiceResponse<T> InValidUserId(EnErrorTypes errorType) => new AddUpdateServiceResponse<T>
+        {
+            ErrorMessage = "Unauthorized", 
+            ErrorType = errorType
         };
     }
 }

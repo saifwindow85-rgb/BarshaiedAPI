@@ -10,13 +10,16 @@ namespace BusinessLayer.Helpper_Classes
 {
     public class HelpperMethods
     {
-        public static bool CanBeConvertedToInt(string value)
+        public static bool IsValidId(string? Id)
         {
-            if(int.TryParse(value,out int result))
+            if (int.TryParse(Id, out int id))
             {
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
 

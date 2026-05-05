@@ -28,7 +28,7 @@ namespace BarshaiedAPI.Extensions
                 {
                     Status = 400,
                     Title = "Validation Error",
-                    Errors = response.Errors 
+                    Errors = response.Errors
                 }),
 
                 EnErrorTypes.InvalidRefrenceData => new BadRequestObjectResult(new
@@ -36,6 +36,12 @@ namespace BarshaiedAPI.Extensions
                     Status = 400,
                     Title = "Invalid Related Entity",
                     Errors = response.Errors
+                }),
+
+                EnErrorTypes.InvalidAuthenticatedUserId => new UnauthorizedObjectResult(new
+                {
+                    StatusCode = 401,
+                    Message = response.ErrorMessage
                 }),
 
                 _ => new ObjectResult(new { Status = 500, Title = "Server Error" }) { StatusCode = 500 }

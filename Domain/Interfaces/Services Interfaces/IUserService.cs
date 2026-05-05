@@ -17,7 +17,7 @@ namespace Domain.Interfaces.Services_Interfaces
 
         Task<UserDTO> GetUserById(int id);
 
-        Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser, int creatorId);
+        Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser, string? creatorId);
 
         Task<User> GetUserByUserName(string userName);
 
