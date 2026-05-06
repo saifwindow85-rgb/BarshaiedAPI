@@ -11,6 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.RateLimiting;
+
+
 using MyLoginRequest = BusinessLayer.Login.LoginRequest;
 using MyRefreshRequest = Domain.DTOs.AuthDTOs.Refresh_LogOutRequest;
 
@@ -31,6 +34,7 @@ namespace BarshaiedAPI.Controllers.Auth
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("AuthLimiter")]
         public async Task<IActionResult> Login([FromBody] MyLoginRequest request)
         {
             var user = await _service.GetUserByUserName(request.UserName);
@@ -79,6 +83,7 @@ namespace BarshaiedAPI.Controllers.Auth
 
 
         [HttpPost("refresh")]
+        [EnableRateLimiting("AuthLimiter")]
         public async Task<IActionResult> Refresh([FromBody]MyRefreshRequest request)
         {
             var user = await _refreshTokenService.GetTokenDetails(request.RefreshToken);
