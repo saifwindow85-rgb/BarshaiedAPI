@@ -20,6 +20,8 @@ using Domain.Interfaces.Services_Interfaces;
 using DataAccessLayer.Configurations.Options;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using BusinessLayer.Extensions;
+using DataAccessLayer.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,14 +35,62 @@ builder.Services.AddRateLimiter(options =>
         var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
         return RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: ip,
-            factory: _ => new FixedWindowRateLimiterOptions
+            ip,
+            _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 5,
                 Window = TimeSpan.FromMinutes(1),
                 QueueLimit = 0
             });
     });
+
+    // ===== User (UserId-based) =====
+    options.AddPolicy("UserSlidingLimiter", httpContext =>
+    {
+        var userId =
+            httpContext.User.FindFirst("sub")?.Value ??
+            httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            userId = httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+        }
+
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            userId,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6,
+                QueueLimit = 0
+            });
+    });
+
+    options.OnRejected = async (context, token) =>
+    {
+        var endpoint = context.HttpContext.GetEndpoint();
+
+        var limiter = endpoint?.Metadata
+            .GetMetadata<EnableRateLimitingAttribute>()?.PolicyName;
+
+        string message = limiter switch
+        {
+            "AuthLimiter" => "Too many login attempts. Try later.",
+            "UserSlidingLimiter" => "Too many requests for this user.",
+            _ => "Too many requests."
+        };
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+
+        var result = JsonSerializer.Serialize(new
+        {
+            status = 429,
+            message
+        });
+
+        await context.HttpContext.Response.WriteAsync(result, token);
+    };
 });
 
 builder.Services.AddAuthorization(options =>
@@ -198,22 +248,10 @@ builder.Services.AddDbContext<BarshaiedDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<ICategoryServices,CategoryService>();
-builder.Services.AddScoped<IProductService,ProductService>();
-builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddScoped<IRefreshTokenService,RefreshTokenService>();
+builder.Services.Applications();
+builder.Services.AddRepositories();
+builder.Services.AddValidators();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ICategoryRepository,CategoryRespository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
-
-builder.Services.AddScoped<IValidator<AddCategoryDTO>, AddCategoryValidator>();
-builder.Services.AddScoped<IValidator<AddProductDTO>, AddProductValidator>();
-builder.Services.AddScoped<IValidator<UpdateCategoryDTO>, UpdateCategoryValidator>();
-builder.Services.AddScoped<IValidator<UpdateProductDTO>, UpdateProductValidator>();
-builder.Services.AddScoped<IValidator<AddUserDTO>, AddUserValidator>();
 builder.Services.AddSingleton<IAuthorizationHandler, UserOwnerOrAdminHandler>();
 
 builder.Services.AddCors(options =>
@@ -245,15 +283,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("BarshiedAPIPolicy");
-app.Use(async (context, next) =>
-{
-    await next();
-
-    if (context.Response.StatusCode == StatusCodes.Status429TooManyRequests)
-    {
-        await context.Response.WriteAsync("Too many login attempts. Please try again later.");
-    }
-});
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();

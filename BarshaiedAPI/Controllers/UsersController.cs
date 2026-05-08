@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Domain.Interfaces.Services_Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+
 
 namespace BarshaiedAPI.Controllers
 {
@@ -25,6 +27,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles ="Admin")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("all",Name ="GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,6 +39,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("By-Id",Name ="GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,6 +67,7 @@ namespace BarshaiedAPI.Controllers
 
 
         [Authorize(Roles = "Admin")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

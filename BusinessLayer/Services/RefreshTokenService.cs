@@ -32,7 +32,7 @@ namespace BusinessLayer.Services
                 RevokedAt = null,
                UserId = UserId
             };
-            await _unitOfWork.RfershTokens.Add(refrshTokenEntity);
+            await _unitOfWork.RfereshTokens.Add(refrshTokenEntity);
             await _unitOfWork.CompleteAsync();
         }
 
@@ -53,7 +53,7 @@ namespace BusinessLayer.Services
             var incomingHash = Convert.ToBase64String(
                 sha.ComputeHash(Encoding.UTF8.GetBytes(refreshToken))
             );
-            return await _unitOfWork.RfershTokens.GetTokenDetails(incomingHash);
+            return await _unitOfWork.RfereshTokens.GetTokenDetails(incomingHash);
         }
 
         public async Task RefreshToken(string refreshedToken,int userId, int replacedByTokenId)
@@ -71,9 +71,9 @@ namespace BusinessLayer.Services
                 UserId = userId,
                 ReplacedByTokenId = replacedByTokenId
             };
-            var oldToken = await _unitOfWork.RfershTokens.GetRefreshTokenById(replacedByTokenId);
+            var oldToken = await _unitOfWork.RfereshTokens.GetRefreshTokenById(replacedByTokenId);
             oldToken.RevokedAt = DateTime.UtcNow;
-            await _unitOfWork.RfershTokens.Add(refrshTokenEntity);
+            await _unitOfWork.RfereshTokens.Add(refrshTokenEntity);
             await _unitOfWork.CompleteAsync();
         }
 
@@ -89,7 +89,7 @@ namespace BusinessLayer.Services
 
         public async Task Logout(int tokenId)
         {
-            var refreshToken = await _unitOfWork.RfershTokens.GetRefreshTokenById(tokenId);
+            var refreshToken = await _unitOfWork.RfereshTokens.GetRefreshTokenById(tokenId);
             refreshToken.RevokedAt = DateTime.UtcNow;
             await _unitOfWork.CompleteAsync();
         }

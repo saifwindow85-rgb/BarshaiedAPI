@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Interfaces.Services_Interfaces;
-using BusinessLayer.Helpper_Classes;
+using BusinessLayer.Helper_Classes;
 
 namespace BusinessLayer.Services
 {
@@ -40,7 +40,7 @@ namespace BusinessLayer.Services
         public async Task<AddUpdateServiceResponse<UserDTO>> AddUser(AddUserDTO newUser,string?creatorId)
         {
             int validUserId = -1;
-            var isValidUserId = HelpperMethods.IsValidId(creatorId);
+            var isValidUserId = HelperMethods.IsValidId(creatorId);
             if(!isValidUserId)
             {
                 return AddUpdateServiceResponse<UserDTO>.InValidUserId(EnErrorTypes.InvalidAuthenticatedUserId);

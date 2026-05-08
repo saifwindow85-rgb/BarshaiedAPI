@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Interfaces.Services_Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+
 
 namespace BarshaiedAPI.Controllers
 {
@@ -25,6 +27,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles ="Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -37,6 +40,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("by-Id",Name = "GetProductById")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -54,6 +58,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles ="Admin,User")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpDelete("Delete")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -71,6 +76,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -83,6 +89,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("get-expired-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -95,6 +102,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("get-zero-Quantity-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -107,6 +115,7 @@ namespace BarshaiedAPI.Controllers
 
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("get-under-min-quantity")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -120,6 +129,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("get-by-name-barcode{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -136,6 +146,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User,Viewer")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("get-nearing-expiry-products")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -148,6 +159,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles = "Admin,User")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpPut("",Name ="UpdateProduct")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]

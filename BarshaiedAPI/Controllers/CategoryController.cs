@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Interfaces.Services_Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+
 
 namespace BarshaiedAPI.Controllers
 {
@@ -25,6 +27,7 @@ namespace BarshaiedAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("All")]
+        [EnableRateLimiting("AuthLimiter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PagedResult<LightCategoryDTO>>> GetCategories([FromQuery]PaginationParams @param)
@@ -35,6 +38,7 @@ namespace BarshaiedAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("By-Id",Name ="GetCategoryById")]
+        [EnableRateLimiting("AuthLimiter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,6 +54,7 @@ namespace BarshaiedAPI.Controllers
 
         [Authorize(Roles ="Admin")]
         [HttpPost]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -61,6 +66,7 @@ namespace BarshaiedAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("",Name = "DeleteCategoryById")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -77,6 +83,7 @@ namespace BarshaiedAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("",Name ="UpdateCategory")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,6 +95,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [AllowAnonymous]
+        [EnableRateLimiting("AuthLimiter")]
         [HttpGet("by-name/{Name}", Name = "GetCategoryByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -99,6 +107,7 @@ namespace BarshaiedAPI.Controllers
         }
 
         [Authorize(Roles ="Admin,User")]
+        [EnableRateLimiting("UserSlidingLimiter")]
         [HttpGet("by-category", Name = "GetCategoriesDetails")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

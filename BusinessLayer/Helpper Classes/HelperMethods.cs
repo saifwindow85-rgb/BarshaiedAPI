@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLayer.Helpper_Classes
+namespace BusinessLayer.Helper_Classes
 {
-    public class HelpperMethods
+    public class HelperMethods
     {
         public static bool IsValidId(string? Id)
         {

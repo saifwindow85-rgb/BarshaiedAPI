@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLayer.Helpper_Classes.Product_Hellper_Methods
+namespace BusinessLayer.Helper_Classes.Product_Hellper_Methods
 {
     public class ProductHelpper
     {

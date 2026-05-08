@@ -10,9 +10,9 @@ using Domain.Enums;
 using Domain.Results;
 using FluentValidation;
 using BusinessLayer.Mappers;
-using BusinessLayer.Helpper_Classes;
+using BusinessLayer.Helper_Classes;
 using Domain.ReadOnlyModels.Product_Models;
-using BusinessLayer.Helpper_Classes.Product_Hellper_Methods;
+using BusinessLayer.Helper_Classes.Product_Hellper_Methods;
 using Domain.PagedResult;
 using Domain.Interfaces.Services_Interfaces;
 
