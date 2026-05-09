@@ -19,6 +19,7 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; }
         public byte Permissions { get; set; }
         public ICollection<RefreshToken>RefreshTokens { get; set; } = new List<RefreshToken>();
+        public ICollection<AuditLog>AuditLogs { get; set; } = new List<AuditLog>();
 
         [NotMapped]
         public EnRole Role => GetUserRole();
