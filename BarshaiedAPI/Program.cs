@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using BusinessLayer.Extensions;
 using DataAccessLayer.Extensions;
+using Microsoft.AspNetCore.Diagnostics;
+using BarshaiedAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -284,6 +286,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("BarshiedAPIPolicy");
 app.UseRateLimiter();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
