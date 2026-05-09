@@ -1,15 +1,16 @@
 ﻿using BarshaiedAPI.Extensions;
 using BarshaiedAPI.First_Validations;
-using Domain.Results;
 using BusinessLayer.Services;
 using Domain.DTOs.CategoryDTOs;
+using Domain.Interfaces.Services_Interfaces;
 using Domain.PagedResult;
 using Domain.ReadOnlyModels.CategoryReadOnlyModels;
+using Domain.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Interfaces.Services_Interfaces;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 
 namespace BarshaiedAPI.Controllers
@@ -60,7 +61,8 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>>AddCategory(AddCategoryDTO newCategory)
         {
-            var categoryResponse = await _service.AddCategory(newCategory);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString();
+            var categoryResponse = await _service.AddCategory(newCategory,userId);
             return categoryResponse.ToActionResult();
         }
 
@@ -89,8 +91,8 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AddUpdateServiceResponse<LightCategoryDTO>>> UpdateCategory([FromQuery]IdInputValidator @param,UpdateCategoryDTO updateCategoryDTO)
         {
-            
-            AddUpdateServiceResponse<LightCategoryDTO> categoryResponse = await _service.UpdateCategory(param.Id, updateCategoryDTO);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString();
+            AddUpdateServiceResponse<LightCategoryDTO> categoryResponse = await _service.UpdateCategory(param.Id, updateCategoryDTO,userId);
             return categoryResponse.ToActionResult();
         }
 

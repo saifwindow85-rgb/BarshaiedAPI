@@ -14,9 +14,9 @@ namespace Domain.Interfaces.Services_Interfaces
     {
         public Task<PagedResult<LightCategoryDTO>> GetCategories(int pageNumber, int pageSize);
         public  Task<CategoryDetailsDTO> GetCategoryById(int Id);
-        public Task<AddUpdateServiceResponse<LightCategoryDTO>> AddCategory(AddCategoryDTO newCategory);
+        public Task<AddUpdateServiceResponse<LightCategoryDTO>> AddCategory(AddCategoryDTO newCategory,string?creatorId);
         public  Task<bool> Delete(int Id);
-        public Task<AddUpdateServiceResponse<LightCategoryDTO>> UpdateCategory(int Id, UpdateCategoryDTO updatedCategory);
+        public Task<AddUpdateServiceResponse<LightCategoryDTO>> UpdateCategory(int Id, UpdateCategoryDTO updatedCategory,string?updatedByUserId);
         public  Task<PagedResult<LightCategoryDTO>> GetCategoryByName(string Name, int pageNumber, int pageSize);
         public  Task<PagedResult<CategoryReportDTO>> GetCategoriesDetails(int pageNumber, int pageSize);
 

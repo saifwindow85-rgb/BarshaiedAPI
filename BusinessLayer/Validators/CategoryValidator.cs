@@ -13,7 +13,6 @@ namespace BusinessLayer.Validators
        public AddCategoryValidator()
         {
             RuleFor(c => c.CategoryName).NotEmpty().MinimumLength(2).MaximumLength(50);
-            RuleFor(c => c.CreatedByUserId).NotNull().WithMessage("CreatedByUserId Can Not Be Null!");
         }
 
        
@@ -24,7 +23,6 @@ namespace BusinessLayer.Validators
         public UpdateCategoryValidator()
         {
             RuleFor(c => c.CategoryName).NotEmpty().MinimumLength(2).MaximumLength(50);
-            RuleFor(c => c.UpdatedByUserId).NotNull().WithMessage("UpdatedByUserId Can Not Be Null");
         }
     }
 }
