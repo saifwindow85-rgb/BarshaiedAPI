@@ -10,8 +10,8 @@ namespace Domain.Entities
     {
         public int AuditLogId { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; } = null!;
+        public int? UserId { get; set; }
+        public User ?User { get; set; } = null!;
 
         public string UserName { get; set; } = null!;
 

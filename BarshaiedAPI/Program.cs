@@ -1,29 +1,30 @@
 using BarshaiedAPI.Authorization;
-using Domain.DTOs.ProductDTOs;
-using Domain.DTOs.CategoryDTOs;
-using Domain.DTOs.UserDTOs;
+using BarshaiedAPI.Middlewares;
+using BusinessLayer.Extensions;
 using BusinessLayer.Services;
 using BusinessLayer.Validators;
 using DataAccessLayer.AppDbContext;
+using DataAccessLayer.Configurations.Options;
+using DataAccessLayer.Extensions;
+using DataAccessLayer.Interceptors;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.UnitOfWork;
+using Domain.DTOs.CategoryDTOs;
+using Domain.DTOs.ProductDTOs;
+using Domain.DTOs.UserDTOs;
 using Domain.Interfaces;
+using Domain.Interfaces.Services_Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json;
-using Domain.Interfaces.Services_Interfaces;
-using DataAccessLayer.Configurations.Options;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using BusinessLayer.Extensions;
-using DataAccessLayer.Extensions;
-using Microsoft.AspNetCore.Diagnostics;
-using BarshaiedAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -245,10 +246,17 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuditInterceptor>();
 
-builder.Services.AddDbContext<BarshaiedDbContext>(options =>
+builder.Services.AddDbContext<BarshaiedDbContext>((sp, options) =>
+{
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+
+    options.AddInterceptors(
+        sp.GetRequiredService<AuditInterceptor>());
+});
 
 builder.Services.Applications();
 builder.Services.AddRepositories();

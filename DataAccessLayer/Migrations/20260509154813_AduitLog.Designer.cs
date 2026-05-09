@@ -4,6 +4,7 @@ using DataAccessLayer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(BarshaiedDbContext))]
-    partial class BarshaiedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509154813_AduitLog")]
+    partial class AduitLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -376,7 +379,7 @@ namespace DataAccessLayer.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedAt = new DateTime(2026, 5, 9, 21, 57, 33, 264, DateTimeKind.Local).AddTicks(7869),
+                            CreatedAt = new DateTime(2026, 5, 9, 18, 48, 13, 157, DateTimeKind.Local).AddTicks(5888),
                             IsActive = true,
                             PasswordHash = "12345",
                             Permissions = (byte)1,
@@ -389,7 +392,8 @@ namespace DataAccessLayer.Migrations
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("AuditLogs")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

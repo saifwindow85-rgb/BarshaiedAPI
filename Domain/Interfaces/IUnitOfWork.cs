@@ -12,7 +12,6 @@ namespace Domain.Interfaces
         IProductRepository Products { get; }
         IUserRepository Users { get; }
         IRefreshTokenRepository RfereshTokens { get; }
-
         Task<int> CompleteAsync();
     }
 }

@@ -16,7 +16,7 @@ namespace DataAccessLayer.Configurations
             builder.HasKey(a => a.AuditLogId);
 
             builder.Property(a => a.UserName)
-                .HasMaxLength(100)
+                .HasMaxLength(50)
                 .IsRequired();
 
             builder.Property(a => a.Action)
@@ -36,7 +36,7 @@ namespace DataAccessLayer.Configurations
 
             builder.HasOne(a => a.User)
                 .WithMany(u => u.AuditLogs)
-                .HasForeignKey(a => a.UserId)
+                .HasForeignKey(a => a.UserId).IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.ToTable("AuditLogs");
