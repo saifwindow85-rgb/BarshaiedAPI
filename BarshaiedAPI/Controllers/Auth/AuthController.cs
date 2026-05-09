@@ -26,11 +26,13 @@ namespace BarshaiedAPI.Controllers.Auth
         private readonly IUserService _service;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly JwtOption _jwt;
-        public AuthController(IUserService service,IRefreshTokenService refreshTokenService,IOptions<JwtOption>jwtOptions)
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(IUserService service,IRefreshTokenService refreshTokenService,IOptions<JwtOption>jwtOptions,ILogger<AuthController>logger)
         {
             _service = service;
             _refreshTokenService = refreshTokenService;
             _jwt = jwtOptions.Value;
+            _logger = logger;
         }
 
         [HttpPost("login")]
@@ -39,12 +41,21 @@ namespace BarshaiedAPI.Controllers.Auth
         {
             var user = await _service.GetUserByUserName(request.UserName);
             if (user == null)
+            {
+                _logger.LogWarning("Login failed. Username {Username} was not found.", request.UserName);
                 return Unauthorized("Invalid credentials");
+            }
 
             if (!_service.VerifyPassword(request.Password, user.PasswordHash))
+            {
+                _logger.LogWarning("Login failed. Invalid password for username {Username}.", request.UserName);
                 return Unauthorized("Invalid credentials");
+            }
             if (!user.IsActive)
+            {
+                _logger.LogWarning("Authentication succeeded for user '{UserName}', but account status is blocked. Login prevented.", request.UserName);
                 return StatusCode(403, new { Title = "Banned Account", Message = "Your Account Is Banned" });
+            }
 
             var claims = new[]
             {
@@ -73,7 +84,7 @@ namespace BarshaiedAPI.Controllers.Auth
 
           
             await _refreshTokenService.AddRefreshToken(refrshToken, user.UserId);
-
+            _logger.LogInformation("Login succeeded for username {Username}.", request.UserName);
             return Ok(new TokenResponseDTO
             {
                 AccessToken = accessToken,
@@ -86,15 +97,25 @@ namespace BarshaiedAPI.Controllers.Auth
         [EnableRateLimiting("AuthLimiter")]
         public async Task<IActionResult> Refresh([FromBody]MyRefreshRequest request)
         {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             var user = await _refreshTokenService.GetTokenDetails(request.RefreshToken);
             if (user == null)
+            {
+                _logger.LogWarning("Refresh token not found. IP: {IP}",ip);
                 return Unauthorized("Invalid refresh request");
+            }
 
             if (user.RevokedAt != null )
+            {
+                _logger.LogWarning( "Revoked refresh token used. IP: {IP}", ip);
                 return Unauthorized("Refresh token is revoked");
+            }
 
             if( user.ExpiresAt<=DateTime.UtcNow)
+            {
+                _logger.LogInformation("Expired refresh token used. IP: {IP}",ip);
                 return Unauthorized("Refresh token is revoked"); 
+            }
 
 
             var claims = new[]
@@ -123,18 +144,30 @@ namespace BarshaiedAPI.Controllers.Auth
             var newAccessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
             var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
             await _refreshTokenService.RefreshToken(newRefreshToken, user.UserId, user.RefreshTokenId);
+
+            _logger.LogInformation("Token refresh succeeded. UserId: {UserId}, IP: {IP}, Time: {TimeUtc}",user.UserId,ip, DateTime.UtcNow);
+
             return Ok(new TokenResponseDTO { AccessToken = newAccessToken ,RefreshToken = newRefreshToken});
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> LogOut([FromBody]MyRefreshRequest request)
         {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             var user = await _refreshTokenService.GetTokenDetails(request.RefreshToken);
             if (user == null)
+            {
+                _logger.LogWarning("Logout attempt with invalid refresh token. IP: {IP}",ip);
                 return Ok();// we dont reveal anything to the user
+            }
             if (user.RevokedAt != null)
-               return Ok(); // Until Adding Logging
+            {
+                _logger.LogInformation("Logout called on already revoked refresh token. IP: {IP}, UserId: {UserId}",ip,user.UserId);
+                return Ok(); // Until Adding Logging
+            }
+
             await _refreshTokenService.Logout(user.RefreshTokenId);
+            _logger.LogInformation("User logged out successfully. UserId: {UserId}, IP: {IP}, RefreshTokenId: {TokenId}",user.UserId,ip,user.RefreshTokenId);
             return Ok("Logged out successfully");
         }
     }
