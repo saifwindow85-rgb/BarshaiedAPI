@@ -57,7 +57,6 @@ namespace BusinessLayer.Validators
                 .When(x => x.ExpiryDate.HasValue)
                 .WithMessage("Expiry date must be in the future");
 
-            RuleFor(x => x.CreatedByUserId).NotNull().WithMessage("CreatedByUserId Can Not Be Null");
         }
     }
 
@@ -110,7 +109,6 @@ namespace BusinessLayer.Validators
                 .When(x => x.ExpiryDate.HasValue)
                 .WithMessage("Expiry date must be in the future");
 
-            RuleFor(x => x.UpdatedByUserId).NotNull().WithMessage("UpdatedByUserId Can Not Be Null");
         }
     }
 

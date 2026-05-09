@@ -17,7 +17,6 @@ namespace Domain.DTOs.ProductDTOs
         public int Quantity { get; set; }
         public int MinQuantity { get; set; }
         public DateTime? ExpiryDate { get; set; }
-        public int CreatedByUserId { get; set; }
 
     }
 
@@ -32,6 +31,5 @@ namespace Domain.DTOs.ProductDTOs
         public int Quantity { get; set; }
         public int MinQuantity { get; set; }
         public DateTime? ExpiryDate { get; set; }
-        public int UpdatedByUserId { get; set; }
     }
 }

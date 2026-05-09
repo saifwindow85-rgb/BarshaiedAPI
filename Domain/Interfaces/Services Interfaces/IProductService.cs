@@ -15,7 +15,7 @@ namespace Domain.Interfaces.Services_Interfaces
         public Task<PagedResult<ReadOnlyProductDTO>> GetAllProducts(int pageNumber, int pageSize);
         public  Task<DetailedProductDTO> GetProductById(int Id);
         public  Task<bool> Delete(int Id);
-        public Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddProductDTO newProduct);
+        public Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddProductDTO newProduct,string? creatorId);
         public Task<PagedResult<ReadOnlyProductDTO>> GetExpiredProducts(int pageNumber, int pageSize);
 
         public Task<PagedResult<ReadOnlyProductDTO>> GetZeroQuantityProducts(int pageNumber, int pageSize);
@@ -25,6 +25,6 @@ namespace Domain.Interfaces.Services_Interfaces
 
         Task<PagedResult<ReadOnlyProductDTO>> ProductsNearingExpiry(int pageNumber, int pageSize);
 
-        Task<AddUpdateServiceResponse<DetailedProductDTO>> UpdateProduct(int productId, UpdateProductDTO updatedProduct);
+        Task<AddUpdateServiceResponse<DetailedProductDTO>> UpdateProduct(int productId, UpdateProductDTO updatedProduct,string?updatedByUserId);
     }
 }

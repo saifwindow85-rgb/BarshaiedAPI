@@ -51,19 +51,27 @@ namespace BusinessLayer.Services
             return true;
         }
 
-        public async Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddProductDTO newProduct)
+        public async Task<AddUpdateServiceResponse<DetailedProductDTO>> AddProduct(AddProductDTO newProduct,string?creatorId)
         {
+            int validUserId = -1;
+            var isValidId = HelperMethods.IsValidId(creatorId);
+            if(!isValidId)
+            {
+                return AddUpdateServiceResponse<DetailedProductDTO>.InValidUserId(EnErrorTypes.InvalidAuthenticatedUserId);
+            }
+            validUserId = int.Parse(creatorId);
             var validatorResult = await _validator.ValidateAsync(newProduct);
             if (!validatorResult.IsValid)
             {
                 return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            if(! await ProductHelpper.CheckRelatedData(newProduct.CreatedByUserId,newProduct.CategoryId,_unitOfWork))
+            if(! await ProductHelpper.CheckRelatedData(validUserId,newProduct.CategoryId,_unitOfWork))
             {
                 return AddUpdateServiceResponse<DetailedProductDTO>.InvalidRelatedData();
             }
             var productEntity = newProduct.ToEntity();
+            productEntity.CreatedByUserId = validUserId;
 
             await _unitOfWork.Products.Add(productEntity);
             await _unitOfWork.CompleteAsync();
@@ -100,15 +108,22 @@ namespace BusinessLayer.Services
         }
 
 
-        public async Task<AddUpdateServiceResponse<DetailedProductDTO>>UpdateProduct(int ProductId,UpdateProductDTO updatedProduct)
+        public async Task<AddUpdateServiceResponse<DetailedProductDTO>>UpdateProduct(int ProductId,UpdateProductDTO updatedProduct,string?updatedByUserId)
         {
+            int validUserId = -1;
+            var isValidId = HelperMethods.IsValidId(updatedByUserId);
+            if (!isValidId)
+            {
+                return AddUpdateServiceResponse<DetailedProductDTO>.InValidUserId(EnErrorTypes.InvalidAuthenticatedUserId);
+            }
+            validUserId = int.Parse(updatedByUserId);
             var validatorResult = await _updateValidator.ValidateAsync(updatedProduct);
             if(!validatorResult.IsValid)
             {
                 return AddUpdateServiceResponse<DetailedProductDTO>.Failure(validatorResult.Errors.Select
                     (x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            if(! await ProductHelpper.CheckRelatedData(updatedProduct.UpdatedByUserId,updatedProduct.CategoryId,_unitOfWork))
+            if(! await ProductHelpper.CheckRelatedData(validUserId,updatedProduct.CategoryId,_unitOfWork))
             {
                 return AddUpdateServiceResponse<DetailedProductDTO>.InvalidRelatedData();
             }
@@ -126,7 +141,7 @@ namespace BusinessLayer.Services
             productEntity.SellPrice = updatedProduct.SellPrice;
             productEntity.MinQuantity = updatedProduct.MinQuantity;
             productEntity.ExpiryDate = updatedProduct.ExpiryDate;
-            productEntity.UpdatedByUserId = updatedProduct.UpdatedByUserId;
+            productEntity.UpdatedByUserId = validUserId;
             productEntity.LastUpdate = DateTime.Now;
 
             await _unitOfWork.CompleteAsync();

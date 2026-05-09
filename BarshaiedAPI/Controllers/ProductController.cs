@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Interfaces.Services_Interfaces;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 
 namespace BarshaiedAPI.Controllers
@@ -83,8 +84,8 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> AddProduct(AddProductDTO newProduct)
         {
-
-            var postResponse = await _service.AddProduct(newProduct);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString();
+            var postResponse = await _service.AddProduct(newProduct,userId);
             return postResponse.ToActionResult();
         }
 
@@ -167,8 +168,8 @@ namespace BarshaiedAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
          public async Task<ActionResult<AddUpdateServiceResponse<DetailedProductDTO>>> UpdateProduct([FromQuery] IdInputValidator @param, UpdateProductDTO updatedProduct)
         {
-          
-            var updateResponse = await _service.UpdateProduct(param.Id, updatedProduct);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString();
+            var updateResponse = await _service.UpdateProduct(param.Id, updatedProduct,userId);
             return updateResponse.ToActionResult();
         }
     }

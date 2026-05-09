@@ -22,7 +22,6 @@ namespace BusinessLayer.Mappers
                 SellPrice = DTO.SellPrice,
                 CostPrice = DTO.CostPrice,
                 ExpiryDate = DTO.ExpiryDate,
-                CreatedByUserId = DTO.CreatedByUserId,
             };
         }
 
