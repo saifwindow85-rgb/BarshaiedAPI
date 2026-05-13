@@ -1,23 +1,12 @@
 using BarshaiedAPI.Authorization;
 using BarshaiedAPI.Middlewares;
 using BusinessLayer.Extensions;
-using BusinessLayer.Services;
-using BusinessLayer.Validators;
 using DataAccessLayer.AppDbContext;
 using DataAccessLayer.Configurations.Options;
 using DataAccessLayer.Extensions;
 using DataAccessLayer.Interceptors;
-using DataAccessLayer.Repositories;
-using DataAccessLayer.UnitOfWork;
-using Domain.DTOs.CategoryDTOs;
-using Domain.DTOs.ProductDTOs;
-using Domain.DTOs.UserDTOs;
-using Domain.Interfaces;
-using Domain.Interfaces.Services_Interfaces;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,7 +30,7 @@ builder.Services.AddRateLimiter(options =>
             ip,
             _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 5,
+                PermitLimit =10,
                 Window = TimeSpan.FromMinutes(1),
                 QueueLimit = 0
             });
@@ -63,7 +52,7 @@ builder.Services.AddRateLimiter(options =>
             userId,
             _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 10,
+                PermitLimit = 50,
                 Window = TimeSpan.FromMinutes(1),
                 SegmentsPerWindow = 6,
                 QueueLimit = 0
