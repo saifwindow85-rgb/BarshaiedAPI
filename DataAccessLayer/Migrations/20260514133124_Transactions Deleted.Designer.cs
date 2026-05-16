@@ -4,6 +4,7 @@ using DataAccessLayer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(BarshaiedDbContext))]
-    partial class BarshaiedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514133124_Transactions Deleted")]
+    partial class TransactionsDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,19 +228,17 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PageId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsPurchased")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("NVARCHAR(300)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<int>("Total")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int")
-                        .HasComputedColumnSql("(\r\n                           ISNULL(\r\n                               (SELECT p.SellPrice\r\n                                FROM Products AS p\r\n                                WHERE p.ProductId = ProductId),\r\n                               0\r\n                           ) * Quantity\r\n                       )", false);
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -249,35 +250,11 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.HasIndex("PageId");
-
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("ShoppingListItems", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.ShoppingListPage", b =>
-                {
-                    b.Property<int>("PageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PageId"));
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("Total")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int")
-                        .HasComputedColumnSql("(\r\n                           SELECT ISNULL(SUM(i.Total), 0)\r\n                           FROM ShoppingListItems AS i\r\n                           WHERE i.PageId = PageId\r\n                       )", false);
-
-                    b.HasKey("PageId");
-
-                    b.ToTable("ShoppingListPages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -323,7 +300,7 @@ namespace DataAccessLayer.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedAt = new DateTime(2026, 5, 14, 16, 57, 1, 65, DateTimeKind.Local).AddTicks(9938),
+                            CreatedAt = new DateTime(2026, 5, 14, 16, 31, 23, 650, DateTimeKind.Local).AddTicks(5674),
                             IsActive = true,
                             PasswordHash = "12345",
                             Permissions = (byte)1,
@@ -403,16 +380,10 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.ShoppingListPage", "shoppingListPage")
-                        .WithMany("ShoppingListItems")
-                        .HasForeignKey("PageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Product", "Product")
                         .WithMany("ShoppingListItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "UpdatedByUser")
@@ -425,8 +396,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("UpdatedByUser");
-
-                    b.Navigation("shoppingListPage");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -445,11 +414,6 @@ namespace DataAccessLayer.Migrations
                 });
 
             modelBuilder.Entity("Domain.Entities.Product", b =>
-                {
-                    b.Navigation("ShoppingListItems");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ShoppingListPage", b =>
                 {
                     b.Navigation("ShoppingListItems");
                 });

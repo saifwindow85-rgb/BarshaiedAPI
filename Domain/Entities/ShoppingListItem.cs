@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,9 +14,9 @@ namespace Domain.Entities
         public int ProductId { get; set; }
         public Product Product { get; set; } = null!;
         public int Quantity { get; set; }
-        public string? Notes { get; set; }
-        public bool IsPurchased { get; set; }
-        
-        public ICollection<Transaction>Transactions { get; set; } = new List<Transaction>();
+        public decimal UnitPrice { get; set; }
+        public decimal Total {  get; set; }
+        public int PageId { get; set; }
+        public ShoppingListPage shoppingListPage { get; set; }
     }
 }

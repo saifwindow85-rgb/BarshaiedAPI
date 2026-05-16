@@ -89,49 +89,9 @@ namespace DataAccessLayer.Seeds
         }
     };
         }
-        public static List<ShoppingListItem> SeedShoppingListItems()
-        {
-            return new List<ShoppingListItem>
-    {
-        new ShoppingListItem
-        {
-            ShoppingListItemId = 1,
-            ProductId = 1,
-            Quantity = 2,
-            Notes = "For breakfast",
-            IsPurchased = false,
-            CreatedAt = DateTime.Now
-        },
-        new ShoppingListItem
-        {
-            ShoppingListItemId = 2,
-            ProductId = 2,
-            Quantity = 1,
-            Notes = "Fresh juice",
-            IsPurchased = true,
-            CreatedAt = DateTime.Now
-        },
-        new ShoppingListItem
-        {
-            ShoppingListItemId = 3,
-            ProductId = 3,
-            Quantity = 5,
-            Notes = null,
-            IsPurchased = false,
-            CreatedAt = DateTime.Now
-        },
-        new ShoppingListItem
-        {
-            ShoppingListItemId = 4,
-            ProductId = 1,
-            Quantity = 3,
-            Notes = "Extra stock",
-            IsPurchased = false,
-            CreatedAt = DateTime.Now
-        }
-    };
+        
         }
     }
 
 
-}
+

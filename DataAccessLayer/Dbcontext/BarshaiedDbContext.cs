@@ -14,9 +14,9 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<Category>Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ShoppingListItem>ShoppingListItems { get; set; }
+        public DbSet<ShoppingListPage>ShoppingListPages { get; set; }
         public DbSet<User>Users { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<TransactionType>TransactionTypes { get; set; }
+
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<AuditLog>AuditLogs { get; set; }
 
