@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(BarshaiedDbContext))]
-    [Migration("20260504124449_RefreshToken Added To DbContext")]
-    partial class RefreshTokenAddedToDbContext
+    [Migration("20260516072034_Initial Commit")]
+    partial class InitialCommit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,50 @@ namespace DataAccessLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.AuditLog", b =>
+                {
+                    b.Property<int>("AuditLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuditLogId"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("NVARCHAR(MAX)");
+
+                    b.Property<int?>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("AuditLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuditLogs", (string)null);
+                });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
@@ -184,17 +228,24 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsPurchased")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("NVARCHAR(300)");
+                    b.Property<int>("PageId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasComputedColumnSql("(\r\n                          [UnitPrice] * [Quantity]\r\n                       )", true);
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -206,6 +257,8 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
+                    b.HasIndex("PageId");
+
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UpdatedByUserId");
@@ -213,83 +266,21 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("ShoppingListItems", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
+            modelBuilder.Entity("Domain.Entities.ShoppingListPage", b =>
                 {
-                    b.Property<int>("TransactionId")
+                    b.Property<int>("PageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PageId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                    b.Property<string>("Note")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
+                    b.HasKey("PageId");
 
-                    b.Property<int?>("ShoppingListItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransactionTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedByUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TransactionId");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("ShoppingListItemId");
-
-                    b.HasIndex("TransactionTypeId");
-
-                    b.HasIndex("UpdatedByUserId");
-
-                    b.ToTable("Transactions", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.TransactionType", b =>
-                {
-                    b.Property<int>("TransactionTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionTypeId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TransactionName")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR(50)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedByUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TransactionTypeId");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("TransactionName")
-                        .IsUnique();
-
-                    b.HasIndex("UpdatedByUserId");
-
-                    b.ToTable("TransactionTypes", (string)null);
+                    b.ToTable("ShoppingListPages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -335,12 +326,22 @@ namespace DataAccessLayer.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedAt = new DateTime(2026, 5, 4, 15, 44, 48, 735, DateTimeKind.Local).AddTicks(7519),
+                            CreatedAt = new DateTime(2026, 5, 16, 10, 20, 33, 176, DateTimeKind.Local).AddTicks(900),
                             IsActive = true,
                             PasswordHash = "12345",
                             Permissions = (byte)1,
                             UserName = "Admin"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Entities.AuditLog", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("AuditLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -405,10 +406,16 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.ShoppingListPage", "shoppingListPage")
+                        .WithMany("ShoppingListItems")
+                        .HasForeignKey("PageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Product", "Product")
                         .WithMany("ShoppingListItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "UpdatedByUser")
@@ -421,57 +428,8 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("UpdatedByUser");
-                });
 
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.ShoppingListItem", "ShoppingListItem")
-                        .WithMany("Transactions")
-                        .HasForeignKey("ShoppingListItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.TransactionType", "TransactionType")
-                        .WithMany("Transactions")
-                        .HasForeignKey("TransactionTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "UpdatedByUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Creator");
-
-                    b.Navigation("ShoppingListItem");
-
-                    b.Navigation("TransactionType");
-
-                    b.Navigation("UpdatedByUser");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TransactionType", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "UpdatedByUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Creator");
-
-                    b.Navigation("UpdatedByUser");
+                    b.Navigation("shoppingListPage");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -494,18 +452,15 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("ShoppingListItems");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ShoppingListItem", b =>
+            modelBuilder.Entity("Domain.Entities.ShoppingListPage", b =>
                 {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TransactionType", b =>
-                {
-                    b.Navigation("Transactions");
+                    b.Navigation("ShoppingListItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
+                    b.Navigation("AuditLogs");
+
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

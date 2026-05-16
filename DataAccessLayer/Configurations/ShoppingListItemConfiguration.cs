@@ -20,7 +20,9 @@ namespace DataAccessLayer.Configurations
                    .ValueGeneratedOnAdd();
 
             builder.Property(l => l.UnitPrice).HasPrecision(18, 2).IsRequired();
-            builder.Property(l => l.Total).HasPrecision(18, 2).IsRequired();
+            builder.Property(l => l.Total)
+        .HasPrecision(18, 2)
+        .HasComputedColumnSql("[UnitPrice] * [Quantity]", stored: true);
 
             // Product Relationship
             builder.HasOne(l => l.Product)

@@ -18,7 +18,6 @@ namespace DataAccessLayer.Configurations
 
             builder.Property(p => p.PageId)
                    .ValueGeneratedOnAdd();
-            builder.Property(l => l.Total).HasPrecision(18, 2).IsRequired();
             // Optional Note
             builder.Property(p => p.Note)
                    .HasMaxLength(1000)
@@ -32,15 +31,7 @@ namespace DataAccessLayer.Configurations
                    .OnDelete(DeleteBehavior.Cascade);
 
             // Computed Column:
-            // Total = SUM(ShoppingListItems.Total) for this page
-            builder.Property(p => p.Total)
-                   .HasComputedColumnSql(
-                       @"(
-                           SELECT ISNULL(SUM(i.Total), 0)
-                           FROM ShoppingListItems AS i
-                           WHERE i.PageId = PageId
-                       )",
-                       stored: false);
+            // Total = SUM(ShoppingListItems.Total) for this page   
 
             // Table Name
             builder.ToTable("ShoppingListPages");

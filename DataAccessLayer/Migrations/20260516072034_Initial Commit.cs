@@ -6,11 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCommit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ShoppingListPages",
+                columns: table => new
+                {
+                    PageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Note = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingListPages", x => x.PageId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -18,7 +31,7 @@ namespace DataAccessLayer.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "NVARCHAR(50)", nullable: false),
-                    Password = table.Column<string>(type: "NVARCHAR(50)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "NVARCHAR(255)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -30,6 +43,31 @@ namespace DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Users_Users_CreatedByUserId",
                         column: x => x.CreatedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                columns: table => new
+                {
+                    AuditLogId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    EntityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EntityId = table.Column<int>(type: "int", nullable: true),
+                    Description = table.Column<string>(type: "NVARCHAR(MAX)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.AuditLogId);
+                    table.ForeignKey(
+                        name: "FK_AuditLogs_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
@@ -65,32 +103,26 @@ namespace DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransactionTypes",
+                name: "RefreshTokens",
                 columns: table => new
                 {
-                    TransactionTypeId = table.Column<int>(type: "int", nullable: false)
+                    RefreshTokenId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionName = table.Column<string>(type: "NVARCHAR(50)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedByUserId = table.Column<int>(type: "int", nullable: true)
+                    TokenHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RevokedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReplacedByTokenId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransactionTypes", x => x.TransactionTypeId);
+                    table.PrimaryKey("PK_RefreshTokens", x => x.RefreshTokenId);
                     table.ForeignKey(
-                        name: "FK_TransactionTypes_Users_CreatedByUserId",
-                        column: x => x.CreatedByUserId,
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TransactionTypes_Users_UpdatedByUserId",
-                        column: x => x.UpdatedByUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -141,12 +173,13 @@ namespace DataAccessLayer.Migrations
                 name: "ShoppingListItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ShoppingListItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "NVARCHAR(300)", nullable: true),
-                    IsPurchased = table.Column<bool>(type: "bit", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false, computedColumnSql: "(\r\n                          [UnitPrice] * [Quantity]\r\n                       )", stored: true),
+                    PageId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -154,12 +187,18 @@ namespace DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShoppingListItems", x => x.Id);
+                    table.PrimaryKey("PK_ShoppingListItems", x => x.ShoppingListItemId);
                     table.ForeignKey(
                         name: "FK_ShoppingListItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShoppingListItems_ShoppingListPages_PageId",
+                        column: x => x.PageId,
+                        principalTable: "ShoppingListPages",
+                        principalColumn: "PageId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ShoppingListItems_Users_CreatedByUserId",
@@ -175,52 +214,15 @@ namespace DataAccessLayer.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Transactions",
-                columns: table => new
-                {
-                    TransactionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionTypeId = table.Column<int>(type: "int", nullable: false),
-                    ShoppingListItemId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedByUserId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transactions", x => x.TransactionId);
-                    table.ForeignKey(
-                        name: "FK_Transactions_ShoppingListItems_ShoppingListItemId",
-                        column: x => x.ShoppingListItemId,
-                        principalTable: "ShoppingListItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Transactions_TransactionTypes_TransactionTypeId",
-                        column: x => x.TransactionTypeId,
-                        principalTable: "TransactionTypes",
-                        principalColumn: "TransactionTypeId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Users_CreatedByUserId",
-                        column: x => x.CreatedByUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Users_UpdatedByUserId",
-                        column: x => x.UpdatedByUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "CreatedAt", "CreatedByUserId", "IsActive", "Password", "Permissions", "UserName" },
-                values: new object[] { 1, new DateTime(2026, 4, 22, 16, 37, 28, 813, DateTimeKind.Local).AddTicks(9555), null, true, "12345", (byte)1, "Admin" });
+                columns: new[] { "UserId", "CreatedAt", "CreatedByUserId", "IsActive", "PasswordHash", "Permissions", "UserName" },
+                values: new object[] { 1, new DateTime(2026, 5, 16, 10, 20, 33, 176, DateTimeKind.Local).AddTicks(900), null, true, "12345", (byte)1, "Admin" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditLogs_UserId",
+                table: "AuditLogs",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_CreatedByUserId",
@@ -255,9 +257,25 @@ namespace DataAccessLayer.Migrations
                 column: "UpdatedByUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_TokenHash",
+                table: "RefreshTokens",
+                column: "TokenHash",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShoppingListItems_CreatedByUserId",
                 table: "ShoppingListItems",
                 column: "CreatedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingListItems_PageId",
+                table: "ShoppingListItems",
+                column: "PageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingListItems_ProductId",
@@ -267,42 +285,6 @@ namespace DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingListItems_UpdatedByUserId",
                 table: "ShoppingListItems",
-                column: "UpdatedByUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_CreatedByUserId",
-                table: "Transactions",
-                column: "CreatedByUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_ShoppingListItemId",
-                table: "Transactions",
-                column: "ShoppingListItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_TransactionTypeId",
-                table: "Transactions",
-                column: "TransactionTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_UpdatedByUserId",
-                table: "Transactions",
-                column: "UpdatedByUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionTypes_CreatedByUserId",
-                table: "TransactionTypes",
-                column: "CreatedByUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionTypes_TransactionName",
-                table: "TransactionTypes",
-                column: "TransactionName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionTypes_UpdatedByUserId",
-                table: "TransactionTypes",
                 column: "UpdatedByUserId");
 
             migrationBuilder.CreateIndex(
@@ -321,16 +303,19 @@ namespace DataAccessLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "AuditLogs");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "ShoppingListItems");
 
             migrationBuilder.DropTable(
-                name: "TransactionTypes");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ShoppingListPages");
 
             migrationBuilder.DropTable(
                 name: "Categories");

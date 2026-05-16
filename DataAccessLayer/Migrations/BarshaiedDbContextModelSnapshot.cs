@@ -234,10 +234,15 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("Total")
+                    b.Property<decimal>("Total")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int")
-                        .HasComputedColumnSql("(\r\n                           ISNULL(\r\n                               (SELECT p.SellPrice\r\n                                FROM Products AS p\r\n                                WHERE p.ProductId = ProductId),\r\n                               0\r\n                           ) * Quantity\r\n                       )", false);
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasComputedColumnSql("(\r\n                          [UnitPrice] * [Quantity]\r\n                       )", true);
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -269,11 +274,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Note")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("Total")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int")
-                        .HasComputedColumnSql("(\r\n                           SELECT ISNULL(SUM(i.Total), 0)\r\n                           FROM ShoppingListItems AS i\r\n                           WHERE i.PageId = PageId\r\n                       )", false);
 
                     b.HasKey("PageId");
 
@@ -323,7 +323,7 @@ namespace DataAccessLayer.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedAt = new DateTime(2026, 5, 14, 16, 57, 1, 65, DateTimeKind.Local).AddTicks(9938),
+                            CreatedAt = new DateTime(2026, 5, 16, 10, 20, 33, 176, DateTimeKind.Local).AddTicks(900),
                             IsActive = true,
                             PasswordHash = "12345",
                             Permissions = (byte)1,
