@@ -11,7 +11,7 @@ namespace BusinessLayer.Helper_Classes.Product_Hellper_Methods
     {
         public static async  Task<bool> CheckRelatedData(int userId,int categoryId,IUnitOfWork unitOfWork)
         {
-            bool IsUserExist = await unitOfWork.Users.IsUserExsist(userId);
+            bool IsUserExist = await unitOfWork.Users.IsUserExist(userId);
             bool IsCategoryExist = await unitOfWork.Categories.IsCategoryExist(categoryId);
             if(!IsUserExist|| !IsCategoryExist)
                 return false;

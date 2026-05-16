@@ -12,7 +12,8 @@ namespace Domain.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<bool> IsUserExsist(int ?Id);
+        public Task<bool> IsUserExist(int ?Id);
+        public Task<bool> IsUserExist(string userName);
         public Task<PagedResult<UserDTO>> GetAllUsers(int pageNumber, int pageSize);
         public Task<UserDTO>GetUserById(int Id);
         public Task<User> GetUserByUserName(string userName);

@@ -61,13 +61,13 @@ namespace BarshaiedAPI.Controllers.Auth
             {
                 new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
 
-                new Claim(ClaimTypes.Name,user.UserName), // Is This Right No Email In User Entity
+                new Claim(ClaimTypes.Name,user.UserName), 
 
                 new Claim(ClaimTypes.Role,user.Role.ToString())
             };
 
             var key = new SymmetricSecurityKey(
-               Encoding.UTF8.GetBytes(_jwt.Key)); // hardcoded just for test
+               Encoding.UTF8.GetBytes(_jwt.Key)); 
 
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

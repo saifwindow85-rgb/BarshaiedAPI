@@ -44,6 +44,12 @@ namespace BarshaiedAPI.Extensions
                     Message = response.ErrorMessage
                 }),
 
+                EnErrorTypes.ExistedResource => new BadRequestObjectResult(new
+                {
+                    StatusCode = 400,
+                    Errors = response.Errors
+                }),
+
                 _ => new ObjectResult(new { Status = 500, Title = "Server Error" }) { StatusCode = 500 }
             };
         }

@@ -57,7 +57,7 @@ namespace BusinessLayer.Services
                 Name = newCategory.CategoryName,
                 CreatedByUserId = validUserId,
             };
-            if(!await _unitOfWork.Users.IsUserExsist(categoryEntity.CreatedByUserId))
+            if(!await _unitOfWork.Users.IsUserExist(categoryEntity.CreatedByUserId))
             {
                 return AddUpdateServiceResponse<LightCategoryDTO>.InvalidRelatedData();
             }
@@ -97,7 +97,7 @@ namespace BusinessLayer.Services
             {
                 return AddUpdateServiceResponse<LightCategoryDTO>.Failure(new List<string> { $"No Category Found With Id = {Id}" }, EnErrorTypes.NotFound);
             }
-            if(!await _unitOfWork.Users.IsUserExsist(validUserId))
+            if(!await _unitOfWork.Users.IsUserExist(validUserId))
             {
                 return AddUpdateServiceResponse<LightCategoryDTO>.InvalidRelatedData();
             }

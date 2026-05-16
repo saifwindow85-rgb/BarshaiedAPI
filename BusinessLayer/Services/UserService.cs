@@ -41,6 +41,10 @@ namespace BusinessLayer.Services
         {
             int validUserId = -1;
             var isValidUserId = HelperMethods.IsValidId(creatorId);
+            if(await _unitOfWork.Users.IsUserExist(newUser.UserName))
+            {
+                return AddUpdateServiceResponse<UserDTO>.ExistedResource("User");
+            }
             if(!isValidUserId)
             {
                 return AddUpdateServiceResponse<UserDTO>.InValidUserId(EnErrorTypes.InvalidAuthenticatedUserId);
@@ -53,7 +57,7 @@ namespace BusinessLayer.Services
                 return AddUpdateServiceResponse<UserDTO>.Failure(validatorResult.Errors.
                     Select(x => $"{x.PropertyName} : {x.ErrorMessage}").ToList(), EnErrorTypes.InvalidData);
             }
-            if (!await _unitOfWork.Users.IsUserExsist(validUserId))
+            if (!await _unitOfWork.Users.IsUserExist(validUserId))
             {
                 return AddUpdateServiceResponse<UserDTO>.InvalidRelatedData();
             }
