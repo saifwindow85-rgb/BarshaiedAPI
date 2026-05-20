@@ -12,6 +12,7 @@ namespace Domain.Interfaces
     public interface IProductRepository
     {
         public Task<List<ReadOnlyProductDTO>> GetAllProducts(int pageNumber,int pageSize);
+        public Task<List<Product>> GetProductsByIds(List<int> ProductsIds);
         public Task<PagedResult<ReadOnlyProductDTO>> GetReadOnlyProducts(int pageNumber, int pageSize);
         public Task<DetailedProductDTO> GetProdutcById(int Id);
         public Task<PagedResult<ReadOnlyProductDTO>> GetProductByNameOrBarcode(string Name, int pageNumber, int pageSize);

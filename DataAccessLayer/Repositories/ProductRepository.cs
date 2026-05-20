@@ -23,6 +23,7 @@ namespace DataAccessLayer.Repositories
         {
             Id = p.ProductId,
             ProductName = p.ProductName,
+            SellPrice = p.SellPrice,
             Barcode = p.Barcode,
             CategoryName = p.Category.Name,
             Quantity = p.Quantity,
@@ -128,6 +129,13 @@ namespace DataAccessLayer.Repositories
         public async Task<bool> IsProductExist(int Id)
         {
             return await _context.Products.AnyAsync(p => p.ProductId == Id);
+        }
+
+        public async Task<List<Product>> GetProductsByIds(List<int> ProductsIds)
+        {
+            return await _context.Products
+         .Where(p => ProductsIds.Contains(p.ProductId))
+         .ToListAsync();
         }
     }
 

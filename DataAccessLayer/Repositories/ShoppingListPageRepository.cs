@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.DTOs.ShoppingListPageDTOs.ItemDTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories
 {
@@ -36,6 +37,19 @@ namespace DataAccessLayer.Repositories
         {
             _context = context;
         }
+
+        public async Task AddShoppingListPage(ShoppingListPage page)
+        {
+            await _context.ShoppingListPages.AddAsync(page);
+        }
+
+        public async Task<ShoppingListPage> GetPageById(int Id)
+        {
+            return await _context.ShoppingListPages
+                .Include(p => p.ShoppingListItems).ThenInclude(p => p.Product)
+                .SingleOrDefaultAsync(p => p.PageId == Id);
+        }
+
         public async Task<PagedResult<ShoppingListPageReadOnlyDTO>> GetShoppingListPages(int pageNumber, int pageSize)
         {
             return await _context.ShoppingListPages.Select(ToReadOnlyDTO).ToPagedResultAsync(pageNumber, pageSize);
