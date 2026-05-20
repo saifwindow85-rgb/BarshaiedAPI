@@ -25,17 +25,18 @@ namespace DataAccessLayer.Repositories
                 Note = p.Note,
                 Items = p.ShoppingListItems.Select(i => new ItemDTO
                 {
+                    ProductName = i.Product.ProductName,
                     Quantity = i.Quantity,
                     UnitPrice = i.UnitPrice,
                     Total = i.Total
                 }).ToList(),
-                Total = p.Total,
+                Total = p.ShoppingListItems.Sum(l=>l.Total)
             };
         public ShoppingListPageRepository(BarshaiedDbContext context)
         {
             _context = context;
         }
-        public async Task<PagedResult<ShoppingListPageReadOnlyDTO>> GetShoopingListPages(int pageNumber, int pageSize)
+        public async Task<PagedResult<ShoppingListPageReadOnlyDTO>> GetShoppingListPages(int pageNumber, int pageSize)
         {
             return await _context.ShoppingListPages.Select(ToReadOnlyDTO).ToPagedResultAsync(pageNumber, pageSize);
         }

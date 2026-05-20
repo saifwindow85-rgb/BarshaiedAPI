@@ -8,6 +8,7 @@ namespace Domain.DTOs.ShoppingListPageDTOs.ItemDTO
 {
     public class ItemDTO
     {
+        public string ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Total {  get; set; }

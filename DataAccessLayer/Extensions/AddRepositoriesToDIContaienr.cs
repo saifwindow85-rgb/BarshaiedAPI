@@ -18,6 +18,7 @@ namespace DataAccessLayer.Extensions
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IShoppingListPageRepository, ShoppingListPageRepository>();
             return services;
         }
     }

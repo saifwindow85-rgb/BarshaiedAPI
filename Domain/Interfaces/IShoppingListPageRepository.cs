@@ -10,6 +10,6 @@ namespace Domain.Interfaces
 {
     public interface IShoppingListPageRepository
     {
-        public Task<PagedResult<ShoppingListPageReadOnlyDTO>> GetShoopingListPages(int pageNumber, int pageSize);
+        public Task<PagedResult<ShoppingListPageReadOnlyDTO>> GetShoppingListPages(int pageNumber, int pageSize);
     }
 }

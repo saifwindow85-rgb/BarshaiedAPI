@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
+using Domain.Interfaces.Services_Interfaces;
 
 
 namespace DataAccessLayer.UnitOfWork
@@ -20,6 +21,8 @@ namespace DataAccessLayer.UnitOfWork
         public IUserRepository Users { get; private set; }
 
         public IRefreshTokenRepository RfereshTokens {  get; private set; }
+   
+        public IShoppingListPageRepository ShoppingListPageRepository {  get; private set; }
 
         public UnitOfWork(BarshaiedDbContext context)
         {
@@ -28,6 +31,7 @@ namespace DataAccessLayer.UnitOfWork
             Categories = new CategoryRespository(_context);
             Products = new ProductRepository(_context);
             Users = new UserRepository(_context);
+            ShoppingListPageRepository = new ShoppingListPageRepository(_context);
             
         }
 

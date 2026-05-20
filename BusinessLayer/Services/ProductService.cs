@@ -29,7 +29,6 @@ namespace BusinessLayer.Services
             _validator = validator;
             _updateValidator = updateValidator;
         }
-        private int _pageSize = 10;
 
 
         public async Task<PagedResult<ReadOnlyProductDTO>> GetAllProducts(int pageNumber,int pageSize)

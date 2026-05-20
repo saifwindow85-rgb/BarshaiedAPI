@@ -23,6 +23,7 @@ namespace BusinessLayer.Extensions
            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            services.AddScoped<IShoppingListPageService, ShoppingListPageService>();
             return services;
         }
 
