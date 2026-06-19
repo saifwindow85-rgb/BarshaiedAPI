@@ -131,7 +131,7 @@ namespace BarshaiedAPI.Controllers
 
         [Authorize(Roles = "Admin,User,Viewer")]
         [EnableRateLimiting("UserSlidingLimiter")]
-        [HttpGet("get-by-name-barcode{nameOrBarcode}")]
+        [HttpGet("get-by-name-barcode/{nameOrBarcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
